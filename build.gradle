@@ -1,7 +1,35 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.obqo.gradle:gradle-lesscss-plugin:1.0-1.3.3'
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.4.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+}
+apply plugin: 'lesscss'
+
+lesscss {
+    source = fileTree('src/main/less') {
+        include 'petclinic.less'
+//        include 'header.less'
+//        include 'responsive.less'
+//        include 'typography.less'
+    }
+   
+    dest = file("${buildDir}/resources/main/static/resources/css")
+    
+//    dest = 'src/main/resources/static/resources/css'
+    compress = true
+}
+
+bootJar {
+    dependsOn 'lesscss'
 }
 
 description = "SwaggerHub Reporter application"
