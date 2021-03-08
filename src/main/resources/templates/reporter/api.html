@@ -42,6 +42,22 @@
     </tbody>
 </table>
 
+<h2>Crealogix Security definitions</h2>
+<div>
+    <h3>Scopes</h3>
+    <tr th:each="scope : ${api.getSecurityDefinitions().getScopes()}">
+        <td th:text="${scope}">Scope</td></br>
+    </tr>
+    <h3>Roles</h3>
+    <tr th:each="role : ${api.getSecurityDefinitions().getRoles()}">
+        <td th:text="${role}">Role</td></br>
+    </tr>
+    <h3>Audiences</h3>
+    <tr th:each="audience : ${api.getSecurityDefinitions().getAudiences()}">
+        <td th:text="${audience}">Audience</td></br>
+    </tr>
+</div>
+    
 <h2>Specification</h2>
 <div>
     <pre th:text="${api.document}"/>

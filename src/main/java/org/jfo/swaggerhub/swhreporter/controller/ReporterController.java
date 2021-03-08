@@ -27,7 +27,7 @@ public class ReporterController {
     }
 
     @GetMapping("/api/{apiName}/{version}")
-    public String getApiDetails(Model model, @PathVariable("apiName") String apiName, @PathVariable("version") String version){
+    public String getApiDetails(Model model, @PathVariable("apiName") String apiName, @PathVariable("version") String version) throws Exception {
         log.info("Entering getAPis controller method");
         model.addAttribute("api", reporterService.getApiDetails(apiName, version));
         return "reporter/api";

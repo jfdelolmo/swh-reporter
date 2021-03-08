@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class SwhWebClient {
 
-    private static final String APIKEY = "c9f7e5ad-6eab-4c9a-8a2f-9e0af4316803";
+    private static final String APIKEY = "a377281d-81e5-4b5b-9391-962439111515";
     private static final String BASE_URL = "https://api.swaggerhub.com";
 
     public static final String GET_SPECS_URL = BASE_URL + "/specs";

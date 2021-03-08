@@ -9,6 +9,11 @@ import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.parser.OpenAPIV3Parser;
+import io.swagger.v3.parser.core.models.ParseOptions;
+import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -78,6 +83,7 @@ public class SwaggerHubService {
         queryParams.add("flatten", "true");
 
         Mono<String> result = webClient.executeCall(SwhWebClient.GET_API_VERSION_URL, uriParams, queryParams, String.class);
+        
         return result.block();
     }
 

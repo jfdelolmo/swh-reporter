@@ -1,5 +1,7 @@
 package org.jfo.swaggerhub.swhreporter.dto;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SecurityDefinition {
+public class ClxApiOauth2SecurityDefinitionDto {
 
-    private String definition;
+    private Set<String> scopes;
+    private Set<String> roles;
+    private Set<String> audiences;
 
 }
