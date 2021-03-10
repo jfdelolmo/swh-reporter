@@ -1,13 +1,13 @@
 package org.jfo.swaggerhub.swhreporter.client;
 
-import org.springframework.http.HttpHeaders;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
+import reactor.core.publisher.Mono;
 
 @Component
 public class SwhWebClient {
@@ -16,6 +16,7 @@ public class SwhWebClient {
     private static final String BASE_URL = "https://api.swaggerhub.com";
 
     public static final String GET_SPECS_URL = BASE_URL + "/specs";
+    public static final String GET_APIS_BY_OWNER = BASE_URL + "/apis/{owner}";
     public static final String GET_API_VERSION_URL = BASE_URL + "/apis/{owner}/{apiName}/{version}/swagger.yaml";
     public static final String GET_API_COLLABORATION_URL = BASE_URL + "/apis/{owner}/{api}/.collaboration";
 

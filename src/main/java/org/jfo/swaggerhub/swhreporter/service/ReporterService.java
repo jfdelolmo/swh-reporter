@@ -8,7 +8,13 @@ import java.util.stream.Collectors;
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
 import org.jfo.swaggerhub.swhreporter.dto.ClxApiOauth2SecurityDefinitionDto;
 import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
-import org.jfo.swaggerhub.swhreporter.dto.SpecDto;
+import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
+import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
+import org.jfo.swaggerhub.swhreporter.model.db.Specification;
+import org.jfo.swaggerhub.swhreporter.repository.SpecRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -23,16 +29,35 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ReporterService {
 
-  SwaggerHubService swaggerHubService;
+  private final SpecRepository specRepository;
+  private final SwaggerHubService swaggerHubService;
+  private final ModelMapper modelMapper;
 
-  public ReporterService(SwaggerHubService swaggerHubService) {
+  public ReporterService(SpecRepository specRepository, 
+      SwaggerHubService swaggerHubService,
+      ModelMapper modelMapper) {
+    this.specRepository = specRepository;
     this.swaggerHubService = swaggerHubService;
+    this.modelMapper = modelMapper;
   }
 
-  public SpecDto getSpecs() {
+  public SpecsDto getSpecs() {
     log.info("Entering service getApis method");
-
-    return swaggerHubService.getSpecs();
+    
+    Page<Specification> result = specRepository.findAll(PageRequest.of(0, 20, Sort.by("name").ascending()));
+    
+    SpecsDto specsDto = new SpecsDto();
+    specsDto.setNumberOfSpec(result.getTotalElements());
+    
+    specsDto.setSpecs(
+        result.getContent()
+            .stream()
+            .map(modelMapper::specModelToSpecPropertiesDto)
+            .collect(Collectors.toList())
+    );
+    
+    return specsDto;
+    //return swaggerHubService.getSpecs();
   }
 
   public ApiDto getApiDetails(String apiName, String version) throws Exception {

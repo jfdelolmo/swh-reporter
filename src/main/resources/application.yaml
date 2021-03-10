@@ -11,7 +11,26 @@ spring:
     template-resolver-order: 1
     check-template: true
     check-template-location: true
-
+    
+  # JPA
+  jpa:
+    show-sql: true    
+    hibernate:
+      ddl-auto: update      
+    properties:
+      hibernate.jdbc.batch_size: 10
+      hibernate.order_inserts: true
+#      hibernate.cache.use_second_level_cache: true
+#      hibernate.cache.use_query_cache: true        
+  h2:
+    console:
+      enabled: true      
+  datasource:
+    platform: h2
+    url: jdbc:h2:file:./swh_reporter_db;AUTO_SERVER=TRUE
+    username: admin
+    password: admin
+    driver-class-name: org.h2.Driver
   # Internationalization
   messages:
     basename: messages/messages
@@ -45,6 +64,4 @@ logging.level.org.springframework: INFO
 #  spring.datasource.schema: classpath*:db/${database}/schema.sql
 #  spring.datasource.data: classpath*:db/${database}/data.sql
 
-# JPA
-#  spring.jpa.hibernate.ddl-auto=none
-#  spring.jpa.open-in-view=false
+

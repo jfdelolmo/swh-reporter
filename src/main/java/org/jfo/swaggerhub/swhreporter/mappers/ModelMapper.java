@@ -1,6 +1,7 @@
 package org.jfo.swaggerhub.swhreporter.mappers;
 
 import org.jfo.swaggerhub.swhreporter.dto.*;
+import org.jfo.swaggerhub.swhreporter.model.db.Specification;
 import org.jfo.swaggerhub.swhreporter.model.swh.*;
 import org.springframework.stereotype.Component;
 
@@ -11,36 +12,50 @@ import java.util.stream.Collectors;
 @Component
 public class ModelMapper {
 
-    public SpecDto apisJsonToSpecDto(ApisJson apisJson){
-        SpecDto specDto = new SpecDto();
-        ArrayList<BaseSpecDto> baseSpecDtoList = new ArrayList<>();
+    public SpecPropertiesDto specModelToSpecPropertiesDto(Specification model){
+        SpecPropertiesDto dto = new SpecPropertiesDto();
+        dto.setSpecName(model.getName());
+        dto.setSpecDescription(model.getDescription());
 
-        specDto.setNumberOfSpec(apisJson.getTotalCount());
-        specDto.setOffset(apisJson.getOffset());
-        baseSpecDtoList.addAll(
+        //Properties
+        dto.setSpecType(model.getProperties().getType());
+        dto.setSpecVersion(model.getProperties().getVersion());
+        dto.setCreated(model.getProperties().getCreated());
+        dto.setUpdated(model.getProperties().getModified());
+        
+        return dto;    
+    }
+    
+    public SpecsDto apisJsonToSpecDto(ApisJson apisJson){
+        SpecsDto specsDto = new SpecsDto();
+        ArrayList<SpecPropertiesDto> specPropertiesDtoList = new ArrayList<>();
+
+        specsDto.setNumberOfSpec(apisJson.getTotalCount());
+        
+        specPropertiesDtoList.addAll(
                 apisJson
                         .getApis()
                         .stream()
                         .map(this::apisJsonApiToBaseSpecDto)
                         .collect(Collectors.toList())
         );
-        specDto.setSpecs(baseSpecDtoList);
+        specsDto.setSpecs(specPropertiesDtoList);
 
-        return specDto;
+        return specsDto;
     }
 
-    public BaseSpecDto apisJsonApiToBaseSpecDto(ApisJsonApi apisJsonApi) {
-        BaseSpecDto baseSpecDto = new BaseSpecDto();
-        baseSpecDto.setSpecName(apisJsonApi.getName());
-        baseSpecDto.setSpecDescription(apisJsonApi.getDescription().substring(0,25) + "...");
-        baseSpecDto.setSpecVersion(
+    public SpecPropertiesDto apisJsonApiToBaseSpecDto(ApisJsonApi apisJsonApi) {
+        SpecPropertiesDto specPropertiesDto = new SpecPropertiesDto();
+        specPropertiesDto.setSpecName(apisJsonApi.getName());
+        specPropertiesDto.setSpecDescription(apisJsonApi.getDescription().substring(0,25) + "...");
+        specPropertiesDto.setSpecVersion(
                 apisJsonApi.getProperties().stream().filter(f->"X-Version".equals(f.getType())).findFirst().get().getValue()
         );
         apisJsonApi.getProperties().stream()
                 .filter(f->"X-Domain".equals(f.getType()))
                 .findFirst()
-                .ifPresentOrElse( domain -> baseSpecDto.setSpecType("DOMAIN"), () -> baseSpecDto.setSpecType("API") );
-        return baseSpecDto;
+                .ifPresentOrElse( domain -> specPropertiesDto.setSpecType("DOMAIN"), () -> specPropertiesDto.setSpecType("API") );
+        return specPropertiesDto;
     }
 
     public CollaborationDto collaborationToCollaborationDto(Collaboration collaboration) {

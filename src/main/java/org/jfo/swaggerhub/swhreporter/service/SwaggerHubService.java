@@ -2,21 +2,20 @@ package org.jfo.swaggerhub.swhreporter.service;
 
 import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
 import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
-import org.jfo.swaggerhub.swhreporter.dto.SpecDto;
+import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
 import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
+import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.parser.OpenAPIV3Parser;
-import io.swagger.v3.parser.core.models.ParseOptions;
-import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,7 +28,62 @@ public class SwaggerHubService {
         this.webClient = webClient;
         this.mapper = mapper;
     }
+    
+    //"CREALOGIX"
+    public List<ApisJsonApi> getAllOwnerApis(String owner){
+        int page = 0;
+        boolean pendingToDownload = true;
+        List<ApisJsonApi> allApis = new ArrayList<>();
 
+        Map<String, String> uriParams = new HashMap<>();
+        uriParams.put("owner", owner);
+        
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("page", "0");
+        queryParams.add("limit", "50");
+        queryParams.add("sort", "NAME");
+        queryParams.add("order", "ASC");
+        
+        while (pendingToDownload){
+            Mono<ApisJson> result = webClient.executeCall(SwhWebClient.GET_APIS_BY_OWNER, uriParams, queryParams, ApisJson.class);
+            
+            ApisJson apisJson = result.blockOptional().orElse(new ApisJson());
+            allApis.addAll(apisJson.getApis());
+            pendingToDownload = apisJson.getTotalCount() > allApis.size();
+            queryParams.get("page").set(0,"" + ++page);
+        }
+
+        return allApis;
+    }
+    
+    public List<ApisJsonApi> getAllOwnerSpecs(String owner){
+        int page = 0;
+        boolean pendingToDownload = true;
+
+        List<ApisJsonApi> allSpecs = new ArrayList<>();
+
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("owner", owner);
+        queryParams.add("specType", "ANY");
+        queryParams.add("visibility", "ANY");
+        queryParams.add("state", "ALL");
+        queryParams.add("page", "" + page);
+        queryParams.add("limit", "25");
+        queryParams.add("sort", "NAME");
+        queryParams.add("order", "ASC");
+        
+        while(pendingToDownload){
+            Mono<ApisJson> result = webClient.executeCall(SwhWebClient.GET_SPECS_URL, null, queryParams, ApisJson.class);
+
+            ApisJson apisJson = result.blockOptional().orElse(new ApisJson());
+            allSpecs.addAll(apisJson.getApis());
+            pendingToDownload = apisJson.getTotalCount() > allSpecs.size();
+            queryParams.get("page").set(0,"" + ++page);
+        }
+        
+        return allSpecs;
+    }
+    
     /*
       - type: Swagger
                 url: 'https://api.swaggerhub.com/apis/username/petstore/1.1'
@@ -53,7 +107,7 @@ public class SwaggerHubService {
                 value: 'username'
                 X-Domain
      */
-    public SpecDto getSpecs() {
+    public SpecsDto getSpecs() {
 
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("owner", "CREALOGIX");

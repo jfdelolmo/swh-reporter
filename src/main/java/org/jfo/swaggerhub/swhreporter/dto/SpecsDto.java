@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecDto {
+public class SpecsDto {
 
     private long numberOfSpec;
-    private long offset;
-    private ArrayList<BaseSpecDto> specs;
+    private List<SpecPropertiesDto> specs;
 
 }

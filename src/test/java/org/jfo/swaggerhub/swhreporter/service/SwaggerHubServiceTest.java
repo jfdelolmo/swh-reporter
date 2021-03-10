@@ -1,10 +1,39 @@
 package org.jfo.swaggerhub.swhreporter.service;
 
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
+import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
+import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
+import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
+import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
+import org.junit.jupiter.api.Test;
+
 class SwaggerHubServiceTest {
 
+  private final ModelMapper mapper = new ModelMapper();
+  private final SwhWebClient webClient = new SwhWebClient();
+  private final SwaggerHubService swaggerHubService = new SwaggerHubService(webClient, mapper);
 
-//    @Test
-//    public void test_getSpecs() throws IOException, InterruptedException {
+  private final String TEST_OWNER = "CREALOGIX";
+  
+  @Test
+  void getAllOwnerApis(){
+    List<ApisJsonApi> result =  swaggerHubService.getAllOwnerApis(TEST_OWNER);
+    Assertions.assertThat(result).isNotEmpty();
+  }
+  
+  @Test
+  void getAllOwnerSpecs(){
+    List<ApisJsonApi> result = swaggerHubService.getAllOwnerSpecs(TEST_OWNER);
+    Assertions.assertThat(result).isNotEmpty();
+  }
+  
+      @Test
+    public void test_getSpecs() {
+        SpecsDto result = swaggerHubService.getSpecs();
+        Assertions.assertThat(result).isNotNull();
+      }
 //        MockWebServer mockWebServer = new MockWebServer();
 //
 //        //Schedule some response
