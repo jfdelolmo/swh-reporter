@@ -17,9 +17,9 @@ apply plugin: 'lesscss'
 lesscss {
     source = fileTree('src/main/less') {
         include 'petclinic.less'
-//        include 'header.less'
-//        include 'responsive.less'
-//        include 'typography.less'
+        include 'header.less'
+        include 'responsive.less'
+        include 'typography.less'
     }
    
     dest = file("${buildDir}/resources/main/static/resources/css")
@@ -28,7 +28,7 @@ lesscss {
     compress = true
 }
 
-bootJar {
+build {
     dependsOn 'lesscss'
 }
 
@@ -37,11 +37,13 @@ group = 'org.jfo.swaggerhub'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+/*
 ext {
     set('boostrapVersion', "3.3.6")
     set('jQueryVersion', "2.2.4")
     set('jQueryUIVersion', "1.11.4")
 }
+*/
 
 test {
     useJUnitPlatform()
@@ -80,9 +82,10 @@ dependencies {
     implementation("javax.cache:cache-api")
 
     implementation("org.webjars:webjars-locator-core")
-    implementation("org.webjars:jquery:$jQueryVersion")
-    implementation("org.webjars:jquery-ui:$jQueryUIVersion")
-    implementation("org.webjars:bootstrap:$boostrapVersion")
+
+    implementation("org.webjars:jquery:2.2.4")
+    implementation("org.webjars:jquery-ui:1.11.4")
+    implementation("org.webjars:bootstrap:3.3.6")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api")

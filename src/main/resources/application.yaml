@@ -1,10 +1,17 @@
 server:
   port: 9090
-  
+
 spring:
   # Web
   thymeleaf:
     mode: HTML
+#    prefix: "/WEB-INF/thymeleaf/"
+    suffix: .html
+    cache: false
+    template-resolver-order: 1
+    check-template: true
+    check-template-location: true
+
   # Internationalization
   messages:
     basename: messages/messages
@@ -26,6 +33,8 @@ spring:
 #management.endpoints.web.exposure.include: *
 
 # Logging
+logging:
+  level: INFO
 logging.level.org.springframework: INFO
 # logging.level.org.springframework.web: DEBUG
 # logging.level.org.springframework.context.annotation: TRACE
