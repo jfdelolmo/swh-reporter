@@ -16,14 +16,18 @@
         <th>Name</th>
         <th>Version</th>
         <th>Description</th>
+        <th>Created</th>
+        <th>Updated</th>
     </tr>
     </thead>
     <tbody>
         <tr th:each="s : ${specs.specs}">
             <td th:text="${s.specType}">Api type</td>
             <td th:text="${s.specName}">Api name</td>
-            <td th:text="${s.specVersion}">Api name</td>
-            <td th:text="${s.specDescription}">Api name</td>
+            <td th:text="${s.specVersion}">Api version</td>
+            <td th:text="${s.specDescription}">Api description</td>
+            <td th:text="${s.created}">Api creation date-time</td>
+            <td th:datetime="${s.updated}">Api update date-time</td>
     </tr>
     </tbody>
     <tfoot>
