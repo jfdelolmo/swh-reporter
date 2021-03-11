@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'api')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>API details</title>
+</head>
+<body>
+
+
+<h1>Api <span th:text="${api.name}"/> - <span th:text="${api.version}"/> details</h1>
+
+<h2>Collaboration</h2>
+<h3>Team</h3>
+<table id="teams" class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="team : ${api.collaboration.teams}">
+        <td th:text="${team.name}">Team name</td>
+        <td th:text="${team.description}">Team description</td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>Members</h3>
+<table id="members" class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Role</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="member : ${api.getCollaboration().getMembers()}">
+        <td th:text="${member.memberName}">Member name</td>
+        <td th:text="${member.memberRole}">Member role</td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Crealogix Security definitions</h2>
+<div>
+    <h3>Scopes</h3>
+    <tr th:each="scope : ${api.getSecurityDefinitions().getScopes()}">
+        <td th:text="${scope}">Scope</td></br>
+    </tr>
+    <h3>Roles</h3>
+    <tr th:each="role : ${api.getSecurityDefinitions().getRoles()}">
+        <td th:text="${role}">Role</td></br>
+    </tr>
+    <h3>Audiences</h3>
+    <tr th:each="audience : ${api.getSecurityDefinitions().getAudiences()}">
+        <td th:text="${audience}">Audience</td></br>
+    </tr>
+</div>
+    
+<h2>Specification</h2>
+<div>
+    <pre th:text="${api.document}"/>
+</div>
+
+</body>
+</html>

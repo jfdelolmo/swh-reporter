@@ -19,6 +19,13 @@ public class ReporterController {
         this.reporterService = reporterService;
     }
 
+    @GetMapping("/demo")
+    public String getSpecsDemo(Model model) {
+        log.info("Entering getAPis controller method");
+        model.addAttribute("specs", reporterService.getSpecs());
+        return "demo";
+    }
+
     @GetMapping("/specs")
     public String getSpecs(Model model) {
         log.info("Entering getAPis controller method");

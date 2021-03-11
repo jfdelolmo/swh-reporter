@@ -19,8 +19,8 @@ public class DataLoader implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args)  {
-    log.info("Executing data loader....");
-    int items = initializerService.retrieveAllSpecs();
-    log.info("Items load on boot up time: {}", items);
+    //log.info("Executing data loader....");
+    //int items = initializerService.retrieveAllSpecs();
+    //log.info("Items load on boot up time: {}", items);
   }
 }
