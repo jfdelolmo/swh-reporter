@@ -19,13 +19,6 @@ public class ReporterController {
         this.reporterService = reporterService;
     }
 
-    @GetMapping("/demo")
-    public String getSpecsDemo(Model model) {
-        log.info("Entering getAPis controller method");
-        model.addAttribute("specs", reporterService.getSpecs());
-        return "demo";
-    }
-
     @GetMapping("/specs")
     public String getSpecs(Model model) {
         log.info("Entering getAPis controller method");
@@ -33,10 +26,10 @@ public class ReporterController {
         return "reporter/specs";
     }
 
-    @GetMapping("/api/{apiName}/{version}")
-    public String getApiDetails(Model model, @PathVariable("apiName") String apiName, @PathVariable("version") String version) throws Exception {
+    @GetMapping("/specs/{id}")
+    public String getSpecDetails(Model model, @PathVariable("id") Long id) throws Exception {
         log.info("Entering getAPis controller method");
-        model.addAttribute("api", reporterService.getApiDetails(apiName, version));
+        model.addAttribute("api", reporterService.getApiDetails(id));
         return "reporter/api";
     }
 }

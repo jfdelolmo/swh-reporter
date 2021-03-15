@@ -1,0 +1,53 @@
+entity Properties {
+	type String,
+ 	url String,
+ 	version String,
+ 	created DateTime,
+	modified DateTime	
+}
+entity OpenApiDocument {
+	yaml Clob
+}
+entity Specification {
+	id Long,
+    name String,
+    description String,
+    properties Properties,
+    openApiDocument OpenApiDocument,
+    collaboration Collaboration
+}
+
+entity Collaboration {
+	members Member,
+	teams Team
+}
+
+entity Member {
+	name String,
+    role String
+}
+
+entity Team {
+	name String,
+	description String
+}
+
+relationship OneToOne {
+	Specification{properties} to Properties
+}
+
+relationship OneToOne {
+	Specification{openApiDocument} to OpenApiDocument
+}
+
+relationship OneToOne {
+	Specification{collaboration} to Collaboration
+}
+
+relationship OneToMany {
+	Collaboration{members} to Member,
+    Collaboration{teams} to Team
+}
+
+// Set pagination options
+paginate Specification with pagination

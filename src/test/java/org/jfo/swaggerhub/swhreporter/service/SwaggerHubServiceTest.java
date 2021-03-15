@@ -11,9 +11,10 @@ import org.junit.jupiter.api.Test;
 
 class SwaggerHubServiceTest {
 
+  private final AdminService adminService = new AdminService();
   private final ModelMapper mapper = new ModelMapper();
   private final SwhWebClient webClient = new SwhWebClient();
-  private final SwaggerHubService swaggerHubService = new SwaggerHubService(webClient, mapper);
+  private final SwaggerHubService swaggerHubService = new SwaggerHubService(adminService, webClient, mapper);
 
   private final String TEST_OWNER = "CREALOGIX";
   
@@ -27,6 +28,13 @@ class SwaggerHubServiceTest {
   void getAllOwnerSpecs(){
     List<ApisJsonApi> result = swaggerHubService.getAllOwnerSpecs(TEST_OWNER);
     Assertions.assertThat(result).isNotEmpty();
+  }
+
+  @Test
+  void getApiNameFromUrl(){
+    String url = "https://api.swaggerhub.com/apis/username/petstore/1.1";
+    String name = swaggerHubService.getApiNameFromUrl(url, "username");
+    Assertions.assertThat(name).isEqualTo("petstore");
   }
   
       @Test

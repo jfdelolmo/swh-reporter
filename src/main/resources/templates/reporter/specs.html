@@ -3,38 +3,78 @@
 <head>
     <meta charset="UTF-8"/>
     <title>List of specifications</title>
+    <!-- Latest compiled and minified CSS -->
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>-->
+
+    <!-- CSS only -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/flatly/bootstrap.min.css" integrity="sha384-qF/QmIAj5ZaYFAeQcrQ6bfVMAh4zZlrGwTPY7T/M+iTTLJqJBJjwwnsE5Y0mV7QK" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/sandstone/bootstrap.min.css" integrity="sha384-zEpdAL7W11eTKeoBJK1g79kgl9qjP7g84KfK3AZsuonx38n8ad+f5ZgXtoSDxPOh" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+            crossorigin="anonymous"></script>
+
+
 </head>
 <body>
 <!--/*@thymesVar id="specs" type="org.jfo.swaggerhub.swhreporter.dto.SpecsDto"*/-->
+<div class="container-fluid" style="margin-top: 20px">
 
-<h2>Specifications (<span th:text="${specs.numberOfSpec}">0</span>)</h2>
+    <div class="row">
+        <table class="table table-sm table-responsive table-hover" style="max-width: 100%;" th:if="${not #lists.isEmpty(specs.specs)}">
+            <thead class="thead-dark">
+                <tr>
+                    <th colspan="6">Specification list (<span th:text="${specs.numberOfSpec}">0</span>)</th>
+                </tr>
+                <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Version</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:remove="all">
+                    <td th:text="${s.specType}">Api type</td>
+                    <td th:text="${s.specName}">Api name</td>
+                    <td th:text="${s.specVersion}">Api version</td>
+                    <td th:text="${s.specDescription}">Api description</td>
+                    <td th:text="${s.created}">Api creation date-time</td>
+                    <td th:text="${s.updated}">Api update date-time</td>
+                </tr>
+                <tr th:remove="all">
+                    <td th:text="${s.specType}">Api type</td>
+                    <td th:text="${s.specName}">Api name</td>
+                    <td th:text="${s.specVersion}">Api version</td>
+                    <td th:text="${s.specDescription}">Api description</td>
+                    <td th:text="${s.created}">Api creation date-time</td>
+                    <td th:text="${s.updated}">Api update date-time</td>
+                </tr>
+                <tr th:each="s : ${specs.specs}">
+                    <td th:text="${s.specType}">DOMAIN</td>
+<!--                    <a th:href="@{/order/details(id=${order.id},action=(${user.admin} ? 'show_all' : 'show_public'))}">-->
+<!--                    <a th:href="${sps.website}" th:text="${sps.website}" target="_blank" />-->
+                    <td><a th:href="'/reporter/specs/'+ ${s.id}" th:text="${s.specName}" /></td>
+                    <td th:text="${s.specVersion}">3.2.0</td>
+                    <td th:text="${s.specDescription}">Api description: Lorem...</td>
+                    <td th:text="${s.created}">14-03-1976T22:22:22Z</td>
+                    <td th:text="${s.updated}">14-03-1976T22:22:22Z</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6">Pagination pending</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 
-<table id="specs" class="table table-striped">
-    <thead>
-    <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Version</th>
-        <th>Description</th>
-        <th>Created</th>
-        <th>Updated</th>
-    </tr>
-    </thead>
-    <tbody>
-        <tr th:each="s : ${specs.specs}">
-            <td th:text="${s.specType}">Api type</td>
-            <td th:text="${s.specName}">Api name</td>
-            <td th:text="${s.specVersion}">Api version</td>
-            <td th:text="${s.specDescription}">Api description</td>
-            <td th:text="${s.created}">Api creation date-time</td>
-            <td th:datetime="${s.updated}">Api update date-time</td>
-    </tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <td>Pagination pending</td>
-        </tr>
-    </tfoot>
-</table>
 </body>
 </html>

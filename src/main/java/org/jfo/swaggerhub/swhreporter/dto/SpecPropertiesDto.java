@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SpecPropertiesDto {
 
+    private Long id;
     private String specType;
     private String specName;
     private String specVersion;

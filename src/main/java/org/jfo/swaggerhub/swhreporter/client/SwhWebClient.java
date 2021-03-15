@@ -13,8 +13,8 @@ import reactor.core.publisher.Mono;
 public class SwhWebClient {
 
     private static final String APIKEY = "a377281d-81e5-4b5b-9391-962439111515";
-    private static final String BASE_URL = "https://api.swaggerhub.com";
 
+    public static final String BASE_URL = "https://api.swaggerhub.com";
     public static final String GET_SPECS_URL = BASE_URL + "/specs";
     public static final String GET_APIS_BY_OWNER = BASE_URL + "/apis/{owner}";
     public static final String GET_API_VERSION_URL = BASE_URL + "/apis/{owner}/{apiName}/{version}/swagger.yaml";

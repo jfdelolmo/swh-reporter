@@ -16,14 +16,15 @@ apply plugin: 'lesscss'
 
 lesscss {
     source = fileTree('src/main/less') {
-        include 'petclinic.less'
-        include 'header.less'
-        include 'responsive.less'
-        include 'typography.less'
+        include 'swhreporter.less'
+//        include 'petclinic.less'
+//        include 'header.less'
+//        include 'responsive.less'
+//        include 'typography.less'
     }
-   
+
     dest = file("${buildDir}/resources/main/static/resources/css")
-    
+
 //    dest = 'src/main/resources/static/resources/css'
     compress = true
 }
@@ -36,14 +37,6 @@ description = "SwaggerHub Reporter application"
 group = 'org.jfo.swaggerhub'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
-
-/*
-ext {
-    set('boostrapVersion', "3.3.6")
-    set('jQueryVersion', "2.2.4")
-    set('jQueryUIVersion', "1.11.4")
-}
-*/
 
 test {
     useJUnitPlatform()
@@ -85,7 +78,7 @@ dependencies {
 
     implementation("org.webjars:jquery:2.2.4")
     implementation("org.webjars:jquery-ui:1.11.4")
-    implementation("org.webjars:bootstrap:3.3.6")
+    implementation("org.webjars:bootstrap:4.6.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api")

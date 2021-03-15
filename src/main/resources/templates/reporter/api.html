@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8"/>
     <title>API details</title>
-    <!-- Latest compiled and minified CSS -->
+<!--    &lt;!&ndash; Latest compiled and minified CSS &ndash;&gt;
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <!-- Latest compiled and minified JavaScript -->
+    &lt;!&ndash; Latest compiled and minified JavaScript &ndash;&gt;
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous"></script>-->
+    <!-- CSS only -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/flatly/bootstrap.min.css" integrity="sha384-qF/QmIAj5ZaYFAeQcrQ6bfVMAh4zZlrGwTPY7T/M+iTTLJqJBJjwwnsE5Y0mV7QK" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/sandstone/bootstrap.min.css" integrity="sha384-zEpdAL7W11eTKeoBJK1g79kgl9qjP7g84KfK3AZsuonx38n8ad+f5ZgXtoSDxPOh" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
 </head>
 <body>
@@ -21,151 +27,153 @@
             <h3>API <span th:text="${api.name}">api name</span> - <span th:text="${api.version}">api version</span> details</h3>
         </div>
     </div>
+
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-primary">
-                <div class="panel panel-heading">
-                    <h3>Collaboration / Team</h3>
-                </div>
-                <div class="panel  panel-body">
-                    <div class="table-responsive" th:if="${not #lists.isEmpty(api.collaboration.teams)}">
-                        <table class="table table-hover ">
-                            <thead class="thead-inverse">
-                            <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:remove="all">
-                                <td th:text="${team.name}">Team name</td>
-                                <td th:text="${team.description}">Team description</td>
-                            </tr>
-                            <tr th:remove="all">
-                                <td th:text="${team.name}">Team name</td>
-                                <td th:text="${team.description}">Team description</td>
-                            </tr>
-                            <tr th:each="team : ${api.collaboration.teams}">
-                                <td th:text="${team.name}">Team name</td>
-                                <td th:text="${team.description}">Team description</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                <div class="panel panel-heading"><h2>Collaboration</h2></div>
+                <div class="panel panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel-title"><h3>Members</h3></div>
+                        <div class="table-responsive table-striped" th:if="${not #lists.isEmpty(api.getCollaboration().getMembers())}">
+                            <table class="table table-sm table-hover ">
+                                <thead class="thead-inverse">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:remove="all">
+                                    <td th:text="${member.memberName}">Member name</td>
+                                    <td th:text="${member.memberRole}">Member role</td>
+                                </tr>
+                                <tr th:remove="all">
+                                    <td th:text="${member.memberName}">Member name</td>
+                                    <td th:text="${member.memberRole}">Member role</td>
+                                </tr>
+                                <tr th:each="member : ${api.getCollaboration().getMembers()}">
+                                    <td th:text="${member.memberName}">Member name</td>
+                                    <td th:text="${member.memberRole}">Member role</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel-title"><h3>Teams</h3></div>
+                        <div class="table-responsive" th:if="${not #lists.isEmpty(api.collaboration.teams)}">
+                            <table class="table table-sm table-hover ">
+                                <thead class="thead-inverse">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:remove="all">
+                                    <td th:text="${team.name}">Team name</td>
+                                    <td th:text="${team.description}">Team description</td>
+                                </tr>
+                                <tr th:remove="all">
+                                    <td th:text="${team.name}">Team name</td>
+                                    <td th:text="${team.description}">Team description</td>
+                                </tr>
+                                <tr th:each="team : ${api.collaboration.teams}">
+                                    <td th:text="${team.name}">Team name</td>
+                                    <td th:text="${team.description}">Team description</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-primary">
-                <div class="panel panel-heading">
-                    <h3>Collaboration / Members</h3>
-                </div>
-                <div class="panel  panel-body">
-                    <div class="table-responsive" th:if="${not #lists.isEmpty(api.getCollaboration().getMembers())}">
-                        <table class="table table-hover ">
-                            <thead class="thead-inverse">
-                            <tr>
-                                <th>Name</th>
-                                <th>Role</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:remove="all">
-                                <td th:text="${member.memberName}">Member name</td>
-                                <td th:text="${member.memberRole}">Member role</td>
-                            </tr>
-                            <tr th:remove="all">
-                                <td th:text="${member.memberName}">Member name</td>
-                                <td th:text="${member.memberRole}">Member role</td>
-                            </tr>
-                            <tr th:each="member : ${member.memberName}">
-                                <td th:text="${member.memberName}">Member name</td>
-                                <td th:text="${member.memberRole}">Member role</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                <div class="panel panel-heading"><h2>Security definitions</h2></div>
+                <div class="panel panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getScopes())}">
+                                <table class="table table-sm table-hover ">
+                                    <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Scopes</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:remove="all">
+                                        <td th:text="${scope}">Member scope</td>
+                                    </tr>
+                                    <tr th:remove="all">
+                                        <td th:text="${scope}">Member scope</td>
+                                    </tr>
+                                    <tr th:each="scope : ${api.getSecurityDefinitions().getScopes()}">
+                                        <td th:text="${scope}">Scope</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getRoles())}">
+                                <table class="table table-hover ">
+                                    <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Roles</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:remove="all">
+                                        <td th:text="${role}">Member role</td>
+                                    </tr>
+                                    <tr th:remove="all">
+                                        <td th:text="${role}">Member role</td>
+                                    </tr>
+                                    <tr th:each="role : ${api.getSecurityDefinitions().getRoles()}">
+                                        <td th:text="${role}">Scope</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
+                                <table class="table table-hover ">
+                                    <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Audiences</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:remove="all">
+                                        <td th:text="${audience}">Member audience</td>
+                                    </tr>
+                                    <tr th:remove="all">
+                                        <td th:text="${audience}">Member audience</td>
+                                    </tr>
+                                    <tr th:each="audience : ${api.getSecurityDefinitions().getAudiences()}">
+                                        <td th:text="${audience}">Audience</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-primary">
 
-                <div class="panel panel-heading">
-                    <h3>Crealogix Security definitions</h3>
-                </div>
-                <div class="panel  panel-body">
-                    <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getScopes())}">
-                        <table class="table table-hover ">
-                            <thead class="thead-inverse">
-                            <tr>
-                                <th>Socpes</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:remove="all">
-                                <td th:text="${scope}">Member scope</td>
-                            </tr>
-                            <tr th:remove="all">
-                                <td th:text="${scope}">Member scope</td>
-                            </tr>
-                            <tr th:each="scope : ${api.getSecurityDefinitions().getScopes()}">
-                                <td th:text="${scope}">Scope</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="panel  panel-body">
-                    <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getRoles())}">
-                        <table class="table table-hover ">
-                            <thead class="thead-inverse">
-                            <tr>
-                                <th>Roles</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:remove="all">
-                                <td th:text="${role}">Member role</td>
-                            </tr>
-                            <tr th:remove="all">
-                                <td th:text="${role}">Member role</td>
-                            </tr>
-                            <tr th:each="role : ${api.getSecurityDefinitions().getRoles()}">
-                                <td th:text="${role}">Scope</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="panel  panel-body">
-                    <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
-                        <table class="table table-hover ">
-                            <thead class="thead-inverse">
-                            <tr>
-                                <th>Audiences</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:remove="all">
-                                <td th:text="${audience}">Member audience</td>
-                            </tr>
-                            <tr th:remove="all">
-                                <td th:text="${audience}">Member audience</td>
-                            </tr>
-                            <tr th:each="audience : ${api.getSecurityDefinitions().getAudiences()}">
-                                <td th:text="${audience}">Audience</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-8 col-md-offset-2">
             <div class="panel-heading">
                 <h2>Specification</h2>
             </div>
