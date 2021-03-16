@@ -28,8 +28,15 @@ public class ReporterController {
 
     @GetMapping("/specs/{id}")
     public String getSpecDetails(Model model, @PathVariable("id") Long id) throws Exception {
-        log.info("Entering getAPis controller method");
+        log.info("Entering getSpecDetails controller method");
         model.addAttribute("api", reporterService.getApiDetails(id));
         return "reporter/api";
+    }
+    
+    @GetMapping("/projects")
+    public String getProjectsReport(Model model){
+        log.info("Entering ProjectsReport controller method");
+        model.addAttribute("projects", reporterService.getProjectsReport());
+        return "reporter/projects";
     }
 }

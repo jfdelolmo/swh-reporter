@@ -1,5 +1,6 @@
 package org.jfo.swaggerhub.swhreporter.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -11,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClxApiOauth2SecurityDefinitionDto {
 
-    private Set<String> scopes;
-    private Set<String> roles;
-    private Set<String> audiences;
+    private Set<String> scopes = new HashSet<>();
+    private Set<String> roles = new HashSet<>();
+    private Set<String> audiences = new HashSet<>();
 
 }

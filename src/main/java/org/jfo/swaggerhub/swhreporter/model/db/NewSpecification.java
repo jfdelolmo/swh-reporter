@@ -43,6 +43,12 @@ public class NewSpecification {
         return this;
     }
 
+    public NewSpecification updateCollaboration(NewCollaboration newCollaboration){
+        this.getCollaboration().setMembers(newCollaboration.getMembers());
+        this.getCollaboration().setTeams(newCollaboration.getTeams());
+        return this;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

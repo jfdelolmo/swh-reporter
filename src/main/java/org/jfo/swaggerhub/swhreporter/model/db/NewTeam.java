@@ -17,6 +17,9 @@ public class NewTeam {
 
     @ManyToOne
     private NewCollaboration collaboration;
+    
+//    @ManyToMany
+//    private Project project;
 
     @Override
     public String toString() {

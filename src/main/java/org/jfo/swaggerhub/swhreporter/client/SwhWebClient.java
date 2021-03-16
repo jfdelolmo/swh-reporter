@@ -17,9 +17,14 @@ public class SwhWebClient {
     public static final String BASE_URL = "https://api.swaggerhub.com";
     public static final String GET_SPECS_URL = BASE_URL + "/specs";
     public static final String GET_APIS_BY_OWNER = BASE_URL + "/apis/{owner}";
-    public static final String GET_API_VERSION_URL = BASE_URL + "/apis/{owner}/{apiName}/{version}/swagger.yaml";
+    public static final String API_AS_YAML = "/swagger.yaml";
+    public static final String DOMAIN_AS_YAML = "/domain.yaml";
+    public static final String GET_API_VERSION_URL = BASE_URL + "/apis/{owner}/{apiName}/{version}" + API_AS_YAML;
     public static final String GET_API_COLLABORATION_URL = BASE_URL + "/apis/{owner}/{api}/.collaboration";
-
+    public static final String GET_DOMAIN_VERSION_URL = BASE_URL + "/domains/{owner}/{domain}/{version}" + DOMAIN_AS_YAML;
+    public static final String GET_PROJECTS_BY_OWNER = BASE_URL + "/projects/{owner}";
+    
+    
     public <T> Mono<T> executeCall(String url, Map<String, ?> uriParams, MultiValueMap<String, String> queryParams, Class<T> responseClazz){
 
         if (null==uriParams){

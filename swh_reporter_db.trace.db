@@ -1,0 +1,12 @@
+2021-03-16 18:00:24 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE *[*] FROM API"; expected "identifier"; SQL statement:
+delete * FROM API [42001-200]
+2021-03-16 18:00:45 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE *[*] FROM API"; expected "identifier"; SQL statement:
+DELETE * FROM API [42001-200]
+2021-03-16 18:00:52 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE *[*] FROM PROJECT"; expected "identifier"; SQL statement:
+DELETE * FROM PROJECT [42001-200]
+2021-03-16 18:01:22 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PROJEC" not found; SQL statement:
+select * from projec [42102-200]

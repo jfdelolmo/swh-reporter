@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'projects')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Projects report</title>
+<!--    &lt;!&ndash; Latest compiled and minified CSS &ndash;&gt;
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    &lt;!&ndash; Latest compiled and minified JavaScript &ndash;&gt;
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>-->
+    <!-- CSS only -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/flatly/bootstrap.min.css" integrity="sha384-qF/QmIAj5ZaYFAeQcrQ6bfVMAh4zZlrGwTPY7T/M+iTTLJqJBJjwwnsE5Y0mV7QK" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/sandstone/bootstrap.min.css" integrity="sha384-zEpdAL7W11eTKeoBJK1g79kgl9qjP7g84KfK3AZsuonx38n8ad+f5ZgXtoSDxPOh" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<div class="container-fluid" style="margin-top: 20px">
+    <div class="row">
+        <div class="panel panel-heading">
+            <h3>Projects (<span th:text="${projects.total}">0</span>)</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-md-offset-0">
+            <div class="panel panel-primary">
+<!--                <div class="panel panel-heading"><h4>Collaboration</h4></div>-->
+                <div class="panel panel-body">
+                    <div class="row" th:if="${#lists.isEmpty(projects.getProjects())}">
+                        <p class="label-info">There is no projects information</p>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(projects.getProjects())}">
+                    
+                        <div class="panel-title"><h5>Members</h5></div>
+                        <div class="table-responsive table-striped" th:if="${not #lists.isEmpty(projects.getProjects())}">
+                            <table class="table table-sm table-hover ">
+                                <thead class="thead-inverse">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+<!--                                    <th>API</th>-->
+<!--                                    <th>Domain</th>-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:remove="all">
+                                    <td th:text="${project.name}">Project name</td>
+                                    <td th:text="${project.description}">Project description</td>
+                                </tr>
+                                <tr th:remove="all">
+                                    <td th:text="${project.name}">Project name</td>
+                                    <td th:text="${project.description}">Project description</td>
+                                </tr>
+                                <tr th:each="project : ${projects.getProjects()}">
+                                    <td th:text="${project.name}">Project name</td>
+                                    <td th:text="${project.description}">Project description</td>
+<!--                                    <tr th:each="api : ${project.api}">-->
+<!--                                        <td th:text="${api.description}">Project description</td>-->
+<!--                                        <td>domain</td>-->
+                                    
+                                    </tr>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+</body>
+</html>

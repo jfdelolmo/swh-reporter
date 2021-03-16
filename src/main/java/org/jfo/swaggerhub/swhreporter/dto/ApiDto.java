@@ -13,6 +13,7 @@ public class ApiDto {
   private String version;
   private String document;
   private String project;
+  private String type;
   private CollaborationDto collaboration;
   private ClxApiOauth2SecurityDefinitionDto securityDefinitions;
 

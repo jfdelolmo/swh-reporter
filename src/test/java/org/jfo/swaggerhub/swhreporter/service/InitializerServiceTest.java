@@ -4,6 +4,7 @@ import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
 import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
 import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
 import org.jfo.swaggerhub.swhreporter.repository.NewSpecificationRepository;
+import org.jfo.swaggerhub.swhreporter.repository.ProjectRepository;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -14,10 +15,13 @@ class InitializerServiceTest {
     private final SwaggerHubService swaggerHubService = new SwaggerHubService(adminService, new SwhWebClient(), new ModelMapper());
     private final SwhMapper swhMapper = new SwhMapper();
     private final NewSpecificationRepository specificationRepository = Mockito.mock(NewSpecificationRepository.class);
+    private final ProjectRepository projectRepository = Mockito.mock(ProjectRepository.class);
+    
     private final InitializerService initializerService = new InitializerService(adminService,
             swaggerHubService,
             swhMapper,
-            specificationRepository);
+            specificationRepository,
+        projectRepository);
 
 //  @Test
 //  @DisplayName("When we want to retrieve all the specifications")

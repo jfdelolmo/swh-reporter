@@ -1,16 +1,5 @@
 package org.jfo.swaggerhub.swhreporter.mappers;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import org.apache.commons.io.IOUtils;
-import org.jfo.swaggerhub.swhreporter.dto.*;
-import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
-import org.jfo.swaggerhub.swhreporter.model.db.NewMember;
-import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
-import org.jfo.swaggerhub.swhreporter.model.db.NewTeam;
-import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
-import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -20,6 +9,24 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import org.apache.commons.io.IOUtils;
+import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
+import org.jfo.swaggerhub.swhreporter.dto.MemberDto;
+import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
+import org.jfo.swaggerhub.swhreporter.dto.SpecPropertiesDto;
+import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
+import org.jfo.swaggerhub.swhreporter.dto.TeamDto;
+import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
+import org.jfo.swaggerhub.swhreporter.model.db.NewMember;
+import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
+import org.jfo.swaggerhub.swhreporter.model.db.NewTeam;
+import org.jfo.swaggerhub.swhreporter.model.db.Project;
+import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
+import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
+import org.springframework.stereotype.Component;
+
+import io.swagger.v3.oas.models.OpenAPI;
 
 @Component
 public class ModelMapper {
@@ -119,4 +126,12 @@ public class ModelMapper {
         return openAPI;
     }
 
+  public ProjectDto projectModelToDto(Project dbp) {
+      ProjectDto dto = new ProjectDto();
+      dto.setName(dbp.getName());
+      dto.setDescription(dbp.getDescription());
+      dbp.getApis().forEach(a->dto.addApi(a.getName()));
+      dbp.getDomains().forEach(d->dto.addDomain(d.getName()));
+      return dto;
+  }
 }

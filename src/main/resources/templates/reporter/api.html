@@ -29,13 +29,16 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-primary">
-                <div class="panel panel-heading"><h2>Collaboration</h2></div>
+                <div class="panel panel-heading"><h4>Collaboration</h4></div>
                 <div class="panel panel-body">
-                <div class="row">
+                    <div class="row" th:if="${#lists.isEmpty(api.getCollaboration().getMembers()) && #lists.isEmpty(api.getCollaboration().getTeams())}">
+                        <p class="label-info">There is no collaboration information</p>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(api.getCollaboration().getMembers()) && not #lists.isEmpty(api.getCollaboration().getTeams())}">
                     <div class="col-md-6">
-                        <div class="panel-title"><h3>Members</h3></div>
+                        <div class="panel-title"><h5>Members</h5></div>
                         <div class="table-responsive table-striped" th:if="${not #lists.isEmpty(api.getCollaboration().getMembers())}">
                             <table class="table table-sm table-hover ">
                                 <thead class="thead-inverse">
@@ -62,7 +65,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="panel-title"><h3>Teams</h3></div>
+                        <div class="panel-title"><h5>Teams</h5></div>
                         <div class="table-responsive" th:if="${not #lists.isEmpty(api.collaboration.teams)}">
                             <table class="table table-sm table-hover ">
                                 <thead class="thead-inverse">
@@ -95,11 +98,18 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-primary">
-                <div class="panel panel-heading"><h2>Security definitions</h2></div>
+                <div class="panel panel-heading"><h4>Security definitions</h4></div>
                 <div class="panel panel-body">
-                    <div class="row">
+                    <div class="row" th:if="${#lists.isEmpty(api.getSecurityDefinitions().getRoles()) && 
+                        #lists.isEmpty(api.getSecurityDefinitions().getScopes()) &&
+                        #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
+                        <p class="label-info">There is no security definitions</p>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getRoles()) && 
+                        not #lists.isEmpty(api.getSecurityDefinitions().getScopes()) &&
+                        not #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
                         <div class="col-md-6">
                             <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getScopes())}">
                                 <table class="table table-sm table-hover ">
@@ -124,7 +134,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getRoles())}">
-                                <table class="table table-hover ">
+                                <table class="table table-sm table-hover ">
                                     <thead class="thead-inverse">
                                     <tr>
                                         <th>Roles</th>
@@ -146,7 +156,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
-                                <table class="table table-hover ">
+                                <table class="table table-sm table-hover ">
                                     <thead class="thead-inverse">
                                     <tr>
                                         <th>Audiences</th>
@@ -173,11 +183,11 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-12 col-md-offset-0">
             <div class="panel-heading">
-                <h2>Specification</h2>
+                <h4>Specification</h4>
             </div>
-            <div class="panel-collapse">
+            <div class="panel panel-body">
                 <pre th:text="${api.document}">openapi: .....blablablab .....</pre>
             </div>
         </div>

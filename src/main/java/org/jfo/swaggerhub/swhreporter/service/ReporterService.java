@@ -7,18 +7,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
 import org.jfo.swaggerhub.swhreporter.dto.ClxApiOauth2SecurityDefinitionDto;
 import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
+import org.jfo.swaggerhub.swhreporter.dto.ProjectsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
 import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
 import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
 import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
 import org.jfo.swaggerhub.swhreporter.model.db.NewOpenApiDocument;
 import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
+import org.jfo.swaggerhub.swhreporter.model.db.Project;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.jfo.swaggerhub.swhreporter.repository.NewSpecificationRepository;
+import org.jfo.swaggerhub.swhreporter.repository.ProjectRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -31,16 +35,19 @@ public class ReporterService {
 
     private final InitializerService initializerService;
     private final NewSpecificationRepository specificationRepository;
+    private final ProjectRepository projectRepository;
     private final SwaggerHubService swaggerHubService;
     private final ModelMapper modelMapper;
     private final SwhMapper swhMapper;
 
     public ReporterService(NewSpecificationRepository specificationRepository,
+            ProjectRepository projectRepository,
                            InitializerService initializerService,
                            SwaggerHubService swaggerHubService,
                            ModelMapper modelMapper,
                            SwhMapper swhMapper) {
         this.specificationRepository = specificationRepository;
+        this.projectRepository = projectRepository;
         this.swaggerHubService = swaggerHubService;
         this.modelMapper = modelMapper;
         this.swhMapper = swhMapper;
@@ -54,6 +61,7 @@ public class ReporterService {
 
         if (result.getTotalElements()==0){
             initializerService.retrieveAllSpecs();
+            result = specificationRepository.findAll(PageRequest.of(0, 20, Sort.by("name").ascending()));
         }
 
         SpecsDto specsDto = new SpecsDto();
@@ -133,7 +141,11 @@ public class ReporterService {
 
     private ApiDto buildApiDto(NewSpecification specification) throws Exception {
         ApiDto apiDto = new ApiDto();
+        apiDto.setCollaboration(new CollaborationDto());
+        apiDto.setSecurityDefinitions(new ClxApiOauth2SecurityDefinitionDto());
+        
         apiDto.setName(specification.getName());
+        apiDto.setType(StringUtils.capitalize(specification.getProperties().getType().toLowerCase()));
         apiDto.setVersion(specification.getProperties().getVersion());
 
 //        String document = modelMapper.getClobAsString(specification.getOpenApiDocument().getDefinition());
@@ -141,25 +153,22 @@ public class ReporterService {
         apiDto.setDocument(document);
 
 //        OpenAPI openAPI = modelMapper.getOpenApiObjectFromBlob(specification.getOpenApiDocument().getOpenapi());
-        OpenAPI openAPI = swhMapper.parseOpenApi(document);
-        apiDto.setSecurityDefinitions(getClxApiOauth2SecurityDefinition(openAPI).orElse(null));
+        if ("API".equalsIgnoreCase(specification.getProperties().getType())){
+            OpenAPI openAPI = swhMapper.parseOpenApi(document);
+            apiDto.setSecurityDefinitions(getClxApiOauth2SecurityDefinition(openAPI).orElse(null));
+        }
 
         NewCollaboration collaborationModel = specification.getCollaboration();
-        apiDto.setCollaboration(
-                collaborationModel == null ?
-                        new CollaborationDto() :
-                        modelMapper.collaborationModelToCollaborationDto(collaborationModel)
-        );
-
+        if (null!=collaborationModel){
+            apiDto.setCollaboration(modelMapper.collaborationModelToCollaborationDto(collaborationModel));    
+        }
+        
         return apiDto;
     }
 
 
     private Optional<ClxApiOauth2SecurityDefinitionDto> getClxApiOauth2SecurityDefinition(OpenAPI api) {
         ClxApiOauth2SecurityDefinitionDto securities = new ClxApiOauth2SecurityDefinitionDto();
-        securities.setScopes(new HashSet<>());
-        securities.setRoles(new HashSet<>());
-        securities.setAudiences(new HashSet<>());
         try {
             OAuthFlows clxApiOAuth2Flows = api.getComponents()
                     .getSecuritySchemes()
@@ -207,4 +216,16 @@ public class ReporterService {
         return Optional.empty();
     }
 
+    public ProjectsReportDto getProjectsReport() {
+        ProjectsReportDto reportDto = new ProjectsReportDto();
+
+        if (projectRepository.count()==0){
+            initializerService.retrieveAllProjects();
+        }
+
+        Iterable<Project> dbProjects = projectRepository.findAll();
+        dbProjects.iterator().forEachRemaining(dbp -> reportDto.addProject(modelMapper.projectModelToDto(dbp)));
+        
+        return reportDto;
+    }
 }

@@ -1,19 +1,32 @@
 package org.jfo.swaggerhub.swhreporter.mappers;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.parser.OpenAPIV3Parser;
-import io.swagger.v3.parser.core.models.ParseOptions;
-import io.swagger.v3.parser.core.models.SwaggerParseResult;
-import org.apache.commons.lang3.StringUtils;
-import org.jfo.swaggerhub.swhreporter.model.db.*;
-import org.jfo.swaggerhub.swhreporter.model.swh.*;
-import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.time.OffsetDateTime;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jfo.swaggerhub.swhreporter.model.db.Api;
+import org.jfo.swaggerhub.swhreporter.model.db.Domain;
+import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
+import org.jfo.swaggerhub.swhreporter.model.db.NewMember;
+import org.jfo.swaggerhub.swhreporter.model.db.NewOpenApiDocument;
+import org.jfo.swaggerhub.swhreporter.model.db.NewProperties;
+import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
+import org.jfo.swaggerhub.swhreporter.model.db.NewTeam;
+import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
+import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonProperty;
+import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
+import org.jfo.swaggerhub.swhreporter.model.swh.CollaborationMembership;
+import org.jfo.swaggerhub.swhreporter.model.swh.CollaborationTeamMembership;
+import org.jfo.swaggerhub.swhreporter.model.swh.Project;
+import org.springframework.stereotype.Component;
+import org.yaml.snakeyaml.Yaml;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.parser.OpenAPIV3Parser;
+import io.swagger.v3.parser.core.models.ParseOptions;
+import io.swagger.v3.parser.core.models.SwaggerParseResult;
 
 @Component
 public class SwhMapper {
@@ -36,7 +49,7 @@ public class SwhMapper {
     return specification;
   }
 
-  public NewProperties mapToProperties(List<ApisJsonProperty> input){
+  public NewProperties mapToProperties(List<ApisJsonProperty> input) {
     NewProperties properties = new NewProperties();
     input.forEach(p -> {
       if ("Swagger".equalsIgnoreCase(p.getType())) {
@@ -76,18 +89,18 @@ public class SwhMapper {
     return member;
   }
 
-  private String getMainRole(List<CollaborationMembership.RolesEnum> roles){
+  private String getMainRole(List<CollaborationMembership.RolesEnum> roles) {
 
-    if(roles.contains(CollaborationMembership.RolesEnum.EDIT)) {
+    if (roles.contains(CollaborationMembership.RolesEnum.EDIT)) {
       return "Designer";
-    }else if (roles.contains(CollaborationMembership.RolesEnum.COMMENT)) {
+    } else if (roles.contains(CollaborationMembership.RolesEnum.COMMENT)) {
       return "Collaborator";
-    }else {
+    } else {
       return "Viewer";
     }
   }
 
-  private NewTeam teamSwhToModel(CollaborationTeamMembership collaborationTeam){
+  private NewTeam teamSwhToModel(CollaborationTeamMembership collaborationTeam) {
     NewTeam team = new NewTeam();
     team.setName(collaborationTeam.getName());
     team.setDescription(collaborationTeam.getTitle());
@@ -126,4 +139,12 @@ public class SwhMapper {
   }
 
 
+  public org.jfo.swaggerhub.swhreporter.model.db.Project projectSwhToModel(Project project) {
+    org.jfo.swaggerhub.swhreporter.model.db.Project dbProject = new org.jfo.swaggerhub.swhreporter.model.db.Project();
+    dbProject.setName(project.getName());
+    dbProject.setDescription(project.getDescription());
+    project.getApis().forEach(api -> dbProject.addApi(new Api(api)));
+    project.getDomains().forEach(api -> dbProject.addDomain(new Domain(api)));
+    return dbProject;
+  }
 }
