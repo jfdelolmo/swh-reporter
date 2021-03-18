@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProjectsReportDto {
   
-  private Long total;
+  private Integer total;
   private Set<ProjectDto> projects = new HashSet<>();
   
   public ProjectsReportDto addProject(ProjectDto projectDto){

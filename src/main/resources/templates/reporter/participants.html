@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'participants')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Projects report</title>
+    <!--    &lt;!&ndash; Latest compiled and minified CSS &ndash;&gt;
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+        &lt;!&ndash; Latest compiled and minified JavaScript &ndash;&gt;
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>-->
+    <!-- CSS only -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/flatly/bootstrap.min.css" integrity="sha384-qF/QmIAj5ZaYFAeQcrQ6bfVMAh4zZlrGwTPY7T/M+iTTLJqJBJjwwnsE5Y0mV7QK" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/sandstone/bootstrap.min.css" integrity="sha384-zEpdAL7W11eTKeoBJK1g79kgl9qjP7g84KfK3AZsuonx38n8ad+f5ZgXtoSDxPOh" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+    <div class="container-fluid" style="margin-top: 20px">
+        <div class="row">
+            <div class="panel panel-heading">
+                <h3>Projects & participants</h3>
+            </div>
+        </div>
+    
+        <div class="row" th:if="${#lists.isEmpty(participants.getParticipants())}">
+            <p class="label-info">There is no projects information</p>
+        </div>
+        <div class="row" th:if="${not #lists.isEmpty(participants.getParticipants())}">
+            <table class="table table-sm table-m-0 table-light table-hover" th:if="${not #lists.isEmpty(participants.getParticipants())}">
+                <thead class="table thead-dark">
+                    <tr class="row">
+                        <th scope="col" class="text-center align-middle col-sm-3" >Project</th>
+                        <th scope="col" class="text-center col-sm-9" colspan="3">Participants</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <tr th:remove="all">
+                        <td th:text="${projectParticipant.getProject()}">Project name</td>
+                        <td>Subtable</td>
+                    </tr>
+                    <tr th:remove="all">
+                        <td th:text="${projectParticipant.getProject()}">Project name</td>
+                        <td>Subtable</td>
+                    </tr>
+                    <tr th:each="projectParticipant : ${participants.getParticipants()}" class="row">
+                        <td th:text="${projectParticipant.getProject()}" class="col-sm-3">Project name</td>
+                        <td colspan="3" class="col-sm-9">
+                            <table class="table table-sm table-light">
+                                <thead class="table thead-dark">
+                                    <tr class="row">
+                                        <th scope="col" class="col-sm-4">Name</th>
+                                        <th scope="col" class="col-sm-3">Type</th>
+                                        <th scope="col" class="col-sm-5">Roles</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="participant : ${projectParticipant.getParticipants()}" class="row">
+                                        <td th:text="${participant.getName()}" class="col-sm-4">Participant name</td>
+                                        <td th:text="${participant.getType()}" class="col-sm-3">Participant type</td>
+                                        <td th:text="${participant.getRoles()}" class="col-sm-5">Participant roles</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+    <!--    
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="panel panel-primary">
+                    <div class="panel panel-body">
+                        <div class="row" th:if="${#lists.isEmpty(participants.getParticipants())}">
+                            <p class="label-info">There is no projects information</p>
+                        </div>
+                        <div class="row" th:if="${not #lists.isEmpty(participants.getParticipants())}">
+    
+                            <div class="table-sm" style="max-width: 100%;">
+                                <table class="table table-sm table-hover table-striped table-hover">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="text-center col-sm-6">Project</th>
+                                            <th class="text-center col-sm-6">Participants</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:remove="all">
+                                            <td th:text="${participant.getProject()}" class="text-left">Project name</td>
+                                            <td>Subtable</td>
+                                        </tr>
+                                        <tr th:remove="all">
+                                            <td th:text="${participant.getProject()}" class="text-left">Project name</td>
+                                            <td>Subtable</td>
+                                        </tr>
+                                        <tr th:each="participant : ${participants.getParticipants()}">
+                                            <td th:text="${participant.getProject()}" class="text-left">Project name</td>
+                                            <td>
+                                                <table class="table-m-0">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th scope="col" class="col-sm-5">Name</th>
+                                                            <th scope="col" class="col-sm-2">Type</th>
+                                                            <th scope="col" class="col-sm-5">Roles</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr th:each="p : ${participant.getParticipants()}">
+                                                            <td th:text="${p.getName()}">Participant name</td>
+                                                            <td th:text="${p.getType()}">Participant type</td>
+                                                            <td th:text="${p.getRoles()}">Participant roles</td>
+                                                        </tr>                                                
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                       
+                                                <div class="table table-striped" th:if="${not #lists.isEmpty(participants.getParticipants())}">
+                                                    <table class="table table-sm table-hover ">
+                                                        <thead class="thead-inverse">
+                                                            <tr>
+                                                                <th scope="col" class="text-center col-sm-6">Project</th>
+                                                                <th scope="col" class="text-center col-sm-6">Participants</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr th:remove="all">
+                                                                <td th:text="${participant.getProject()}" class="text-left">Project name</td>
+                                                            </tr>
+                                                            <tr th:remove="all">
+                                                                <td th:text="${participant.getProject()}" class="text-left">Project name</td>
+                                                            </tr>
+                                                            <tr th:each="participant : ${participants.getParticipants()}">
+                                                                <td th:text="${participant.getProject()}" class="text-left">Project name</td>
+                                                                <td >Subtable
+                                                                    <table class="table mb-0">
+                                                                        <thead class="thead-inverse">
+                                                                            <tr>
+                                                                                <th scope="col" class="col-sm-5">Name</th>
+                                                                                <th scope="col" class="col-sm-2">Type</th>
+                                                                                <th scope="col" class="col-sm-5">Roles</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr th:each="p : ${participant.getParticipants()}">
+                                                                                <td th:text="${p.getName()}" class="col-md">Participant name</td>
+                                                                                <td th:text="${p.getType()}">Participant type</td>
+                                                                                <td th:text="${p.getRoles()}">Participant roles</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    -->
+    </div>
+
+</body>
+</html>

@@ -39,4 +39,11 @@ public class ReporterController {
         model.addAttribute("projects", reporterService.getProjectsReport());
         return "reporter/projects";
     }
+
+    @GetMapping("/participants")
+    public String getParticipantsReport(Model model){
+        log.info("Entering Participants Report controller method");
+        model.addAttribute("participants", reporterService.getParticipantsReport());
+        return "reporter/participants";
+    }
 }

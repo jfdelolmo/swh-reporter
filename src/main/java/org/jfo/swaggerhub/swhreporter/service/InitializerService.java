@@ -5,8 +5,10 @@ import java.util.stream.Collectors;
 
 import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
 import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
+import org.jfo.swaggerhub.swhreporter.model.db.Project;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
+import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
 import org.jfo.swaggerhub.swhreporter.repository.NewSpecificationRepository;
 import org.jfo.swaggerhub.swhreporter.repository.ProjectRepository;
@@ -69,12 +71,14 @@ public class InitializerService {
       s.updateCollaboration(swhMapper.collaborationSwhToModel(collaboration));
     });
   }
-
-  //TODO: Ask for the team & members
+  
   public void retrieveAllProjects() {
     ProjectsJson swhProjects = swaggerHubService.getProjects(adminService.getUserOwner());
     swhProjects.getProjects().forEach(project -> {
-      projectRepository.save(swhMapper.projectSwhToModel(project));
+      Project dbProject = swhMapper.projectSwhToModel(project);
+      List<ProjectMember> members = swaggerHubService.getProjectMembers(adminService.getUserOwner(), project.getName());
+      members.forEach( m -> dbProject.addParticipant(swhMapper.memberShwToParticipants(m)));
+      projectRepository.save(dbProject);
     });
   }
 

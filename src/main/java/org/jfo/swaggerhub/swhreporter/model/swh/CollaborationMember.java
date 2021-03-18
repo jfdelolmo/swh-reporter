@@ -1,12 +1,12 @@
 package org.jfo.swaggerhub.swhreporter.model.swh;
 
 import com.google.gson.annotations.SerializedName;
+
+import java.time.OffsetDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.OffsetDateTime;
-//import org.threeten.bp.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -25,4 +25,3 @@ public class CollaborationMember {
   private OffsetDateTime startTime = null;
 
 }
-

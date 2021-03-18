@@ -23,58 +23,57 @@
 </head>
 <body>
 <!--/*@thymesVar id="specs" type="org.jfo.swaggerhub.swhreporter.dto.SpecsDto"*/-->
-<div class="container-fluid" style="margin-top: 20px">
-
-    <div class="row">
-        <table class="table table-sm table-responsive table-hover" style="max-width: 100%;" th:if="${not #lists.isEmpty(specs.specs)}">
-            <thead class="thead-dark">
-                <tr>
-                    <th colspan="6">Specification list (<span th:text="${specs.numberOfSpec}">0</span>)</th>
-                </tr>
-                <tr>
-                    <th scope="col">Type</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Version</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">Updated</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:remove="all">
-                    <td th:text="${s.specType}">Api type</td>
-                    <td th:text="${s.specName}">Api name</td>
-                    <td th:text="${s.specVersion}">Api version</td>
-                    <td th:text="${s.specDescription}">Api description</td>
-                    <td th:text="${s.created}">Api creation date-time</td>
-                    <td th:text="${s.updated}">Api update date-time</td>
-                </tr>
-                <tr th:remove="all">
-                    <td th:text="${s.specType}">Api type</td>
-                    <td th:text="${s.specName}">Api name</td>
-                    <td th:text="${s.specVersion}">Api version</td>
-                    <td th:text="${s.specDescription}">Api description</td>
-                    <td th:text="${s.created}">Api creation date-time</td>
-                    <td th:text="${s.updated}">Api update date-time</td>
-                </tr>
-                <tr th:each="s : ${specs.specs}">
-                    <td th:text="${s.specType}">DOMAIN</td>
-<!--                    <a th:href="@{/order/details(id=${order.id},action=(${user.admin} ? 'show_all' : 'show_public'))}">-->
-<!--                    <a th:href="${sps.website}" th:text="${sps.website}" target="_blank" />-->
-                    <td><a th:href="'/reporter/specs/'+ ${s.id}" th:text="${s.specName}" /></td>
-                    <td th:text="${s.specVersion}">3.2.0</td>
-                    <td th:text="${s.specDescription}">Api description: Lorem...</td>
-                    <td th:text="${s.created}">14-03-1976T22:22:22Z</td>
-                    <td th:text="${s.updated}">14-03-1976T22:22:22Z</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="6">Pagination pending</td>
-                </tr>
-            </tfoot>
-        </table>
+    <div class="container-fluid" style="margin-top: 20px">
+    
+        <div class="row">
+            <table class="table table-sm table-responsive table-hover" style="max-width: 100%;" th:if="${not #lists.isEmpty(specs.specs)}">
+                <thead class="thead-dark">
+                    <tr>
+                        <th colspan="6">Specification list (<span th:text="${specs.numberOfSpec}">0</span>)</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Version</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:remove="all">
+                        <td th:text="${s.specType}">Api type</td>
+                        <td th:text="${s.specName}">Api name</td>
+                        <td th:text="${s.specVersion}">Api version</td>
+                        <td th:text="${s.specDescription}">Api description</td>
+                        <td th:text="${s.created}">Api creation date-time</td>
+                        <td th:text="${s.updated}">Api update date-time</td>
+                    </tr>
+                    <tr th:remove="all">
+                        <td th:text="${s.specType}">Api type</td>
+                        <td th:text="${s.specName}">Api name</td>
+                        <td th:text="${s.specVersion}">Api version</td>
+                        <td th:text="${s.specDescription}">Api description</td>
+                        <td th:text="${s.created}">Api creation date-time</td>
+                        <td th:text="${s.updated}">Api update date-time</td>
+                    </tr>
+                    <tr th:each="s : ${specs.specs}">
+                        <td th:text="${s.specType}">DOMAIN</td>
+                        <td><a th:href="'/reporter/specs/'+ ${s.id}" th:text="${s.specName}" /></td>
+                        <td th:text="${s.specVersion}">3.2.0</td>
+                        <td th:text="${s.specDescription}">Api description: Lorem...</td>
+                        <td th:text="${s.created}">14-03-1976T22:22:22Z</td>
+                        <td th:text="${s.updated}">14-03-1976T22:22:22Z</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">Pagination pending</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
     </div>
-
 </body>
 </html>

@@ -23,6 +23,7 @@ public class SwhWebClient {
     public static final String GET_API_COLLABORATION_URL = BASE_URL + "/apis/{owner}/{api}/.collaboration";
     public static final String GET_DOMAIN_VERSION_URL = BASE_URL + "/domains/{owner}/{domain}/{version}" + DOMAIN_AS_YAML;
     public static final String GET_PROJECTS_BY_OWNER = BASE_URL + "/projects/{owner}";
+    public static final String GET_PROJECT_MEMBERS = BASE_URL + "/projects/{owner}/{projectId}/members";
     
     
     public <T> Mono<T> executeCall(String url, Map<String, ?> uriParams, MultiValueMap<String, String> queryParams, Class<T> responseClazz){

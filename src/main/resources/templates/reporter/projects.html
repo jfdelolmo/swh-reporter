@@ -31,22 +31,19 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-primary">
-<!--                <div class="panel panel-heading"><h4>Collaboration</h4></div>-->
                 <div class="panel panel-body">
                     <div class="row" th:if="${#lists.isEmpty(projects.getProjects())}">
                         <p class="label-info">There is no projects information</p>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(projects.getProjects())}">
                     
-                        <div class="panel-title"><h5>Members</h5></div>
                         <div class="table-responsive table-striped" th:if="${not #lists.isEmpty(projects.getProjects())}">
                             <table class="table table-sm table-hover ">
                                 <thead class="thead-inverse">
                                 <tr>
                                     <th>Name</th>
                                     <th>Description</th>
-<!--                                    <th>API</th>-->
-<!--                                    <th>Domain</th>-->
+                                    <th>API & Domains</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -59,13 +56,22 @@
                                     <td th:text="${project.description}">Project description</td>
                                 </tr>
                                 <tr th:each="project : ${projects.getProjects()}">
+                                    
                                     <td th:text="${project.name}">Project name</td>
                                     <td th:text="${project.description}">Project description</td>
-<!--                                    <tr th:each="api : ${project.api}">-->
-<!--                                        <td th:text="${api.description}">Project description</td>-->
-<!--                                        <td>domain</td>-->
+                                    <td colspan="2">
+                                        <table class="table mb-0">
+                                            <tbody>
+                                                <tr th:each="api : ${project.getApis()}">
+                                                    <td>API: <span th:text="${api}"></span></td>                
+                                                </tr>
+                                                <tr th:each="domain : ${project.getDomains()}">
+                                                    <td>Domain: <span th:text="${domain}"></span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
                                     
-                                    </tr>
                                 </tr>
                                 </tbody>
                             </table>

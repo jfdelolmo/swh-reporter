@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jfo.swaggerhub.swhreporter.model.db.Api;
@@ -14,12 +15,14 @@ import org.jfo.swaggerhub.swhreporter.model.db.NewOpenApiDocument;
 import org.jfo.swaggerhub.swhreporter.model.db.NewProperties;
 import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
 import org.jfo.swaggerhub.swhreporter.model.db.NewTeam;
+import org.jfo.swaggerhub.swhreporter.model.db.ProjectParticipant;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonProperty;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.jfo.swaggerhub.swhreporter.model.swh.CollaborationMembership;
 import org.jfo.swaggerhub.swhreporter.model.swh.CollaborationTeamMembership;
 import org.jfo.swaggerhub.swhreporter.model.swh.Project;
+import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
@@ -146,5 +149,20 @@ public class SwhMapper {
     project.getApis().forEach(api -> dbProject.addApi(new Api(api)));
     project.getDomains().forEach(api -> dbProject.addDomain(new Domain(api)));
     return dbProject;
+  }
+  
+  public ProjectParticipant memberShwToParticipants(ProjectMember member){
+    ProjectParticipant participant = new ProjectParticipant();
+    participant.setName(member.getName());
+    participant.setType(member.getType().getValue());
+    participant.setRoles(member
+        .getRoles()
+        .stream()
+        .map(ProjectMember.RolesEnum::getValue)
+        .collect(Collectors.joining(", "))
+    );
+    
+    return participant;
+    
   }
 }

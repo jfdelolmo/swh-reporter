@@ -1,18 +1,14 @@
 package org.jfo.swaggerhub.swhreporter.model.swh;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +16,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class CollaborationMembership extends CollaborationMember {
 
-//  @JsonAdapter(RolesEnum.Adapter.class)
   public enum RolesEnum {
     @SerializedName("EDIT")
     EDIT("EDIT"),
@@ -53,18 +48,6 @@ public class CollaborationMembership extends CollaborationMember {
       return null;
     }
 
-//    public static class Adapter extends TypeAdapter<RolesEnum> {
-//      @Override
-//      public void write(final JsonWriter jsonWriter, final RolesEnum enumeration) throws IOException {
-//        jsonWriter.value(enumeration.getValue());
-//      }
-//
-//      @Override
-//      public RolesEnum read(final JsonReader jsonReader) throws IOException {
-//        String value = jsonReader.nextString();
-//        return RolesEnum.fromValue(String.valueOf(value));
-//      }
-//    }
   }
 
   @SerializedName("roles")

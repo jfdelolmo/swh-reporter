@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
 import org.jfo.swaggerhub.swhreporter.dto.MemberDto;
+import org.jfo.swaggerhub.swhreporter.dto.ParticipantDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecPropertiesDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
@@ -22,6 +23,7 @@ import org.jfo.swaggerhub.swhreporter.model.db.NewMember;
 import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
 import org.jfo.swaggerhub.swhreporter.model.db.NewTeam;
 import org.jfo.swaggerhub.swhreporter.model.db.Project;
+import org.jfo.swaggerhub.swhreporter.model.db.ProjectParticipant;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.springframework.stereotype.Component;
@@ -132,6 +134,14 @@ public class ModelMapper {
       dto.setDescription(dbp.getDescription());
       dbp.getApis().forEach(a->dto.addApi(a.getName()));
       dbp.getDomains().forEach(d->dto.addDomain(d.getName()));
+      return dto;
+  }
+
+  public ParticipantDto projectModelToParticipantDto(ProjectParticipant model) {
+      ParticipantDto dto = new ParticipantDto();
+      dto.setName(model.getName());
+      dto.setRoles(model.getRoles());
+      dto.setType(model.getType());
       return dto;
   }
 }

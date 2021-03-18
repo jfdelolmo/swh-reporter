@@ -7,12 +7,16 @@ import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_APIS_BY_OWN
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_API_COLLABORATION_URL;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_API_VERSION_URL;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECTS_BY_OWNER;
+import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECT_MEMBERS;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_SPECS_URL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
@@ -21,6 +25,8 @@ import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
+import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
+import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMembersList;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -217,6 +223,23 @@ public class SwaggerHubService {
         }
         
         return accumulated;
+    }
+    
+    public List<ProjectMember> getProjectMembers(String owner, String project){
+        Map<String, String> uriParams = new HashMap<>();
+        uriParams.put(OWNER_PARAM, owner);
+        uriParams.put("projectId", project);
+        
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        Mono<ProjectMembersList> result = webClient.executeCall(GET_PROJECT_MEMBERS, uriParams, queryParams, ProjectMembersList.class);
+
+        Optional<ProjectMembersList> optionalBlock = result.blockOptional();
+       
+        if (optionalBlock.isEmpty() || optionalBlock.get().getMembers().isEmpty()){
+            return new ArrayList<>();
+        }else{
+            return optionalBlock.get().getMembers();
+        }
     }
 }
 

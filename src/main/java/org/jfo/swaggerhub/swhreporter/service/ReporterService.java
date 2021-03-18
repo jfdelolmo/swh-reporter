@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
 import org.jfo.swaggerhub.swhreporter.dto.ClxApiOauth2SecurityDefinitionDto;
 import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
+import org.jfo.swaggerhub.swhreporter.dto.ParticipantReportDto;
+import org.jfo.swaggerhub.swhreporter.dto.ProjectParticipantsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
 import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
@@ -24,7 +26,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -223,8 +224,28 @@ public class ReporterService {
             initializerService.retrieveAllProjects();
         }
 
-        Iterable<Project> dbProjects = projectRepository.findAll();
+        Iterable<Project> dbProjects = projectRepository.findAllByOrderByNameAsc();
         dbProjects.iterator().forEachRemaining(dbp -> reportDto.addProject(modelMapper.projectModelToDto(dbp)));
+        reportDto.setTotal(reportDto.getProjects().size());
+        
+        return reportDto;
+    }
+
+    public ProjectParticipantsReportDto getParticipantsReport() {
+        ProjectParticipantsReportDto reportDto = new ProjectParticipantsReportDto(); 
+        
+        if (projectRepository.count()==0){
+            initializerService.retrieveAllProjects();
+        }
+
+        Iterable<Project> dbProjects = projectRepository.findAllByOrderByNameAsc();
+        dbProjects.iterator().forEachRemaining(dbp -> {
+            ParticipantReportDto pprDto = new ParticipantReportDto();
+            pprDto.setProject(dbp.getName());
+            dbp.getParticipants()
+                .forEach(p-> pprDto.addParticipant(modelMapper.projectModelToParticipantDto(p)));
+            reportDto.addParticipant(pprDto);
+        });
         
         return reportDto;
     }
