@@ -6,15 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface NewSpecificationRepository extends CrudRepository<NewSpecification, Long> {
 
     Page<NewSpecification> findAll(Pageable page);
 
-    default List<NewSpecification> saveOrUpdateAll(List<NewSpecification> input) {
-
-        List<NewSpecification> saved = new ArrayList<>();
+    default Set<NewSpecification> saveOrUpdateAll(Set<NewSpecification> input) {
+        Set<NewSpecification> saved = new HashSet<>();
         input.forEach(item -> {
             NewSpecification s = findByPropertiesUrl(item.getProperties().getUrl());
             if (null != s) {
@@ -30,5 +31,4 @@ public interface NewSpecificationRepository extends CrudRepository<NewSpecificat
 
     NewSpecification findByPropertiesUrl(String url);
 
-//    NewSpecification findByNameAndPropertiesVersion(String apiName, String version);
 }

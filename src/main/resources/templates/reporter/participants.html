@@ -32,7 +32,7 @@
             <p class="label-info">There is no projects information</p>
         </div>
         <div class="row" th:if="${not #lists.isEmpty(participants.getParticipants())}">
-            <table class="table table-sm table-m-0 table-light table-hover" th:if="${not #lists.isEmpty(participants.getParticipants())}">
+            <table class="table table-sm table-hover table-m-0 col-sm-12" th:if="${not #lists.isEmpty(participants.getParticipants())}">
                 <thead class="table thead-dark">
                     <tr class="row">
                         <th scope="col" class="text-center align-middle col-sm-3" >Project</th>
@@ -51,17 +51,17 @@
                     </tr>
                     <tr th:each="projectParticipant : ${participants.getParticipants()}" class="row">
                         <td th:text="${projectParticipant.getProject()}" class="col-sm-3">Project name</td>
-                        <td colspan="3" class="col-sm-9">
-                            <table class="table table-sm table-light">
+                        <td class="col-sm-9">
+                            <table class="table table-sm table-light table-m-0">
                                 <thead class="table thead-dark">
-                                    <tr class="row">
+                                    <tr class="row col-sm-12">
                                         <th scope="col" class="col-sm-4">Name</th>
                                         <th scope="col" class="col-sm-3">Type</th>
                                         <th scope="col" class="col-sm-5">Roles</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="participant : ${projectParticipant.getParticipants()}" class="row">
+                                    <tr th:each="participant : ${projectParticipant.getParticipants()}" class="row col-sm-12">
                                         <td th:text="${participant.getName()}" class="col-sm-4">Participant name</td>
                                         <td th:text="${participant.getType()}" class="col-sm-3">Participant type</td>
                                         <td th:text="${participant.getRoles()}" class="col-sm-5">Participant roles</td>

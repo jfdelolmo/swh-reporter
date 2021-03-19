@@ -46,4 +46,12 @@ public class ReporterController {
         model.addAttribute("participants", reporterService.getParticipantsReport());
         return "reporter/participants";
     }
+    
+    @GetMapping("/wrongreference")
+    public String getWrongReferencedApis(Model model){
+        log.info("Entering Wrong Referenced Apis Report controller method");
+        model.addAttribute("wrongreference", reporterService.getWrongReferencedApis());
+        return "/reporter/wrongreference";
+        
+    }
 }

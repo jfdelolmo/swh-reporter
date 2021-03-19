@@ -1,6 +1,10 @@
 server:
   port: 9090
 
+reporter:
+  config:
+    loadOnStartUp: false
+    
 spring:
   # Web
   thymeleaf:

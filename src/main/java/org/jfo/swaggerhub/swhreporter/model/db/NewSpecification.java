@@ -44,8 +44,13 @@ public class NewSpecification {
     }
 
     public NewSpecification updateCollaboration(NewCollaboration newCollaboration){
-        this.getCollaboration().setMembers(newCollaboration.getMembers());
-        this.getCollaboration().setTeams(newCollaboration.getTeams());
+        if (null!=newCollaboration) {
+            if (null==this.getCollaboration()){
+                this.setCollaboration(new NewCollaboration());
+            }
+            this.getCollaboration().setMembers(newCollaboration.getMembers());
+            this.getCollaboration().setTeams(newCollaboration.getTeams());
+        }
         return this;
     }
     

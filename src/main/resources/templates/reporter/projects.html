@@ -37,9 +37,9 @@
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(projects.getProjects())}">
                     
-                        <div class="table-responsive table-striped" th:if="${not #lists.isEmpty(projects.getProjects())}">
-                            <table class="table table-sm table-hover ">
-                                <thead class="thead-inverse">
+                        <div class="table-responsive " th:if="${not #lists.isEmpty(projects.getProjects())}">
+                            <table class="table table-sm table-hover table-m-0 col-sm-12">
+                                <thead class="thead-dark">
                                 <tr>
                                     <th>Name</th>
                                     <th>Description</th>

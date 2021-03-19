@@ -1,6 +1,7 @@
 package org.jfo.swaggerhub.swhreporter.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
@@ -26,7 +27,7 @@ class SwaggerHubServiceTest {
   
   @Test
   void getAllOwnerSpecs(){
-    List<ApisJsonApi> result = swaggerHubService.getAllOwnerSpecs(TEST_OWNER);
+    Set<ApisJsonApi> result = swaggerHubService.getAllOwnerSpecs(TEST_OWNER);
     Assertions.assertThat(result).isNotEmpty();
   }
 

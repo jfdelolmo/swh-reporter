@@ -13,9 +13,11 @@ import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_SPECS_URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,14 +34,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 /**
- * Service responsible to do the required calls SwggerHub.
+ * Service responsible to retrieve the information from SwggerHub.
  * It will handle basic objects or the ones defined by SwaggerHub.
  * It will not use DB models -> Use the SwhMapper to convert SwhModels to DbModels.
  */
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class SwaggerHubService {
 
     private static final String OWNER_PARAM = "owner";
@@ -50,13 +56,6 @@ public class SwaggerHubService {
     private final SwhWebClient webClient;
     private final ModelMapper mapper;
     
-    public SwaggerHubService(AdminService adminService,
-                             SwhWebClient webClient,
-                             ModelMapper mapper) {
-        this.adminService = adminService;
-        this.webClient = webClient;
-        this.mapper = mapper;
-    }
 
     public List<ApisJsonApi> getAllOwnerApis(String owner) {
         int page = 0;
@@ -84,11 +83,11 @@ public class SwaggerHubService {
         return allApis;
     }
 
-    public List<ApisJsonApi> getAllOwnerSpecs(String owner) {
+    public Set<ApisJsonApi> getAllOwnerSpecs(String owner) {
         int page = 0;
         boolean pendingToDownload = true;
 
-        List<ApisJsonApi> allSpecs = new ArrayList<>();
+        Set<ApisJsonApi> allSpecs = new HashSet<>();
 
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add(OWNER_PARAM, owner);
@@ -188,8 +187,8 @@ public class SwaggerHubService {
 
     public String getApiVersionByUrl(String url) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("resolved", "true");
-        queryParams.add("flatten", "true");
+        queryParams.add("resolved", "false");
+//        queryParams.add("flatten", "true");
         String specType = url.contains("/domains")? DOMAIN_AS_YAML : API_AS_YAML;
         Mono<String> result = webClient.executeCall(url + specType, null, queryParams, String.class);
         return result.block();
@@ -225,7 +224,7 @@ public class SwaggerHubService {
         return accumulated;
     }
     
-    public List<ProjectMember> getProjectMembers(String owner, String project){
+    public Set<ProjectMember> getProjectMembers(String owner, String project){
         Map<String, String> uriParams = new HashMap<>();
         uriParams.put(OWNER_PARAM, owner);
         uriParams.put("projectId", project);
@@ -236,9 +235,9 @@ public class SwaggerHubService {
         Optional<ProjectMembersList> optionalBlock = result.blockOptional();
        
         if (optionalBlock.isEmpty() || optionalBlock.get().getMembers().isEmpty()){
-            return new ArrayList<>();
+            return new HashSet<>();
         }else{
-            return optionalBlock.get().getMembers();
+            return new HashSet<>(optionalBlock.get().getMembers());
         }
     }
 }

@@ -55,13 +55,13 @@
 
             <li th:replace="::menuItem ('/','Home','Home page','home','Home')" class="nav-item active"></li>
             <li th:replace="::menuItem ('/reporter/specs','specs','Specification list','search','Specification list')" class="nav-item active"></li>
-            <li th:replace="::menuItem ('/reporter/api/Account Transfer API/2.18.5','api','ASO admin api','search','ASO Admin api 2.0.5')"></li>
+            <li th:replace="::menuItem ('/reporter/projects','projects','Projects & specifications','search','Projects & specifications')"></li>
+            <li th:replace="::menuItem ('/reporter/participants','projects','Projects & participants','search','Projects & participants')"></li>
+            
             <span class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reports</a>
                 <div class="dropdown-menu">
-                    <span class="dropdown-item" th:replace="::menuItem ('/reporter/projects','projects','Projects & specifications','search','Projects & specifications')"></span>
-                    <span class="dropdown-item" th:replace="::menuItem ('/reporter/participants','projects','Projects & participants','search','Projects & participants')"></span>
-                    <span class="dropdown-item" th:replace="::menuItem ('/','apierrors','todo','search','Wrong defined APIs (todo)')"></span>
+                    <span class="dropdown-item" th:replace="::menuItem ('/reporter/wrongreference','wrongreference','Wrong reference','search','Wrong reference')"></span>
 <!--                    <div class="dropdown-divider"></div>-->
 <!--                    <a class="dropdown-item" href="#">Separated link</a>-->
                 </div>

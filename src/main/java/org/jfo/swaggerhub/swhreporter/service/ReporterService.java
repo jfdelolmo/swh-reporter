@@ -3,6 +3,7 @@ package org.jfo.swaggerhub.swhreporter.service;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
 import org.jfo.swaggerhub.swhreporter.dto.ClxApiOauth2SecurityDefinitionDto;
@@ -11,6 +12,8 @@ import org.jfo.swaggerhub.swhreporter.dto.ParticipantReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectParticipantsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
+import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceReportDto;
+import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceSpecDto;
 import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
 import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
 import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
@@ -28,10 +31,13 @@ import org.thymeleaf.util.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ReporterService {
 
     private final InitializerService initializerService;
@@ -40,20 +46,21 @@ public class ReporterService {
     private final SwaggerHubService swaggerHubService;
     private final ModelMapper modelMapper;
     private final SwhMapper swhMapper;
+    private final SpecValidator specValidator;
 
-    public ReporterService(NewSpecificationRepository specificationRepository,
-            ProjectRepository projectRepository,
-                           InitializerService initializerService,
-                           SwaggerHubService swaggerHubService,
-                           ModelMapper modelMapper,
-                           SwhMapper swhMapper) {
-        this.specificationRepository = specificationRepository;
-        this.projectRepository = projectRepository;
-        this.swaggerHubService = swaggerHubService;
-        this.modelMapper = modelMapper;
-        this.swhMapper = swhMapper;
-        this.initializerService = initializerService;
-    }
+//    public ReporterService(NewSpecificationRepository specificationRepository,
+//            ProjectRepository projectRepository,
+//                           InitializerService initializerService,
+//                           SwaggerHubService swaggerHubService,
+//                           ModelMapper modelMapper,
+//                           SwhMapper swhMapper) {
+//        this.specificationRepository = specificationRepository;
+//        this.projectRepository = projectRepository;
+//        this.swaggerHubService = swaggerHubService;
+//        this.modelMapper = modelMapper;
+//        this.swhMapper = swhMapper;
+//        this.initializerService = initializerService;
+//    }
 
     public SpecsDto getSpecs() {
         log.info("Entering service getApis method");
@@ -61,7 +68,7 @@ public class ReporterService {
         Page<NewSpecification> result = specificationRepository.findAll(PageRequest.of(0, 20, Sort.by("name").ascending()));
 
         if (result.getTotalElements()==0){
-            initializerService.retrieveAllSpecs();
+            initializerService.retrieveAllOwnedSpecs();
             result = specificationRepository.findAll(PageRequest.of(0, 20, Sort.by("name").ascending()));
         }
 
@@ -221,7 +228,7 @@ public class ReporterService {
         ProjectsReportDto reportDto = new ProjectsReportDto();
 
         if (projectRepository.count()==0){
-            initializerService.retrieveAllProjects();
+            initializerService.retrieveAllOwnedProjectsAndMembers();
         }
 
         Iterable<Project> dbProjects = projectRepository.findAllByOrderByNameAsc();
@@ -235,7 +242,7 @@ public class ReporterService {
         ProjectParticipantsReportDto reportDto = new ProjectParticipantsReportDto(); 
         
         if (projectRepository.count()==0){
-            initializerService.retrieveAllProjects();
+            initializerService.retrieveAllOwnedProjectsAndMembers();
         }
 
         Iterable<Project> dbProjects = projectRepository.findAllByOrderByNameAsc();
@@ -249,4 +256,37 @@ public class ReporterService {
         
         return reportDto;
     }
+
+    public WrongReferenceReportDto getWrongReferencedApis() {
+        WrongReferenceReportDto reportDto = new WrongReferenceReportDto();
+        AtomicLong accumulated = new AtomicLong();
+        Iterable<NewSpecification> specs = specificationRepository.findAll();
+        specs.forEach(s -> {
+            WrongReferenceSpecDto ws = new WrongReferenceSpecDto();             
+            try {
+                String spec = retrieveApiAndStoreUpdatedSpecification(s).getOpenApiDocument().getDefinition();
+                Set<String> errors = specValidator.wrongReferences(spec);
+                if (!errors.isEmpty()){
+                    long specErrorSize = errors.size();
+                    ws.setErrors(errors);
+                    ws.setNumErrors(specErrorSize);
+                    reportDto.getWrongspecs().add(ws);
+                    accumulated.set(accumulated.get() + specErrorSize);
+                }
+            } catch (Exception e) {
+                log.error("Error retrieving the specification:", e);
+                ws.addError("Error retrieving the specification");
+                ws.setNumErrors(1L);
+                accumulated.set(accumulated.get() + 1);
+            }
+            ws.setName(s.getName());
+            ws.setType(s.getProperties().getType());
+        });
+        
+        reportDto.setTotal(accumulated.get());
+        
+        return reportDto;
+    }
+
+
 }
