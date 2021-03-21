@@ -15,32 +15,32 @@ class SwaggerHubServiceTest {
   private final AdminService adminService = new AdminService();
   private final ModelMapper mapper = new ModelMapper();
   private final SwhWebClient webClient = new SwhWebClient();
-  private final SwaggerHubService swaggerHubService = new SwaggerHubService(adminService, webClient, mapper);
+  private final SwaggerHubServiceImpl swaggerHubServiceImpl = new SwaggerHubServiceImpl(adminService, webClient, mapper);
 
   private final String TEST_OWNER = "CREALOGIX";
   
   @Test
   void getAllOwnerApis(){
-    List<ApisJsonApi> result =  swaggerHubService.getAllOwnerApis(TEST_OWNER);
+    List<ApisJsonApi> result =  swaggerHubServiceImpl.getAllOwnerApis(TEST_OWNER);
     Assertions.assertThat(result).isNotEmpty();
   }
   
   @Test
   void getAllOwnerSpecs(){
-    Set<ApisJsonApi> result = swaggerHubService.getAllOwnerSpecs(TEST_OWNER);
+    Set<ApisJsonApi> result = swaggerHubServiceImpl.getAllOwnerSpecs(TEST_OWNER);
     Assertions.assertThat(result).isNotEmpty();
   }
 
   @Test
   void getApiNameFromUrl(){
     String url = "https://api.swaggerhub.com/apis/username/petstore/1.1";
-    String name = swaggerHubService.getApiNameFromUrl(url, "username");
+    String name = swaggerHubServiceImpl.getApiNameFromUrl(url, "username");
     Assertions.assertThat(name).isEqualTo("petstore");
   }
   
       @Test
     public void test_getSpecs() {
-        SpecsDto result = swaggerHubService.getSpecs();
+        SpecsDto result = swaggerHubServiceImpl.getSpecs();
         Assertions.assertThat(result).isNotNull();
       }
 //        MockWebServer mockWebServer = new MockWebServer();

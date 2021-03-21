@@ -55,7 +55,7 @@ configurations {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-//    implementation 'org.springframework.boot:spring-boot-starter-data-cassandra'
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
 //    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation('org.springframework.boot:spring-boot-starter-webflux')

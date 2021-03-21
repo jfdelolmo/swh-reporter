@@ -12,13 +12,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 class InitializerServiceTest {
 
     private final AdminService adminService = new AdminService();
-    private final SwaggerHubService swaggerHubService = new SwaggerHubService(adminService, new SwhWebClient(), new ModelMapper());
+    private final SwaggerHubServiceImpl swaggerHubServiceImpl = new SwaggerHubServiceImpl(adminService, new SwhWebClient(), new ModelMapper());
     private final SwhMapper swhMapper = new SwhMapper();
     private final NewSpecificationRepository specificationRepository = Mockito.mock(NewSpecificationRepository.class);
     private final ProjectRepository projectRepository = Mockito.mock(ProjectRepository.class);
     
     private final InitializerService initializerService = new InitializerService(adminService,
-            swaggerHubService,
+            swaggerHubServiceImpl,
             swhMapper,
             specificationRepository,
         projectRepository);

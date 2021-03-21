@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -26,8 +28,23 @@ public class SwhWebClient {
     public static final String GET_PROJECT_MEMBERS = BASE_URL + "/projects/{owner}/{projectId}/members";
     
     
-    public <T> Mono<T> executeCall(String url, Map<String, ?> uriParams, MultiValueMap<String, String> queryParams, Class<T> responseClazz){
+    public <T> Mono<T> executeCallMono(String url, Map<String, ?> uriParams, MultiValueMap<String, String> queryParams, Class<T> responseClazz){
+        if (null==queryParams){
+            queryParams = new LinkedMultiValueMap<>();
+        }
+        return baseCall(url,uriParams,queryParams)
+                .bodyToMono(responseClazz);
+    }
 
+    public <T> Flux<T> executeCallFlux(String url, Map<String, ?> uriParams, MultiValueMap<String, String> queryParams, Class<T> responseClazz){
+        if (null==queryParams){
+            queryParams = new LinkedMultiValueMap<>();
+        }
+        return baseCall(url,uriParams,queryParams)
+                .bodyToFlux(responseClazz);
+    }
+
+    private WebClient.ResponseSpec baseCall(String url, Map<String, ?> uriParams, MultiValueMap<String, String> queryParams){
         if (null==uriParams){
             uriParams = new HashMap<>();
         }
@@ -41,8 +58,7 @@ public class SwhWebClient {
         return webClient
                 .get()
                 .uri(uri ->uri.queryParams(queryParams).build())
-                .retrieve()
-                .bodyToMono(responseClazz);
+                .retrieve();
     }
 
 }

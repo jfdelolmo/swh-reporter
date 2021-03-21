@@ -37,18 +37,18 @@
                 <thead class="table thead-dark">
                     <tr class="row">
                         <th scope="col" class="text-center align-middle col-sm-1" >Number</th>
-                        <th scope="col" class="text-center col-sm-9" colspan="1">Type</th>
-                        <th scope="col" class="text-center col-sm-9" colspan="3">Name</th>
-                        <th scope="col" class="text-center col-sm-9" colspan="7">Error</th>
+                        <th scope="col" class="text-center col-sm-1">Type</th>
+                        <th scope="col" class="text-center col-sm-5">Name</th>
+                        <th scope="col" class="text-center col-sm-5">Error</th>
                     </tr>
                 </thead>
                 
                 <tbody>
                     <tr th:remove="all">
-                        <td th:text="${wr.getErrors()}" class="col-sm-3">Number of errors</td>
-                        <td th:text="${wr.getType()}" class="col-sm-3">Type of spec</td>
-                        <td th:text="${wr.getName()}" class="col-sm-3">Spec name</td>
-                        <td class="col-sm-9">
+                        <td th:text="${wr.getNumErrors()}" class="col-sm-1">Number of errors</td>
+                        <td th:text="${wr.getType()}" class="col-sm-1">Type of spec</td>
+                        <td th:text="${wr.getName()}" class="col-sm-5">Spec name</td>
+                        <td class="col-sm-5">
                             <table class="table table-sm table-light table-m-0">
                                 <tbody>
                                 <tr th:each="error : ${wr.getErrors()}" class="row col-sm-12">
@@ -59,7 +59,7 @@
                         </td>
                     </tr>
                     <tr th:remove="all">
-                        <td th:text="${wr.getErrors()}" class="col-sm-3">Number of errors</td>
+                        <td th:text="${wr.getNumErrors()}" class="col-sm-3">Number of errors</td>
                         <td th:text="${wr.getType()}" class="col-sm-3">Type of spec</td>
                         <td th:text="${wr.getName()}" class="col-sm-3">Spec name</td>
                         <td class="col-sm-9">
@@ -73,14 +73,14 @@
                         </td>
                     </tr>
                     <tr th:each="wr : ${wrongreference.getWrongspecs()}" class="row">
-                        <td th:text="${wr.getErrors()}" class="col-sm-3">Number of errors</td>
-                        <td th:text="${wr.getType()}" class="col-sm-3">Type of spec</td>
-                        <td th:text="${wr.getName()}" class="col-sm-3">Spec name</td>
-                        <td class="col-sm-9">
+                        <td th:text="${wr.getNumErrors()}" class="col-sm-1">Number of errors</td>
+                        <td th:text="${wr.getType()}" class="col-sm-1">Type of spec</td>
+                        <td th:text="${wr.getName()}" class="col-sm-5">Spec name</td>
+                        <td class="col-sm-5">
                             <table class="table table-sm table-light table-m-0">
                                 <tbody>
                                     <tr th:each="error : ${wr.getErrors()}" class="row col-sm-12">
-                                        <td th:text="${error}" class="col-sm-4">Error</td>
+                                        <td th:text="${error}">Error</td>
                                     </tr>
                                 </tbody>
                             </table>

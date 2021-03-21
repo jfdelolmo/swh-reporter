@@ -43,24 +43,10 @@ public class ReporterService {
     private final InitializerService initializerService;
     private final NewSpecificationRepository specificationRepository;
     private final ProjectRepository projectRepository;
-    private final SwaggerHubService swaggerHubService;
+    private final SwaggerHubServiceImpl swaggerHubServiceImpl;
     private final ModelMapper modelMapper;
     private final SwhMapper swhMapper;
     private final SpecValidator specValidator;
-
-//    public ReporterService(NewSpecificationRepository specificationRepository,
-//            ProjectRepository projectRepository,
-//                           InitializerService initializerService,
-//                           SwaggerHubService swaggerHubService,
-//                           ModelMapper modelMapper,
-//                           SwhMapper swhMapper) {
-//        this.specificationRepository = specificationRepository;
-//        this.projectRepository = projectRepository;
-//        this.swaggerHubService = swaggerHubService;
-//        this.modelMapper = modelMapper;
-//        this.swhMapper = swhMapper;
-//        this.initializerService = initializerService;
-//    }
 
     public SpecsDto getSpecs() {
         log.info("Entering service getApis method");
@@ -109,7 +95,7 @@ public class ReporterService {
     }
 
     private NewSpecification retrieveCollaborationAndStoreUpdatedSpecification(NewSpecification specification) {
-        Collaboration collaboration = swaggerHubService.getCollaboration(specification.getProperties().getUrl());
+        Collaboration collaboration = swaggerHubServiceImpl.getCollaboration(specification.getProperties().getUrl());
         NewCollaboration collaborationModel = swhMapper.collaborationSwhToModel(collaboration);
         return specificationRepository.save(specification.setCollaboration(collaborationModel));
     }
@@ -119,7 +105,7 @@ public class ReporterService {
     }
 
     private NewSpecification retrieveApiAndStoreUpdatedSpecification(NewSpecification specification) throws Exception {
-        String apiAsString = swaggerHubService.getApiVersionByUrl(specification.getProperties().getUrl());
+        String apiAsString = swaggerHubServiceImpl.getApiVersionByUrl(specification.getProperties().getUrl());
         NewOpenApiDocument openApiDocument = swhMapper.specificationAsStringToOpenApiDocument(apiAsString);
         specification.setOpenApiDocument(openApiDocument);
 
@@ -151,7 +137,7 @@ public class ReporterService {
         ApiDto apiDto = new ApiDto();
         apiDto.setCollaboration(new CollaborationDto());
         apiDto.setSecurityDefinitions(new ClxApiOauth2SecurityDefinitionDto());
-        
+
         apiDto.setName(specification.getName());
         apiDto.setType(StringUtils.capitalize(specification.getProperties().getType().toLowerCase()));
         apiDto.setVersion(specification.getProperties().getVersion());
@@ -168,9 +154,9 @@ public class ReporterService {
 
         NewCollaboration collaborationModel = specification.getCollaboration();
         if (null!=collaborationModel){
-            apiDto.setCollaboration(modelMapper.collaborationModelToCollaborationDto(collaborationModel));    
+            apiDto.setCollaboration(modelMapper.collaborationModelToCollaborationDto(collaborationModel));
         }
-        
+
         return apiDto;
     }
 
@@ -234,13 +220,13 @@ public class ReporterService {
         Iterable<Project> dbProjects = projectRepository.findAllByOrderByNameAsc();
         dbProjects.iterator().forEachRemaining(dbp -> reportDto.addProject(modelMapper.projectModelToDto(dbp)));
         reportDto.setTotal(reportDto.getProjects().size());
-        
+
         return reportDto;
     }
 
     public ProjectParticipantsReportDto getParticipantsReport() {
-        ProjectParticipantsReportDto reportDto = new ProjectParticipantsReportDto(); 
-        
+        ProjectParticipantsReportDto reportDto = new ProjectParticipantsReportDto();
+
         if (projectRepository.count()==0){
             initializerService.retrieveAllOwnedProjectsAndMembers();
         }
@@ -253,7 +239,7 @@ public class ReporterService {
                 .forEach(p-> pprDto.addParticipant(modelMapper.projectModelToParticipantDto(p)));
             reportDto.addParticipant(pprDto);
         });
-        
+
         return reportDto;
     }
 
@@ -262,7 +248,7 @@ public class ReporterService {
         AtomicLong accumulated = new AtomicLong();
         Iterable<NewSpecification> specs = specificationRepository.findAll();
         specs.forEach(s -> {
-            WrongReferenceSpecDto ws = new WrongReferenceSpecDto();             
+            WrongReferenceSpecDto ws = new WrongReferenceSpecDto();
             try {
                 String spec = retrieveApiAndStoreUpdatedSpecification(s).getOpenApiDocument().getDefinition();
                 Set<String> errors = specValidator.wrongReferences(spec);
@@ -282,9 +268,9 @@ public class ReporterService {
             ws.setName(s.getName());
             ws.setType(s.getProperties().getType());
         });
-        
+
         reportDto.setTotal(accumulated.get());
-        
+
         return reportDto;
     }
 

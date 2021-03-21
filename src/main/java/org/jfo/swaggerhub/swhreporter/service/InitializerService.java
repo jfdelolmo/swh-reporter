@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class InitializerService {
 
   private final AdminService adminService;
-  private final SwaggerHubService swaggerHubService;
+  private final SwaggerHubServiceImpl swaggerHubServiceImpl;
   private final SwhMapper swhMapper;
   private final NewSpecificationRepository specificationRepository;
   private final ProjectRepository projectRepository;
@@ -49,7 +49,7 @@ public class InitializerService {
    */
   public Set<NewSpecification> retrieveAllOwnedSpecs() {
     log.info("Retrieving all the specs for initialization");
-    Set<ApisJsonApi> allApis = swaggerHubService.getAllOwnerSpecs(adminService.getUserOwner());
+    Set<ApisJsonApi> allApis = swaggerHubServiceImpl.getAllOwnerSpecs(adminService.getUserOwner());
     log.info("Mapping the {} specs received", allApis.size());
     Set<NewSpecification> allApisModel = allApis.stream().map(swhMapper::apisJsonApiToSpecModel).collect(Collectors.toSet());
     log.info("Saving the {} specs mapped", allApis.size());
@@ -65,7 +65,7 @@ public class InitializerService {
   public Set<NewSpecification> retrieveAllCollaborationsAndUpdateSpecification() {
     Set<NewSpecification> allSpecs = new HashSet<>();
     specificationRepository.findAll().forEach(s -> {
-      Collaboration collaboration = swaggerHubService.getCollaboration(s.getProperties().getUrl());
+      Collaboration collaboration = swaggerHubServiceImpl.getCollaboration(s.getProperties().getUrl());
       s.updateCollaboration(swhMapper.collaborationSwhToModel(collaboration));
       allSpecs.add(s);
     });
@@ -78,19 +78,19 @@ public class InitializerService {
    */
   public Set<Project> retrieveAllOwnedProjectsAndMembers() {
     Set<Project> projects = new HashSet<>();
-    
+
     log.debug("Calling SwaggerHub to get the projects");
-    ProjectsJson swhProjects = swaggerHubService.getProjects(adminService.getUserOwner());
+    ProjectsJson swhProjects = swaggerHubServiceImpl.getProjects(adminService.getUserOwner());
     log.debug("Received {} projects from SwaggerHub", swhProjects.getProjects().size());
 
     log.debug("Calling SwaggerHub to get the projects members");
     swhProjects.getProjects().forEach(project -> {
       Project dbProject = swhMapper.projectSwhToModel(project);
-      Set<ProjectMember> members = swaggerHubService.getProjectMembers(adminService.getUserOwner(), project.getName());
+      Set<ProjectMember> members = swaggerHubServiceImpl.getProjectMembers(adminService.getUserOwner(), project.getName());
       members.forEach(m -> dbProject.addParticipant(swhMapper.memberShwToParticipants(m)));
       projects.add(projectRepository.saveOrUpdate(dbProject));
     });
-    
+
     return projects;
   }
 
