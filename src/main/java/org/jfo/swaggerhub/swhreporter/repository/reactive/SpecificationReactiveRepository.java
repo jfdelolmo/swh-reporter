@@ -1,18 +1,11 @@
 package org.jfo.swaggerhub.swhreporter.repository.reactive;
 
-import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.jfo.swaggerhub.swhreporter.model.db.Specification;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface SpecificationReactiveRepository extends ReactiveMongoRepository<Specification, Long> {
 
-public interface SpecificationReactiveRepository extends ReactiveMongoRepository<NewSpecification, Long> {
-
-    Mono<Page<NewSpecification>> findAll(Pageable page);
+//    Mono<Page<NewSpecification>> findAll(Pageable page);
 
 //    default Flux<List<NewSpecification>> saveOrUpdateAll(List<NewSpecification> input) {
 //
@@ -30,5 +23,5 @@ public interface SpecificationReactiveRepository extends ReactiveMongoRepository
 //        return Flux.just(saved);
 //    }
 
-    NewSpecification findByPropertiesUrl(String url);
+//    NewSpecification findByPropertiesUrl(String url);
 }

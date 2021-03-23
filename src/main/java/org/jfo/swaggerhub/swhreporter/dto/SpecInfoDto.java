@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpecPropertiesDto {
+public class SpecInfoDto {
 
     private Long id;
     private String specType;
+    private String specTitle;
     private String specName;
     private String specVersion;
     private String specDescription;

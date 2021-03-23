@@ -15,7 +15,7 @@ import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
 import org.jfo.swaggerhub.swhreporter.dto.MemberDto;
 import org.jfo.swaggerhub.swhreporter.dto.ParticipantDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
-import org.jfo.swaggerhub.swhreporter.dto.SpecPropertiesDto;
+import org.jfo.swaggerhub.swhreporter.dto.SpecInfoDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
 import org.jfo.swaggerhub.swhreporter.dto.TeamDto;
 import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
@@ -33,10 +33,11 @@ import io.swagger.v3.oas.models.OpenAPI;
 @Component
 public class ModelMapper {
 
-    public SpecPropertiesDto specModelToSpecPropertiesDto(NewSpecification model) {
-        SpecPropertiesDto dto = new SpecPropertiesDto();
+    public SpecInfoDto specModelToSpecPropertiesDto(NewSpecification model) {
+        SpecInfoDto dto = new SpecInfoDto();
         dto.setId(model.getId());
         dto.setSpecName(model.getName());
+        dto.setSpecTitle(model.getTitle());
         dto.setSpecDescription(model.getDescription());
 
         //Properties
@@ -50,34 +51,34 @@ public class ModelMapper {
 
     public SpecsDto apisJsonToSpecDto(ApisJson apisJson) {
         SpecsDto specsDto = new SpecsDto();
-        ArrayList<SpecPropertiesDto> specPropertiesDtoList = new ArrayList<>();
+        ArrayList<SpecInfoDto> specInfoDtoList = new ArrayList<>();
 
         specsDto.setNumberOfSpec(apisJson.getTotalCount());
 
-        specPropertiesDtoList.addAll(
+        specInfoDtoList.addAll(
                 apisJson
                         .getApis()
                         .stream()
                         .map(this::apisJsonApiToBaseSpecDto)
                         .collect(Collectors.toList())
         );
-        specsDto.setSpecs(specPropertiesDtoList);
+        specsDto.setSpecs(specInfoDtoList);
 
         return specsDto;
     }
 
-    public SpecPropertiesDto apisJsonApiToBaseSpecDto(ApisJsonApi apisJsonApi) {
-        SpecPropertiesDto specPropertiesDto = new SpecPropertiesDto();
-        specPropertiesDto.setSpecName(apisJsonApi.getName());
-        specPropertiesDto.setSpecDescription(apisJsonApi.getDescription().substring(0, 25) + "...");
-        specPropertiesDto.setSpecVersion(
+    public SpecInfoDto apisJsonApiToBaseSpecDto(ApisJsonApi apisJsonApi) {
+        SpecInfoDto specInfoDto = new SpecInfoDto();
+        specInfoDto.setSpecName(apisJsonApi.getName());
+        specInfoDto.setSpecDescription(apisJsonApi.getDescription().substring(0, 25) + "...");
+        specInfoDto.setSpecVersion(
                 apisJsonApi.getProperties().stream().filter(f -> "X-Version".equals(f.getType())).findFirst().get().getValue()
         );
         apisJsonApi.getProperties().stream()
                 .filter(f -> "X-Domain".equals(f.getType()))
                 .findFirst()
-                .ifPresentOrElse(domain -> specPropertiesDto.setSpecType("DOMAIN"), () -> specPropertiesDto.setSpecType("API"));
-        return specPropertiesDto;
+                .ifPresentOrElse(domain -> specInfoDto.setSpecType("DOMAIN"), () -> specInfoDto.setSpecType("API"));
+        return specInfoDto;
     }
 
     public CollaborationDto collaborationModelToCollaborationDto(NewCollaboration collaboration) {

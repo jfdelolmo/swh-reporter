@@ -2,16 +2,19 @@ package org.jfo.swaggerhub.swhreporter.mappers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
+import org.jfo.swaggerhub.swhreporter.exception.SwaggerParseResultException;
 import org.jfo.swaggerhub.swhreporter.model.db.Api;
 import org.jfo.swaggerhub.swhreporter.model.db.Domain;
 import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
 import org.jfo.swaggerhub.swhreporter.model.db.NewMember;
-import org.jfo.swaggerhub.swhreporter.model.db.NewOpenApiDocument;
 import org.jfo.swaggerhub.swhreporter.model.db.NewProperties;
 import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
 import org.jfo.swaggerhub.swhreporter.model.db.NewTeam;
@@ -34,22 +37,31 @@ import io.swagger.v3.parser.core.models.SwaggerParseResult;
 @Component
 public class SwhMapper {
 
-  private static final int MAX_DESCRIPTION_LENGTH = 10;
+  private static final String API_TYPE = "API";
+  private static final String DOMAIN_TYPE = "DOMAIN";
+  private static final int MAX_DESCRIPTION_LENGTH = 15;
+  private static final int SPEC_NAME_POSITION = 3;
 
   public NewSpecification apisJsonApiToSpecModel(ApisJsonApi apisJsonApi) {
     NewSpecification specification = new NewSpecification();
 
-    specification.setName(apisJsonApi.getName());
+    NewProperties p = mapToProperties(apisJsonApi.getProperties());
+    specification.setProperties(p);
+
+    specification.setName(extractNameFromUrl(p.getUrl()));
+    specification.setTitle(apisJsonApi.getName());
     int minSize = Math.min(MAX_DESCRIPTION_LENGTH, apisJsonApi.getDescription().length());
     specification.setDescription(StringUtils.isEmpty(apisJsonApi.getDescription()) ?
         "No description provided" :
         apisJsonApi.getDescription().substring(0, minSize) + "..."
     );
 
-    NewProperties p = mapToProperties(apisJsonApi.getProperties());
-    specification.setProperties(p);
-
     return specification;
+  }
+
+  public String extractNameFromUrl(String url) {
+    String[] segments = StringUtils.remove(url, SwhWebClient.BASE_URL).split("/");
+    return segments[SPEC_NAME_POSITION];
   }
 
   public NewProperties mapToProperties(List<ApisJsonProperty> input) {
@@ -110,24 +122,24 @@ public class SwhMapper {
     return team;
   }
 
-  public OpenAPI parseOpenApi(String apiAsString) throws Exception {
+  public OpenAPI parseOpenApi(String apiAsString) throws SwaggerParseResultException {
     OpenAPIV3Parser openAPIV3Parser = new OpenAPIV3Parser();
     ParseOptions options = new ParseOptions();
     options.setResolveFully(true);
     SwaggerParseResult parseResults = openAPIV3Parser.readContents(apiAsString, null, options);
     if (!parseResults.getMessages().isEmpty()) {
-      throw new Exception("Parse errors");
+      throw new SwaggerParseResultException("Exception on parsing api", parseResults.getMessages());
     }
     return parseResults.getOpenAPI();
   }
 
-  public NewOpenApiDocument specificationAsStringToOpenApiDocument(String specificationAsString) throws Exception {
-    NewOpenApiDocument openApiDocument = new NewOpenApiDocument();
-
-//    openApiDocument.setDefinition(ClobProxy.generateProxy(specificationAsString));
-    openApiDocument.setDefinition(specificationAsString);
-    return openApiDocument;
-  }
+//  public NewOpenApiDocument specificationAsStringToOpenApiDocument(String specificationAsString) throws Exception {
+//    NewOpenApiDocument openApiDocument = new NewOpenApiDocument();
+//
+////    openApiDocument.setDefinition(ClobProxy.generateProxy(specificationAsString));
+//    openApiDocument.setDefinition(specificationAsString);
+//    return openApiDocument;
+//  }
 
   private byte[] openApiToByteArray(OpenAPI openAPI) throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();

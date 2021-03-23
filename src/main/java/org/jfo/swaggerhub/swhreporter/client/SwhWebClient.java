@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Flux;
@@ -49,10 +50,16 @@ public class SwhWebClient {
             uriParams = new HashMap<>();
         }
 
+        ExchangeStrategies es = ExchangeStrategies
+            .builder()
+            .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 2))
+            .build();
+        
         WebClient webClient = WebClient.builder()
                 .baseUrl(url)
                 .defaultHeader("Authorization", APIKEY)
                 .defaultUriVariables(uriParams)
+            .exchangeStrategies(es)
                 .build();
 
         return webClient
@@ -60,5 +67,5 @@ public class SwhWebClient {
                 .uri(uri ->uri.queryParams(queryParams).build())
                 .retrieve();
     }
-
+    
 }

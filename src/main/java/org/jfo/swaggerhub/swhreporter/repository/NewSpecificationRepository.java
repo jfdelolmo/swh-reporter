@@ -15,7 +15,7 @@ public interface NewSpecificationRepository extends CrudRepository<NewSpecificat
     default Set<NewSpecification> saveOrUpdateAll(Set<NewSpecification> input) {
         Set<NewSpecification> saved = new HashSet<>();
         input.forEach(item -> {
-            NewSpecification s = findByPropertiesUrl(item.getProperties().getUrl());
+            NewSpecification s = findByName(item.getName());
             if (null != s) {
                 item.setId(s.getId());
             }
@@ -27,6 +27,6 @@ public interface NewSpecificationRepository extends CrudRepository<NewSpecificat
         return saved;
     }
 
-    NewSpecification findByPropertiesUrl(String url);
+    NewSpecification findByName(String name);
 
 }

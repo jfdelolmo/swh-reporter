@@ -29,10 +29,11 @@
             <table class="table table-sm table-responsive table-hover" style="max-width: 100%;" th:if="${not #lists.isEmpty(specs.specs)}">
                 <thead class="thead-dark">
                     <tr>
-                        <th colspan="6">Specifications (<span th:text="${specs.numberOfSpec}">0</span>)</th>
+                        <th colspan="7">Specifications (<span th:text="${specs.numberOfSpec}">0</span>)</th>
                     </tr>
                     <tr>
                         <th scope="col">Type</th>
+                        <th scope="col">Title</th>
                         <th scope="col">Name</th>
                         <th scope="col">Version</th>
                         <th scope="col">Description</th>
@@ -43,6 +44,7 @@
                 <tbody>
                     <tr th:remove="all">
                         <td th:text="${s.specType}">Api type</td>
+                        <td th:text="${s.specTitle}">Title</td>
                         <td th:text="${s.specName}">Api name</td>
                         <td th:text="${s.specVersion}">Api version</td>
                         <td th:text="${s.specDescription}">Api description</td>
@@ -51,6 +53,7 @@
                     </tr>
                     <tr th:remove="all">
                         <td th:text="${s.specType}">Api type</td>
+                        <td th:text="${s.specTitle}">Title</td>
                         <td th:text="${s.specName}">Api name</td>
                         <td th:text="${s.specVersion}">Api version</td>
                         <td th:text="${s.specDescription}">Api description</td>
@@ -59,6 +62,7 @@
                     </tr>
                     <tr th:each="s : ${specs.specs}">
                         <td th:text="${s.specType}">DOMAIN</td>
+                        <td th:text="${s.specTitle}">Title</td>
                         <td><a th:href="'/reporter/specs/'+ ${s.id}" th:text="${s.specName}" /></td>
                         <td th:text="${s.specVersion}">3.2.0</td>
                         <td th:text="${s.specDescription}">Api description: Lorem...</td>

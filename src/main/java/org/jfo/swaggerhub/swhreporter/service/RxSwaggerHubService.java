@@ -1,40 +1,19 @@
 package org.jfo.swaggerhub.swhreporter.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
+import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
-import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class RxSwaggerHubService implements SwaggerHubService {
+public interface RxSwaggerHubService {
 
-    private SwhWebClient swhWebClient;
+    Flux<ApisJson> getAllOwnerSpecs(String owner);
 
-    @Override
-    public Flux<ApisJsonApi> getAllOwnerSpecs(String owner) {
-        return null;
-    }
+    Mono<Collaboration> getCollaboration(String url);
 
-    @Override
-    public Mono<Collaboration> getCollaboration(String url) {
-        return null;
-    }
+    Mono<String> extractApiNameFromUrl(String url, String owner);
 
-    @Override
-    public Mono<String> extractApiNameFromUrl(String url, String owner) {
-        return null;
-    }
+    Mono<String> getApiVersionByUrl(String url);
 
-    @Override
-    public Mono<String> getApiVersionByUrl(String url) {
-        return swhWebClient.executeCallMono(url, null, null, String.class);
-    }
 }

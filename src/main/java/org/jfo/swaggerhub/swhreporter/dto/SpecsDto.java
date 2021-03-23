@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,6 +12,6 @@ import java.util.List;
 public class SpecsDto {
 
     private long numberOfSpec;
-    private List<SpecPropertiesDto> specs;
+    private List<SpecInfoDto> specs;
 
 }
