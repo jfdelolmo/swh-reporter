@@ -3,6 +3,7 @@ package org.jfo.swaggerhub.swhreporter.service;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
+import org.jfo.swaggerhub.swhreporter.client.SwhClientParams;
 import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.junit.jupiter.api.Disabled;
@@ -28,7 +29,7 @@ class SwaggerHubServiceTest {
   @Disabled
   void getApiNameFromUrl() {
     String url = "https://api.swaggerhub.com/apis/username/petstore/1.1";
-    String name = swaggerHubServiceImpl.getApiNameFromUrl(url, "username");
+    String name = SwhClientParams.getApiNameFromUrl(url, "username");
     Assertions.assertThat(name).isEqualTo("petstore");
   }
 

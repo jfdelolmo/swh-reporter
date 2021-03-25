@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jfo.swaggerhub.swhreporter.client.SwhClientParams;
 import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
@@ -66,12 +67,6 @@ public class SwaggerHubServiceImpl {
     return allSpecs;
   }
 
-  public String getApiNameFromUrl(String url, String owner) {
-    String base = SwhWebClient.BASE_URL + "/apis/" + owner + "/";
-    String removed = StringUtils.remove(url, base);
-    return removed.substring(0, removed.indexOf("/"));
-  }
-
   public String getSpecVersionByUrl(String url, boolean resolved) {
     MultiValueMap<String, String> queryParams = SwhClientParams.buildGetSpecVersionByUrlQueryParams(resolved);
 
@@ -87,7 +82,7 @@ public class SwaggerHubServiceImpl {
     Map<String, String> uriParams = new HashMap<>();
     String owner = adminService.getUserOwner();
     uriParams.put(OWNER_PARAM, owner);
-    uriParams.put("api", getApiNameFromUrl(url, owner));
+    uriParams.put("api", SwhClientParams.getApiNameFromUrl(url, owner));
     MultiValueMap<String, String> queryParams = SwhClientParams.buildGetCollaborationQueryParams();
     
     Mono<Collaboration> result = webClient.executeCallMono(SwhWebClient.GET_API_COLLABORATION_URL, uriParams, queryParams, Collaboration.class);
@@ -139,5 +134,18 @@ public class SwaggerHubServiceImpl {
       return new HashSet<>(optionalBlock.get().getMembers());
     }
   }
-
+  
+  public Pair<String, String> getResolvedUnresolvedSpec(String url){
+    String resolvedApi;
+    String unresolvedApi;
+    try {
+      resolvedApi = getSpecVersionByUrl(url, true);
+    } catch (Exception e) {
+      resolvedApi = "Error on retrieving the resolved specification from SwaggerHub";
+    }
+    unresolvedApi = getSpecVersionByUrl(url, false);
+    
+    return Pair.of(resolvedApi,unresolvedApi);
+  }
+  
 }

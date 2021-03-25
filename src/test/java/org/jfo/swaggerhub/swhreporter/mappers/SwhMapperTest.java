@@ -24,5 +24,24 @@ class SwhMapperTest {
     String name = mapper.extractNameFromUrl(apiUrl);
     Assertions.assertThat(name).isEqualTo(apiName);
   }
-
+  
+//  public NewOpenApiDocument specificationAsStringToOpenApiDocument(String specificationAsString) throws Exception {
+//    NewOpenApiDocument openApiDocument = new NewOpenApiDocument();
+//
+////    openApiDocument.setDefinition(ClobProxy.generateProxy(specificationAsString));
+//    openApiDocument.setDefinition(specificationAsString);
+//    return openApiDocument;
+//  }
+//
+//  private byte[] openApiToByteArray(OpenAPI openAPI) throws Exception {
+//    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//    ObjectOutputStream oos = new ObjectOutputStream(baos);
+//    oos.writeObject(openAPI);
+//    oos.flush();
+//    return baos.toByteArray();
+//  }
+//
+//  private String apiStringYaml(String specificationAsString) {
+//    return new Yaml().dump(specificationAsString);
+//  }
 }

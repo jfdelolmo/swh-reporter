@@ -3,9 +3,10 @@ server:
 
 reporter:
   config:
-    loadOnStartUp: false
+    enableScheduler: false
     
 spring:
+  
   # Web
   thymeleaf:
     mode: HTML

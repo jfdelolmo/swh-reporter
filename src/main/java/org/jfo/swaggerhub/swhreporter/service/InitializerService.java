@@ -4,9 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
+import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
+import org.jfo.swaggerhub.swhreporter.model.db.NewOpenApiDocument;
 import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
 import org.jfo.swaggerhub.swhreporter.model.db.Project;
+import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 
 @Slf4j
 @Service
@@ -30,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 public class InitializerService {
 
+  private final RxSwaggerHubService rxSwaggerHubService;
+  
   private final AdminService adminService;
   private final SwaggerHubServiceImpl swaggerHubServiceImpl;
   private final SwhMapper swhMapper;
@@ -42,6 +49,12 @@ public class InitializerService {
 //    retrieveAllOwnedProjectsAndMembers();
   }
 
+  public Flux<NewSpecification> rxInitAllOwnedSpecs(){
+    Flux<ApisJson> swhFlux = rxSwaggerHubService.getAllOwnerSpecs(adminService.getUserOwner());
+//    swhFlux.map(m-> swhMapper.apisJsonApiToSpecModel(m.getApis()))
+    return null;
+  }
+  
   /**
    * Retrieves all the owned specifications and save or updates them in the repository.
    *
@@ -93,5 +106,20 @@ public class InitializerService {
 
     return projects;
   }
+
+  public NewSpecification retrieveApiAndStoreUpdatedSpecification(NewSpecification specification) {
+    Pair<String, String> specsPair = swaggerHubServiceImpl.getResolvedUnresolvedSpec(specification.getProperties().getUrl());
+
+    specification.setOpenApiDocument(new NewOpenApiDocument(specsPair.getLeft(), specsPair.getRight()));
+
+    return specificationRepository.save(specification);
+  }
+
+  public NewSpecification retrieveCollaborationAndStoreUpdatedSpecification(NewSpecification specification) {
+    Collaboration collaboration = swaggerHubServiceImpl.getCollaboration(specification.getProperties().getUrl());
+    specification.setCollaboration(swhMapper.collaborationSwhToModel(collaboration));
+    return specificationRepository.save(specification);
+  }
+
 
 }

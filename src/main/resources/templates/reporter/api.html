@@ -15,16 +15,43 @@
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/flatly/bootstrap.min.css" integrity="sha384-qF/QmIAj5ZaYFAeQcrQ6bfVMAh4zZlrGwTPY7T/M+iTTLJqJBJjwwnsE5Y0mV7QK" crossorigin="anonymous">-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/sandstone/bootstrap.min.css" integrity="sha384-zEpdAL7W11eTKeoBJK1g79kgl9qjP7g84KfK3AZsuonx38n8ad+f5ZgXtoSDxPOh" crossorigin="anonymous">
 
+    <!-- Bootstrap CSS -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">-->
+    
+    
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-
 </head>
 <body>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 <div class="container-fluid" style="margin-top: 20px">
     <div class="row">
-        <div class="panel panel-heading">
-            <h3>API <span th:text="${api.name}">api name</span> - <span th:text="${api.version}">api version</span> details</h3>
+        <div class="col-md-12 col-md-offset-0">
+            <div class="panel panel-primary">
+                <div class="panel panel-heading">
+                    <h3>Specification details</h3>
+                </div>
+                <div class="panel panel-body">
+                    <div class="row">
+                        <dl class="row col-sm-6">
+                            <dt class="col-sm-3">Name</dt>
+                            <dd class="col-sm-9"><span th:text="${api.name}">Specification name</span></dd>
+                            <dt class="col-sm-3">Created by</dt>
+                            <dd class="col-sm-9"><span th:text="${api.createdBy}">Created By</span></dd>
+                            <dt class="col-sm-3">Created</dt>
+                            <dd class="col-sm-9"><span th:text="${api.created}">Created</span></dd>
+                        </dl>
+                        <dl class="row col-sm-6">
+                            <dt class="col-sm-3">Default version</dt>
+                            <dd class="col-sm-9"><span th:text="${api.version}">Default version</span></dd>
+                            <dt class="col-sm-3">Url</dt>
+                            <dd class="col-sm-9"><span th:text="${api.url}">Url</span></dd>
+                            <dt class="col-sm-3">Last update</dt>
+                            <dd class="col-sm-9"><span th:text="${api.updated}">Last update</span></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -102,14 +129,14 @@
             <div class="panel panel-primary">
                 <div class="panel panel-heading"><h4>Security definitions</h4></div>
                 <div class="panel panel-body">
-                    <div class="row" th:if="${#lists.isEmpty(api.getSecurityDefinitions().getRoles()) && 
+                    <div class="row col-md-12" th:if="${#lists.isEmpty(api.getSecurityDefinitions().getRoles()) && 
                         #lists.isEmpty(api.getSecurityDefinitions().getScopes()) &&
                         #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
-                        <p class="label-info">There is no security definitions</p>
+                        <div class="alert alert-warning" role="alert">
+                            There are no valid security definitions
+                        </div>
                     </div>
-                    <div class="row" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getRoles()) && 
-                        not #lists.isEmpty(api.getSecurityDefinitions().getScopes()) &&
-                        not #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getScopes())}">
                                 <table class="table table-sm table-hover ">
@@ -148,7 +175,7 @@
                                         <td th:text="${role}">Member role</td>
                                     </tr>
                                     <tr th:each="role : ${api.getSecurityDefinitions().getRoles()}">
-                                        <td th:text="${role}">Scope</td>
+                                        <td th:text="${role}">Roles</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -185,10 +212,16 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
             <div class="panel-heading">
-                <h4>Specification</h4>
+                <p>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        Specification
+                    </button>
+                </p>
             </div>
-            <div class="panel panel-body">
-                <pre th:text="${api.document}">openapi: .....blablablab .....</pre>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <pre th:text="${api.document}">openapi: .....blablablab .....</pre>
+                </div>
             </div>
         </div>
     </div>

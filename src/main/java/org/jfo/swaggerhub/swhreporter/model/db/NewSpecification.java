@@ -36,6 +36,10 @@ public class NewSpecification {
   public boolean hasApi() {
     return this.hasApi;
   }
+  
+  public boolean hasCollaboration() {
+    return null != this.getCollaboration();
+  }
 
   public NewSpecification setProperties(NewProperties properties) {
     properties.setNewSpecification(this);

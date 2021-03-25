@@ -17,7 +17,6 @@ public class SpecInfoDto {
     private String specName;
     private String specVersion;
     private String specDescription;
-    private OffsetDateTime created;
-    private OffsetDateTime updated;
+
 
 }

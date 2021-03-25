@@ -2,16 +2,11 @@ package org.jfo.swaggerhub.swhreporter.service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
-import org.jfo.swaggerhub.swhreporter.dto.ClxApiOauth2SecurityDefinitionDto;
-import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
 import org.jfo.swaggerhub.swhreporter.dto.ParticipantReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectParticipantsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectsReportDto;
@@ -19,25 +14,21 @@ import org.jfo.swaggerhub.swhreporter.dto.SpecInfoDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
 import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceSpecDto;
-import org.jfo.swaggerhub.swhreporter.exception.SwaggerParseResultException;
+import org.jfo.swaggerhub.swhreporter.exception.InvalidSpecificationException;
 import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
-import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
+import org.jfo.swaggerhub.swhreporter.mappers.OASExtractor;
+import org.jfo.swaggerhub.swhreporter.model.CommonConcepts;
 import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
 import org.jfo.swaggerhub.swhreporter.model.db.NewOpenApiDocument;
 import org.jfo.swaggerhub.swhreporter.model.db.NewSpecification;
 import org.jfo.swaggerhub.swhreporter.model.db.Project;
-import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.jfo.swaggerhub.swhreporter.repository.NewSpecificationRepository;
 import org.jfo.swaggerhub.swhreporter.repository.ProjectRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.security.OAuthFlow;
-import io.swagger.v3.oas.models.security.OAuthFlows;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,10 +40,9 @@ public class ReporterService {
   private final InitializerService initializerService;
   private final NewSpecificationRepository specificationRepository;
   private final ProjectRepository projectRepository;
-  private final SwaggerHubServiceImpl swaggerHubServiceImpl;
   private final ModelMapper modelMapper;
-  private final SwhMapper swhMapper;
   private final SpecValidator specValidator;
+  private final DataProvider dataProvider;
 
   private static final int DEFAULT_PAGE_SIZE = 200;
 
@@ -71,142 +61,30 @@ public class ReporterService {
 
     List<SpecInfoDto> specList = new ArrayList<>();
     result.getContent()
-        .stream()
-        .forEachOrdered(c -> specList.add(modelMapper.specModelToSpecPropertiesDto(c)));
+        .forEach(c -> specList.add(modelMapper.specModelToSpecPropertiesDto(c)));
 
     specsDto.setSpecs(specList);
 
     return specsDto;
   }
 
-  public ApiDto getApiDetails(Long id) throws Exception {
+  public ApiDto getApiDetails(Long id) throws InvalidSpecificationException {
     log.info("Entering service getDefaultApi for {}", id);
 
-    Optional<NewSpecification> optionalSpecification = specificationRepository.findById(id);
+    NewSpecification specification = specificationRepository
+        .findById(id)
+        .orElseThrow(() -> new InvalidSpecificationException(String.format("The id %s is not valid", id)));
 
-    if (optionalSpecification.isEmpty()) {
-      throw new RuntimeException(String.format("The id %s is not valid", id));
-    }
-    NewSpecification specification = optionalSpecification.get();
+    NewOpenApiDocument document = dataProvider.getOpenApiDocument(specification);
+    NewCollaboration collaboration = dataProvider.getCollaboration(specification);
+    OASExtractor oasExtractor = new OASExtractor(document.getResolved());
 
-    //Check if the specification stored in the database has already the api
-    //if not call the swhService to retrieve the api
-    if (!specification.hasApi()) {
-      specification = retrieveApiAndStoreUpdatedSpecification(specification);
-    }
-
-    if (specificationHasNoCollaboration(specification)) {
-      specification = retrieveCollaborationAndStoreUpdatedSpecification(specification);
-    }
-
-    return buildApiDto(specification);
-  }
-
-  private NewSpecification retrieveCollaborationAndStoreUpdatedSpecification(NewSpecification specification) {
-    Collaboration collaboration = swaggerHubServiceImpl.getCollaboration(specification.getProperties().getUrl());
-    NewCollaboration collaborationModel = swhMapper.collaborationSwhToModel(collaboration);
-    return specificationRepository.save(specification.setCollaboration(collaborationModel));
-  }
-
-  private boolean specificationHasNoCollaboration(NewSpecification specification) {
-    return (null == specification.getCollaboration());
-  }
-
-  private NewSpecification retrieveApiAndStoreUpdatedSpecification(NewSpecification specification) {
-    String resolvedApi;
-    String unresolvedApi;
-    try {
-      resolvedApi = swaggerHubServiceImpl.getSpecVersionByUrl(specification.getProperties().getUrl(), true);
-    } catch (Exception e) {
-      resolvedApi = "Error on retrieving the resolved specification from SwaggerHub";
-    }
-    unresolvedApi = swaggerHubServiceImpl.getSpecVersionByUrl(specification.getProperties().getUrl(), false);
-
-    specification.setOpenApiDocument(new NewOpenApiDocument(resolvedApi, unresolvedApi));
-
-    return specificationRepository.save(specification);
-  }
-
-  private ApiDto buildApiDto(NewSpecification specification) throws Exception {
-    ApiDto apiDto = new ApiDto();
-    apiDto.setCollaboration(new CollaborationDto());
-
-    apiDto.setName(specification.getName());
-    apiDto.setType(StringUtils.capitalize(specification.getProperties().getType().toLowerCase()));
-    apiDto.setVersion(specification.getProperties().getVersion());
-
-    String document = specification.getOpenApiDocument().getResolved();
-    apiDto.setDocument(document);
-
-    if ("API".equalsIgnoreCase(specification.getProperties().getType())) {
-      try {
-        OpenAPI openAPI = swhMapper.parseOpenApi(document);
-        apiDto.setSecurityDefinitions(getClxApiOauth2SecurityDefinition(openAPI).orElse(new ClxApiOauth2SecurityDefinitionDto()));
-      } catch (SwaggerParseResultException e) {
-        log.error(e.getMessage());
-        e.getErrors().forEach(log::error);
-        apiDto.setSecurityDefinitions(new ClxApiOauth2SecurityDefinitionDto());
-      }
-    } else {
-      apiDto.setSecurityDefinitions(new ClxApiOauth2SecurityDefinitionDto());
-    }
-
-    NewCollaboration collaborationModel = specification.getCollaboration();
-    if (null != collaborationModel) {
-      apiDto.setCollaboration(modelMapper.collaborationModelToCollaborationDto(collaborationModel));
-    }
-
-    return apiDto;
-  }
-
-
-  private Optional<ClxApiOauth2SecurityDefinitionDto> getClxApiOauth2SecurityDefinition(OpenAPI api) {
-    ClxApiOauth2SecurityDefinitionDto securities = new ClxApiOauth2SecurityDefinitionDto();
-    try {
-      OAuthFlows clxApiOAuth2Flows = api.getComponents()
-          .getSecuritySchemes()
-          .get("ClxApiOAuth2")
-          .getFlows();
-
-      Optional.ofNullable(clxApiOAuth2Flows.getAuthorizationCode())
-          .map(OAuthFlow::getScopes)
-          .ifPresentOrElse(scopes ->
-                  securities.getScopes().addAll(scopes.entrySet()
-                      .stream()
-                      .map(e -> e.getKey() + " - " + e.getValue())
-                      .collect(Collectors.toSet())),
-              () -> securities.getScopes().add("Scopes not defined properly"));
-
-      Optional.ofNullable(clxApiOAuth2Flows.getAuthorizationCode())
-          .map(OAuthFlow::getExtensions)
-          .ifPresentOrElse(extensions -> extensions.forEach((k, v) -> {
-                if ("x-clx-roles".equals(k)) {
-                  securities.getRoles().addAll(
-                      ((LinkedHashMap<String, String>) v).entrySet()
-                          .stream()
-                          .map(r -> r.getKey() + " - " + r.getValue())
-                          .collect(Collectors.toSet())
-                  );
-                } else if ("x-clx-audiences".equals(k)) {
-                  securities.getAudiences().addAll(
-                      ((LinkedHashMap<String, String>) v).entrySet()
-                          .stream()
-                          .map(r -> r.getKey() + " - " + r.getValue())
-                          .collect(Collectors.toSet())
-                  );
-                }
-              }),
-              () -> {
-                securities.getRoles().add("Roles not defined properly");
-                securities.getAudiences().add("Audiences not defined properly");
-              }
-          );
-
-      return Optional.of(securities);
-    } catch (Exception e) {
-      log.error("{}", e.getMessage());
-    }
-    return Optional.empty();
+    return modelMapper.buildApiDto(specification,
+        document,
+        collaboration,
+        oasExtractor.getScopes(),
+        oasExtractor.getRoles(),
+        oasExtractor.getAudiences());
   }
 
   public ProjectsReportDto getProjectsReport() {
@@ -250,13 +128,12 @@ public class ReporterService {
       WrongReferenceSpecDto ws = new WrongReferenceSpecDto();
       try {
         if (!s.hasApi()) {
-          s = retrieveApiAndStoreUpdatedSpecification(s);
+          s = initializerService.retrieveApiAndStoreUpdatedSpecification(s);
         }
         String unresolved = s.getOpenApiDocument().getUnresolved();
 
-        Set<String> errors = new HashSet<>();
-        errors.addAll(specValidator.wrongReferences(unresolved));
-        if ("API".equalsIgnoreCase(s.getProperties().getType())) {
+        Set<String> errors = new HashSet<>(specValidator.wrongReferences(unresolved));
+        if (CommonConcepts.TYPE_API.equalsIgnoreCase(s.getProperties().getType())) {
           errors.addAll(specValidator.wrongOauthFlow(unresolved));
         }
         if (!errors.isEmpty()) {
@@ -291,14 +168,6 @@ public class ReporterService {
     Set<String> errorSet = new HashSet<>();
     errorSet.add(String.format("Error retrieving the specification: %s", e.getMessage()));
     addWrongReferenceErrors(reportDto, s, ws, errorSet);
-
-//        ws.addError(String.format("Error retrieving the specification: %s", e.getMessage()));
-//        ws.setNumErrors(1);
-//        ws.setName(s.getName());
-//        ws.setTitle(s.getTitle());
-//        ws.setType(s.getProperties().getType());
-//        reportDto.getWrongspecs().add(ws);
   }
-
 
 }

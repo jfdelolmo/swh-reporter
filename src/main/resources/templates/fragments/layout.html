@@ -40,7 +40,6 @@
 
     <div class="collapse navbar-collapse" id="navbarColor03">
         <ul class="navbar-nav mr-auto" th:remove="all">
-
             <li th:fragment="menuItem (path,active,title,glyph,text)" class="active"
                 th:class="${active==menu ? 'active' : ''}">
                 <a class="nav-link" th:href="@{__${path}__}" th:title="${title}">
@@ -48,7 +47,6 @@
                     <span th:text="${text}">Template</span>
                 </a>
             </li>
-
         </ul>
 
         <ul class="navbar-nav mr-auto">
@@ -65,7 +63,17 @@
 <!--                    <div class="dropdown-divider"></div>-->
 <!--                    <a class="dropdown-item" href="#">Separated link</a>-->
                 </div>
-            </li>
+            </span>
+
+            <span class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
+                <div class="dropdown-menu">
+                    <span class="dropdown-item" th:replace="::menuItem ('/admin/load/specs','Home','Load specifications','search','Load specifications')"></span>
+                    <span class="dropdown-item" th:replace="::menuItem ('/admin/load/collaborations','Home','Load collaborations','search','Load collaborations')"></span>
+                    <span class="dropdown-item" th:replace="::menuItem ('/admin/load/projects','Home','Load projects','search','Load projects')"></span>
+                </div>
+            </span>
+            
         </ul>
     </div>
 </nav>
