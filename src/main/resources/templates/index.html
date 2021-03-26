@@ -16,9 +16,45 @@
 <body>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 m-5">
         <!--                <img width="40px" class="img-responsive" src="../static/resources/images/swh_logo.jpg" th:src="@{/resources/images/swh_logo.jpg}"/>-->
         <h2 th:text="#{welcome} + ' to SwaggerHub Reporter'">Welcome</h2>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card row col-md-12">
+            <div class="card-header row">Status summary</div>
+            <div class="card-body row" th:if="${status == null}">
+                <div class="col-sm-12">
+                    <p class="label-info">There are no status information available</p>    
+                </div>
+            </div>
+            <div class="card-body row" th:if="${status != null}">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <dl class="row col-sm-6">
+                                <dt class="col-sm-3">Total APIS</dt>
+                                <dd class="col-sm-9"><span th:text="${status.totalApis}">Total APIs</span></dd>
+                                <dt class="col-sm-3">Total Domains</dt>
+                                <dd class="col-sm-9"><span th:text="${status.totalDomains}">Total Domains</span></dd>
+                                <dt class="col-sm-3">Last update:</dt>
+                                <dd class="col-sm-9"><span th:text="${status.lastUpdate}">Last update</span></dd>
+                            </dl>
+                            <dl class="row col-sm-6">
+                                <dt class="col-sm-3">APIs with errors:</dt>
+                                <dd class="col-sm-9"><span th:text="${status.errorApis}">APIs with errors</span></dd>
+                                <dt class="col-sm-3">Domains with errors:</dt>
+                                <dd class="col-sm-9"><span th:text="${status.errorDomains}">Domains with errors</span></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

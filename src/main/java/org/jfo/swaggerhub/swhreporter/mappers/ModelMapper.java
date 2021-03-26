@@ -2,9 +2,13 @@ package org.jfo.swaggerhub.swhreporter.mappers;
 
 import static org.jfo.swaggerhub.swhreporter.model.CommonConcepts.TYPE_API;
 
+import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import org.jfo.swaggerhub.swhreporter.dto.AdminStatusDto;
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
 import org.jfo.swaggerhub.swhreporter.dto.ClxApiOauth2SecurityDefinitionDto;
 import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
@@ -13,6 +17,7 @@ import org.jfo.swaggerhub.swhreporter.dto.ParticipantDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecInfoDto;
 import org.jfo.swaggerhub.swhreporter.dto.TeamDto;
+import org.jfo.swaggerhub.swhreporter.model.db.AdminStatus;
 import org.jfo.swaggerhub.swhreporter.model.db.NewCollaboration;
 import org.jfo.swaggerhub.swhreporter.model.db.NewMember;
 import org.jfo.swaggerhub.swhreporter.model.db.NewOpenApiDocument;
@@ -120,4 +125,15 @@ public class ModelMapper {
       return apiDto;
   }
 
+  public AdminStatusDto adminStatusToDto(AdminStatus input) {
+    AdminStatusDto output = new AdminStatusDto();
+
+    output.setTotalApis(input.getTotalApis());
+    output.setTotalDomains(input.getTotalDomains());
+    output.setErrorApis(input.getErrorApis());
+    output.setErrorDomains(input.getErrorDomains());
+    output.setLastUpdate(input.getLastUpdate());        
+    
+    return output;
+  }
 }
