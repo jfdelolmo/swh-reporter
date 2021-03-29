@@ -3,10 +3,9 @@ server:
 
 reporter:
   config:
-    enableScheduler: false
-    
+    enableScheduler: true
+
 spring:
-  
   # Web
   thymeleaf:
     mode: HTML
@@ -18,24 +17,24 @@ spring:
     check-template-location: true
     
   # JPA
-  jpa:
-    show-sql: true    
-    hibernate:
-      ddl-auto: update      
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
 #    properties:
 #      hibernate.jdbc.batch_size: 10
 #      hibernate.order_inserts: true
 #      hibernate.cache.use_second_level_cache: true
 #      hibernate.cache.use_query_cache: true        
-  h2:
-    console:
-      enabled: true      
-  datasource:
-    platform: h2
-    url: jdbc:h2:file:./swh_reporter_db;AUTO_SERVER=TRUE
-    username: admin
-    password: admin
-    driver-class-name: org.h2.Driver
+#  h2:
+#    console:
+#      enabled: true
+#  datasource:
+#    platform: h2
+#    url: jdbc:h2:file:./swh_reporter_db;AUTO_SERVER=TRUE
+#    username: admin
+#    password: admin
+#    driver-class-name: org.h2.Driver
   # Internationalization
   messages:
     basename: messages/messages
@@ -43,6 +42,11 @@ spring:
 #    livereload:
 #      enabled: true
   # Maximum time static resources should be cached
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+
 #  web:
 #    resources:
 #      cache:
@@ -59,17 +63,9 @@ spring:
 # Logging
 logging:
 #  level: INFO
-#  level.org.springframework: INFO
-  level.org.hibernate.SQL: DEBUG
-  level.org.hibernate.type: TRACE
+  level.org.springframework: INFO
+#  level.org.hibernate.SQL: DEBUG
+#  level.org.hibernate.type: TRACE
 
 # logging.level.org.springframework.web: DEBUG
 # logging.level.org.springframework.context.annotation: TRACE
-
-
-# database init, supports mysql too
-#  database=h2
-#  spring.datasource.schema: classpath*:db/${database}/schema.sql
-#  spring.datasource.data: classpath*:db/${database}/data.sql
-
-

@@ -1,58 +1,55 @@
 package org.jfo.swaggerhub.swhreporter.model.db;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Objects;
+import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@Entity
-@NoArgsConstructor
+@Getter
+@Setter
+@Document
 public class Domain {
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
-  
-  private String name;
 
-  @ManyToOne
-  private Project project;
+    @Id
+//  @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id = UUID.randomUUID();
 
-  public Domain(String name) {
-    this.name = name;
-  }
+    private String name;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Domain)) return false;
+    //  @ManyToOne
+    private Project project;
 
-    Domain domain = (Domain) o;
+    public Domain(String name) {
+        this.name = name;
+    }
 
-    if (!Objects.equals(id, domain.id)) return false;
-    return Objects.equals(name, domain.name);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Domain)) return false;
 
-  @Override
-  public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (name != null ? name.hashCode() : 0);
-    return result;
-  }
+        Domain domain = (Domain) o;
 
-  @Override
-  public String toString() {
-    return "Domain{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        '}';
-  }
-  
+        if (!Objects.equals(id, domain.id)) return false;
+        return Objects.equals(name, domain.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Domain{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
 }

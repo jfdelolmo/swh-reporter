@@ -37,12 +37,13 @@ class RxSwaggerHubServiceImplTest {
   void getAllOwnerSpecs() {
     Flux<ApisJson> flux = rxService.getAllOwnerSpecs(OWNER);
     List<ApisJsonApi> all = new ArrayList<>();
+    flux.map(ApisJson::getApis).all(all::addAll).block();
 
-    flux.map(apisJson -> all.addAll(apisJson.getApis()))
-        .collectList().block();
+//    flux.map(apisJson -> all.addAll(apisJson.getApis()))
+//        .collectList().block();
 
     Assertions.assertThat(all).isNotEmpty();
-    Assertions.assertThat(all.size()).isEqualTo(147);
+    Assertions.assertThat(all.size()).isEqualTo(148);
   }
 
   @Test

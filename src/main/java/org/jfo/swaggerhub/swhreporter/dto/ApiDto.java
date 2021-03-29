@@ -1,6 +1,8 @@
 package org.jfo.swaggerhub.swhreporter.dto;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +20,8 @@ public class ApiDto {
   private String url;
   private String createdBy;
   private String document;
-  private OffsetDateTime created;
-  private OffsetDateTime updated;
+  private LocalDateTime created;
+  private LocalDateTime updated;
   private CollaborationDto collaboration;
   private ClxApiOauth2SecurityDefinitionDto securityDefinitions;
 

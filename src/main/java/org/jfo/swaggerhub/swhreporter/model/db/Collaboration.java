@@ -1,36 +1,40 @@
 package org.jfo.swaggerhub.swhreporter.model.db;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
-@Data
-@Entity
-public class NewCollaboration {
+@Getter
+@Setter
+@Document
+public class Collaboration {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id = UUID.randomUUID();
 
-    @OneToOne
-    private NewSpecification newSpecification;
+    //    @OneToOne
+//    private Specification specification;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "collaboration")
-    private Set<NewTeam> teams = new HashSet<>();
+    //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "collaboration")
+    private Set<Team> teams = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "collaboration")
-    private Set<NewMember> members = new HashSet<>();
+    //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "collaboration")
+    private Set<Member> members = new HashSet<>();
 
-    public NewCollaboration addTeam(NewTeam team) {
+    public Collaboration addTeam(Team team) {
         team.setCollaboration(this);
         teams.add(team);
         return this;
     }
 
-    public NewCollaboration addMember(NewMember member) {
+    public Collaboration addMember(Member member) {
         member.setCollaboration(this);
         members.add(member);
         return this;
@@ -50,7 +54,7 @@ public class NewCollaboration {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        NewCollaboration that = (NewCollaboration) o;
+        Collaboration that = (Collaboration) o;
 
         return Objects.equals(id, that.id);
     }

@@ -10,17 +10,24 @@ import java.util.UUID;
 @Getter
 @Setter
 @Document
-public class Specification {
+public class Member {
 
     @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id = UUID.randomUUID();
 
     private String name;
-    private String title;
-    private String description;
-    private Boolean hasApi = false;
+    private String role;
 
-    private SpecificationProperties specificationProperties;
-    private OpenApiDocument openApiDocument;
+    //    @ManyToOne
     private Collaboration collaboration;
+
+    @Override
+    public String toString() {
+        return "NewTeam{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + role + '\'' +
+                '}';
+    }
 }

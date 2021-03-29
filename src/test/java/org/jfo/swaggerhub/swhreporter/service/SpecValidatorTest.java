@@ -3,6 +3,7 @@ package org.jfo.swaggerhub.swhreporter.service;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
+import org.jfo.swaggerhub.swhreporter.validator.SpecValidator;
 import org.junit.jupiter.api.Test;
 
 class SpecValidatorTest {

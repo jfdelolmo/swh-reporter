@@ -59,7 +59,10 @@
         <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-primary">
                 <div class="panel panel-heading"><h4>Collaboration</h4></div>
-                <div class="panel panel-body">
+                <div class="panel panel-body" th:if="${api.getCollaboration() == null}">
+                    <p class="label-info">Collaboration information is not loaded yet</p>
+                </div>
+                <div class="panel panel-body" th:if="${api.getCollaboration() != null}">
                     <div class="row" th:if="${#lists.isEmpty(api.getCollaboration().getMembers()) && #lists.isEmpty(api.getCollaboration().getTeams())}">
                         <p class="label-info">There is no collaboration information</p>
                     </div>
@@ -128,7 +131,12 @@
         <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-primary">
                 <div class="panel panel-heading"><h4>Security definitions</h4></div>
-                <div class="panel panel-body">
+                <div class="panel panel-body" th:if="${api.getSecurityDefinitions != null}">
+                    <div class="alert alert-warning" role="alert">
+                        The security definitions has not been loaded
+                    </div>
+                </div>
+                <div class="panel panel-body" th:if="${api.getSecurityDefinitions != null}">
                     <div class="row col-md-12" th:if="${#lists.isEmpty(api.getSecurityDefinitions().getRoles()) && 
                         #lists.isEmpty(api.getSecurityDefinitions().getScopes()) &&
                         #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">

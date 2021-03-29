@@ -1,23 +1,27 @@
 package org.jfo.swaggerhub.swhreporter.model.db;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import java.util.UUID;
 
-@Data
-@Entity
-public class NewTeam {
+@Getter
+@Setter
+@Document
+public class Team {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id = UUID.randomUUID();
 
     private String name;
     private String description;
 
-    @ManyToOne
-    private NewCollaboration collaboration;
-    
+    //    @ManyToOne
+    private Collaboration collaboration;
+
 //    @ManyToMany
 //    private Project project;
 

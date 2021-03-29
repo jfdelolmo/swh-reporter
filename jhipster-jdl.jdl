@@ -12,7 +12,7 @@ entity Specification {
 	id Long,
     name String,
     description String,
-    properties Properties,
+    specificationProperties Properties,
     openApiDocument OpenApiDocument,
     collaboration Collaboration
 }
@@ -33,7 +33,7 @@ entity Team {
 }
 
 relationship OneToOne {
-	Specification{properties} to Properties
+	Specification{specificationProperties} to Properties
 }
 
 relationship OneToOne {

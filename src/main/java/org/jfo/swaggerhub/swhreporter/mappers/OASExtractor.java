@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.jfo.swaggerhub.swhreporter.exception.OpenAPIParseResultException;
 import org.jfo.swaggerhub.swhreporter.exception.OpenApiSecurityExtractorException;
 
@@ -19,13 +20,16 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 import io.swagger.v3.parser.core.models.ParseOptions;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class OASExtractor {
 
-  private final OAuthFlows clxApiOAuth2Flows;
-  private final Map<String, Object> extensions;
+  private OAuthFlows clxApiOAuth2Flows;
+  private Map<String, Object> extensions;
 
-  public OASExtractor(String apiAsString) {
+  public OASExtractor init(String apiAsString) {
     OpenAPI api = parseOpenApi(apiAsString);
     clxApiOAuth2Flows = Optional.ofNullable(api.getComponents())
         .map(Components::getSecuritySchemes)
@@ -36,6 +40,7 @@ public class OASExtractor {
     extensions = Optional.ofNullable(clxApiOAuth2Flows.getAuthorizationCode())
         .map(OAuthFlow::getExtensions)
         .orElse(Collections.emptyMap());
+    return this;
   }
 
   private OpenAPI parseOpenApi(String apiAsString) throws OpenAPIParseResultException {

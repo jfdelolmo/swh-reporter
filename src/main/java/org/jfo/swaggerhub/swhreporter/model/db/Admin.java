@@ -10,17 +10,13 @@ import java.util.UUID;
 @Getter
 @Setter
 @Document
-public class Specification {
+public class Admin {
 
     @Id
     private UUID id = UUID.randomUUID();
 
-    private String name;
-    private String title;
-    private String description;
-    private Boolean hasApi = false;
+    private String owner;
+    private String apikey;
+    private Boolean pendingToUpdate;
 
-    private SpecificationProperties specificationProperties;
-    private OpenApiDocument openApiDocument;
-    private Collaboration collaboration;
 }

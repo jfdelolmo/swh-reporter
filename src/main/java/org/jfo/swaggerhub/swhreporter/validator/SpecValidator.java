@@ -1,32 +1,33 @@
-package org.jfo.swaggerhub.swhreporter.service;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.IntStream;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.Yaml;
+package org.jfo.swaggerhub.swhreporter.validator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.jfo.swaggerhub.swhreporter.model.CommonConcepts;
+import org.springframework.stereotype.Component;
+import org.yaml.snakeyaml.Yaml;
+
+import java.util.*;
+import java.util.stream.IntStream;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class SpecValidator {
 
   public static final String WRONG_COMMON_DEFINITIONS_YAML = "./CommonDefinitions.yaml#/";
   public static final String WRONG_OAUTH_FLOW = "ClxApiOAuth2 authorization code flows is not used";
+
+  public Set<String> validate(String unresolvedAPI, String type){
+    Set<String> errors = new HashSet<>(wrongReferences(unresolvedAPI));
+
+    if (CommonConcepts.TYPE_API.equalsIgnoreCase(type)) {
+      errors.addAll(wrongOauthFlow(unresolvedAPI));
+    }
+
+    return errors;
+  }
+
 
   public Set<String> wrongReferences(String spec) {
     Set<String> errors = new HashSet<>();
