@@ -20,7 +20,7 @@ public class Domain {
     private String name;
 
     //  @ManyToOne
-    private Project project;
+    //private Project project;
 
     public Domain(String name) {
         this.name = name;

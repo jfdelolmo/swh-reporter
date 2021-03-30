@@ -40,9 +40,7 @@ public class AdminController {
 
     SwhEventPayload payload = swhProcessor.processCallForSpecs();
 
-    log.info("Payload id: {}", payload.getId());//    long start = System.currentTimeMillis();
-//    initializerService.retrieveAllOwnedSpecs();
-//    log.info(ELAPSED_TIME_LOG, (System.currentTimeMillis() - start));
+    log.info("Payload id: {}", payload.getId());
     return INDEX_VIEW;
   }
 
@@ -56,9 +54,10 @@ public class AdminController {
   
   @GetMapping("/load/projects")
   public String loadProjects() {
-    long start = System.currentTimeMillis();
-//    initializerService.retrieveAllOwnedProjectsAndMembers();
-    log.info(ELAPSED_TIME_LOG, (System.currentTimeMillis() - start));
+    log.info("Call for Projects processor....");
+
+    SwhEventPayload payload = swhProcessor.processCallForProjects();
+
     return INDEX_VIEW;
   }
 

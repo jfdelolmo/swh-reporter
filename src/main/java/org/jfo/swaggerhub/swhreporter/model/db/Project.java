@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 //@Data
 //@Entity
@@ -17,7 +18,7 @@ public class Project {
 
     @Id
 //  @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private UUID id = UUID.randomUUID();
 
     private String name;
     private String description;
@@ -33,13 +34,13 @@ public class Project {
 
 
     public Project addApi(Api api) {
-        api.setProject(this);
+        //api.setProject(this);
         this.apis.add(api);
         return this;
     }
 
     public Project addDomain(Domain domain) {
-        domain.setProject(this);
+        //domain.setProject(this);
         this.domains.add(domain);
         return this;
     }

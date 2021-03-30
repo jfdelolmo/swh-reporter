@@ -26,6 +26,9 @@ public class SwhListener implements ApplicationListener<SwhEvent> {
         if (SwhEventCommand.CALL_FOR_MY_ADMIN.equals(payload.getCommand())){
             callForDummyAdmin();
         }
+        if (SwhEventCommand.CALL_FOR_PROJECTS.equals(payload.getCommand())){
+            callForProjects();
+        }
     }
 
     private void callForDummyAdmin() {
@@ -43,6 +46,15 @@ public class SwhListener implements ApplicationListener<SwhEvent> {
             log.warn("No need to update list of owned specs");
         }else{
             log.info("All owned specs items: {}", loadedItems);
+        }
+    }
+
+    private void callForProjects(){
+        Long loadedItems = initializerService.rxInitAllOwnedProjects();
+        if (-1L == loadedItems){
+            log.warn("No need to update list of owned projects");
+        }else{
+            log.info("All owned project items: {}", loadedItems);
         }
     }
 }

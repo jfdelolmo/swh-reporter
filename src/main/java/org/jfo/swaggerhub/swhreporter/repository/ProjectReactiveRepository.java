@@ -4,7 +4,9 @@ import org.jfo.swaggerhub.swhreporter.model.db.Project;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 
-public interface ProjectReactiveRepository extends ReactiveMongoRepository<Project, String> {
+import java.util.UUID;
+
+public interface ProjectReactiveRepository extends ReactiveMongoRepository<Project, UUID> {
 
     Flux<Project> findAll();
     Flux<Project> findAllByOrderByNameAsc();

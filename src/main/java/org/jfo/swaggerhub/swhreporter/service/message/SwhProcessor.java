@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_PROJECTS;
 import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_SPECS;
 
 @Slf4j
@@ -26,6 +27,12 @@ public class SwhProcessor {
     public SwhEventPayload processCallForSpecs(){
         return commonPublisher(
                 commonPayloadBuilder(CALL_FOR_SPECS)
+        );
+    }
+
+    public SwhEventPayload processCallForProjects() {
+        return commonPublisher(
+                commonPayloadBuilder(CALL_FOR_PROJECTS)
         );
     }
 

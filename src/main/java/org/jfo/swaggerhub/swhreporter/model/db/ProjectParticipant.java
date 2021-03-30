@@ -22,7 +22,7 @@ public class ProjectParticipant {
     private String roles;
 
     //  @ManyToOne
-    private Project project;
+    //private Project project;
 
     @Override
     public boolean equals(Object o) {

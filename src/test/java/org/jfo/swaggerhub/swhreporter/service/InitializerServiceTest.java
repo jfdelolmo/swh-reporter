@@ -6,6 +6,7 @@ import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
 import org.jfo.swaggerhub.swhreporter.model.db.Admin;
 import org.jfo.swaggerhub.swhreporter.model.db.Specification;
 import org.jfo.swaggerhub.swhreporter.repository.AdminReactiveRepository;
+import org.jfo.swaggerhub.swhreporter.repository.ProjectReactiveRepository;
 import org.jfo.swaggerhub.swhreporter.repository.SpecificationReactiveRepository;
 import org.jfo.swaggerhub.swhreporter.service.reactive.RxAdminService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ class InitializerServiceTest {
 
     private final AdminReactiveRepository adminReactiveRepository = mock(AdminReactiveRepository.class);
     private final SpecificationReactiveRepository specificationReactiveRepository = mock(SpecificationReactiveRepository.class);
+    private final ProjectReactiveRepository projectReactiveRepository = mock(ProjectReactiveRepository.class);
 
     private final RxAdminService adminService = new RxAdminService(adminReactiveRepository);
     private final RxSwaggerHubService rxSwaggerHubService = new RxSwaggerHubServiceImpl(new SwhWebClient());
@@ -33,6 +35,7 @@ class InitializerServiceTest {
 
     private final InitializerService initializerService = new InitializerService(
             specificationReactiveRepository,
+            projectReactiveRepository,
             rxSwaggerHubService,
             adminService,
             swhMapper

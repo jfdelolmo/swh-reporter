@@ -21,7 +21,7 @@ public class Api {
     private String name;
 
     //  @ManyToOne
-    private Project project;
+    //private Project project;
 
     public Api(String name) {
         this.name = name;
