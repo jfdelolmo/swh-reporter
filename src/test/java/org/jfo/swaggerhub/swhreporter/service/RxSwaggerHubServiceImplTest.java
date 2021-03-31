@@ -56,9 +56,10 @@ class RxSwaggerHubServiceImplTest {
   
 
   @Test
-  @Disabled("Avoid call to SwaggerHub")
+//  @Disabled("Avoid call to SwaggerHub")
   void getCollaboration() {
-    Mono<Collaboration> mono = rxService.getCollaboration(OWNER, COLLABORATION_URL);
+//    Mono<Collaboration> mono = rxService.getCollaboration(OWNER, COLLABORATION_URL);
+    Mono<Collaboration> mono = rxService.getCollaboration(OWNER, "https://api.swaggerhub.com/apis/CREALOGIX/aso-admin_api/2.0.7");
     Collaboration collaboration = mono.block();
 
     Assertions.assertThat(mono).isNotNull();

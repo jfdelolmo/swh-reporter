@@ -74,8 +74,10 @@ public class SwhMapper {
   public Collaboration collaborationSwhToModel(org.jfo.swaggerhub.swhreporter.model.swh.Collaboration input) {
     Collaboration output = new Collaboration();
 
-    input.getMembers().forEach(m -> output.addMember(memberSwhToModel(m)));
-    input.getTeams().forEach(t -> output.addTeam(teamSwhToModel(t)));
+    if (null != input) {
+      input.getMembers().forEach(m -> output.addMember(memberSwhToModel(m)));
+      input.getTeams().forEach(t -> output.addTeam(teamSwhToModel(t)));
+    }
 
     return output;
   }

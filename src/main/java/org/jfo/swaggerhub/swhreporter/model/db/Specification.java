@@ -1,26 +1,26 @@
 package org.jfo.swaggerhub.swhreporter.model.db;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.UUID;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.UUID;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Document
 public class Specification {
 
-    @Id
-    private UUID id = UUID.randomUUID();
+  @Id
+  private String id = UUID.randomUUID().toString();
 
-    private String name;
-    private String title;
-    private String description;
-    private Boolean hasApi = false;
+  private String name;
+  private String title;
+  private String description;
+  private Boolean hasApi = false;
 
-    private SpecificationProperties specificationProperties;
-    private OpenApiDocument openApiDocument;
-    private Collaboration collaboration;
+  private SpecificationProperties specificationProperties;
+  private OpenApiDocument openApiDocument;
+  private Collaboration collaboration;
+
 }

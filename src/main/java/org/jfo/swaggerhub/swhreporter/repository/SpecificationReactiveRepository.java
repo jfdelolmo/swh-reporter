@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.UUID;
 
-public interface SpecificationReactiveRepository extends ReactiveMongoRepository<Specification, UUID> {
+public interface SpecificationReactiveRepository extends ReactiveMongoRepository<Specification, String> {
 
     Flux<Specification> findAll();
 

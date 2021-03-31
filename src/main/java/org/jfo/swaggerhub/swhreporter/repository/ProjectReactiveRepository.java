@@ -6,7 +6,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
-public interface ProjectReactiveRepository extends ReactiveMongoRepository<Project, UUID> {
+public interface ProjectReactiveRepository extends ReactiveMongoRepository<Project, String> {
 
     Flux<Project> findAll();
     Flux<Project> findAllByOrderByNameAsc();

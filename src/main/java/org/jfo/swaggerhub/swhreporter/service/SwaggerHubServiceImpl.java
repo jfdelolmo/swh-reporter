@@ -41,9 +41,9 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Deprecated
 public class SwaggerHubServiceImpl {
 
-  private final AdminService adminService;
   private final SwhWebClient webClient;
 
   public Set<ApisJsonApi> getAllOwnerSpecs(String owner) {
@@ -80,7 +80,7 @@ public class SwaggerHubServiceImpl {
 
   public Collaboration getCollaboration(String url) {
     Map<String, String> uriParams = new HashMap<>();
-    String owner = adminService.getUserOwner();
+    String owner = "CREALOGIX";
     uriParams.put(OWNER_PARAM, owner);
     uriParams.put("api", SwhClientParams.getApiNameFromUrl(url, owner));
     MultiValueMap<String, String> queryParams = SwhClientParams.buildGetCollaborationQueryParams();

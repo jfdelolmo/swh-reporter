@@ -2,6 +2,7 @@ package org.jfo.swaggerhub.swhreporter.service.message;
 
 public enum SwhEventCommand {
     CALL_FOR_SPECS,
+    CALL_FOR_SPECS_FINISHED,
     CALL_FOR_API,
     CALL_FOR_DOMAIN,
     CALL_FOR_COLLABORATION,

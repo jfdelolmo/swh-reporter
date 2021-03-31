@@ -46,9 +46,12 @@ public class AdminController {
 
   @GetMapping("/load/collaborations")
   public String loadCollaboration() {
+    log.info("Call for Collaboration processor....");
     long start = System.currentTimeMillis();
-//    initializerService.retrieveAllCollaborationsAndUpdateSpecification();
-    log.info(ELAPSED_TIME_LOG, (System.currentTimeMillis() - start));
+    
+    swhProcessor.processCallForCollaboration();
+
+    log.info("Message sent to process ({} ms)", System.currentTimeMillis()-start);
     return INDEX_VIEW;
   }
   
@@ -57,7 +60,8 @@ public class AdminController {
     log.info("Call for Projects processor....");
 
     SwhEventPayload payload = swhProcessor.processCallForProjects();
-
+    
+    log.info("Payload id: {}", payload.getId());
     return INDEX_VIEW;
   }
 

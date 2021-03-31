@@ -1,54 +1,40 @@
 package org.jfo.swaggerhub.swhreporter.model.db;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-//@Data
-//@Entity
-@Getter
-@Setter
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.Data;
+
+@Data
 @Document
 public class Project {
 
-    @Id
-//  @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id = UUID.randomUUID();
+  @Id
+  private String id = UUID.randomUUID().toString();
 
-    private String name;
-    private String description;
+  private String name;
+  private String description;
+  private Set<Api> apis = new HashSet<>();
+  private Set<Domain> domains = new HashSet<>();
+  private Set<ProjectParticipant> participants = new HashSet<>();
 
-    //  @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private Set<Api> apis = new HashSet<>();
+  public Project addApi(Api api) {
+    this.apis.add(api);
+    return this;
+  }
 
-    //  @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private Set<Domain> domains = new HashSet<>();
+  public Project addDomain(Domain domain) {
+    this.domains.add(domain);
+    return this;
+  }
 
-    //  @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private Set<ProjectParticipant> participants = new HashSet<>();
-
-
-    public Project addApi(Api api) {
-        //api.setProject(this);
-        this.apis.add(api);
-        return this;
-    }
-
-    public Project addDomain(Domain domain) {
-        //domain.setProject(this);
-        this.domains.add(domain);
-        return this;
-    }
-
-//  public Project addParticipant(ProjectParticipant participant){
-//    participant.setProject(this);
-//    this.participants.add(participant);
-//    return this;
-//  }
+  public Project addParticipant(ProjectParticipant participant) {
+    this.participants.add(participant);
+    return this;
+  }
 
 }

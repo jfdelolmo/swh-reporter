@@ -1,7 +1,7 @@
 package org.jfo.swaggerhub.swhreporter.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.stream.Collectors;
+
 import org.jfo.swaggerhub.swhreporter.dto.ProjectParticipantsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.UUID;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
@@ -37,7 +37,7 @@ public class ReporterController {
     }
 
     @GetMapping("/specs/{id}")
-    public String getSpecDetails(Model model, @PathVariable("id") UUID id) {
+    public String getSpecDetails(Model model, @PathVariable("id") String id) {
         log.info("Entering getSpecDetails controller method");
         model.addAttribute("api", rxReporterService.getApiDetails(id).block());
         return "reporter/api";

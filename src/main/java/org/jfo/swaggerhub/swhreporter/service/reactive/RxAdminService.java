@@ -21,7 +21,7 @@ public class RxAdminService {
 
     public Admin createAdmin(String owner, String apiKey){
         Admin admin = new Admin();
-        admin.setId(UUID.randomUUID());
+        admin.setId(UUID.randomUUID().toString());
         admin.setApikey(APIKEY);
         admin.setOwner(MY_OWNER);
         admin.setPendingToUpdate(true);
