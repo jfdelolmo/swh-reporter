@@ -2,14 +2,16 @@ package org.jfo.swaggerhub.swhreporter.repository;
 
 import org.jfo.swaggerhub.swhreporter.model.db.Project;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Flux;
 
-import java.util.UUID;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface ProjectReactiveRepository extends ReactiveMongoRepository<Project, String> {
 
-    Flux<Project> findAll();
-    Flux<Project> findAllByOrderByNameAsc();
+  Flux<Project> findAll();
+  Mono<Project> findByName(String name);
+
+  Flux<Project> findAllByOrderByNameAsc();
 
 //    Iterable<Project> findAllByOrderByNameAsc();
 //

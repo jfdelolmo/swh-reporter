@@ -69,8 +69,10 @@
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
                 <div class="dropdown-menu">
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/specs','Home','Load specifications','search','Load specifications')"></span>
+                    <span class="dropdown-item" th:replace="::menuItem ('/admin/load/docs','Home','Load documentation','search','Load documentation')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/collaborations','Home','Load collaborations','search','Load collaborations')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/projects','Home','Load projects','search','Load projects')"></span>
+                    <span class="dropdown-item" th:replace="::menuItem ('/admin/load/status','Home','Update status','search','Update status')"></span>
                 </div>
             </span>
             

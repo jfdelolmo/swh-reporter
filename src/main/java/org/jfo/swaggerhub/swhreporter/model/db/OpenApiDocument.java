@@ -1,8 +1,5 @@
 package org.jfo.swaggerhub.swhreporter.model.db;
 
-import java.util.UUID;
-
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -11,8 +8,6 @@ import lombok.Data;
 @Document
 public class OpenApiDocument {
 
-  @Id
-  private String id = UUID.randomUUID().toString();
   private String resolved;
   private String unresolved;
 

@@ -2,13 +2,16 @@ package org.jfo.swaggerhub.swhreporter.controller;
 
 import java.util.stream.Collectors;
 
+import org.jfo.swaggerhub.swhreporter.dto.ErrorDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectParticipantsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
 import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceReportDto;
+import org.jfo.swaggerhub.swhreporter.exception.OpenAPIParseResultException;
 import org.jfo.swaggerhub.swhreporter.service.reactive.RxReporterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,4 +74,5 @@ public class ReporterController {
         model.addAttribute("wrongreference", dto);
         return "/reporter/wrongreference";
     }
+    
 }

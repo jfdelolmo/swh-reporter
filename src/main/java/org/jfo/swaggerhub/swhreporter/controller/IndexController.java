@@ -11,14 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class IndexController{
-    
-    private final RxStatusService statusService;
+public class IndexController {
 
-    @RequestMapping({"", "/", "index", "index.html"})
-    public String index(Model model){
-        model.addAttribute("status", statusService.getAdminStatus().block());
-        return "index";
-    }
+  private final RxStatusService statusService;
+
+  @RequestMapping({"", "/", "index", "index.html"})
+  public String index(Model model) {
+    model.addAttribute("status", statusService.getAdminStatus().block());
+    return "index";
+  }
 
 }

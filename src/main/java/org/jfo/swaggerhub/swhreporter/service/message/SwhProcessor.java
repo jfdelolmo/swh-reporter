@@ -1,8 +1,10 @@
 package org.jfo.swaggerhub.swhreporter.service.message;
 
 import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_COLLABORATION;
+import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_DOCUMENTATION;
 import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_PROJECTS;
 import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_SPECS;
+import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_UPDATE_STATUS;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -51,6 +53,20 @@ public class SwhProcessor {
         .delaySubscription(Duration.of(1, ChronoUnit.SECONDS))
         .subscribe(pubSpec::apply);
   }
+  
+  public void processCallForDocumentation(){
+    Function<Specification, SwhEventPayload> pubSpec = s -> commonPublisher(loadFromSpec(CALL_FOR_DOCUMENTATION, s.getId()));
+    specificationReactiveRepository
+        .findAll()
+        .delaySubscription(Duration.of(1, ChronoUnit.SECONDS))
+        .subscribe(pubSpec::apply);
+  }
+
+  public SwhEventPayload processCallUpdateStatus() {
+    return commonPublisher(
+        commonPayloadBuilder(CALL_FOR_UPDATE_STATUS)
+    );
+  }
 
   private SwhEventPayload commonPublisher(SwhEventPayload payload) {
     SwhEvent event = new SwhEvent(this, payload);
@@ -72,5 +88,6 @@ public class SwhProcessor {
     payload.getParams().put("specUUID", uuid);
     return payload;
   }
+
 
 }

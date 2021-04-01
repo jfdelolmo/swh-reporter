@@ -1,27 +1,29 @@
 package org.jfo.swaggerhub.swhreporter.model.db;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
+import com.google.common.base.Objects;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-import java.util.Objects;
-import java.util.UUID;
+import lombok.Data;
 
 @Data
 @Document
 public class Api {
 
-    @Id
-    private String id = UUID.randomUUID().toString();
+  private String id;
+  private String name;
 
-    private String name;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Api)) return false;
+    Api api = (Api) o;
+    return Objects.equal(name, api.name);
+  }
 
-
-    public Api(String name) {
-        this.name = name;
-    }
-    
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(name);
+  }
+  
 }

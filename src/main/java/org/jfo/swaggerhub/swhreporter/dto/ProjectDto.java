@@ -12,15 +12,15 @@ public class ProjectDto {
 
   private String name;
   private String description;
-  private Set<String> apis = new HashSet<>();
-  private Set<String> domains = new HashSet<>();
+  private Set<SimpleSpecDto> apis = new HashSet<>();
+  private Set<SimpleSpecDto> domains = new HashSet<>();
   
-  public ProjectDto addApi(String api){
+  public ProjectDto addApi(SimpleSpecDto api){
     this.apis.add(api);
     return this;
   }
 
-  public ProjectDto addDomain(String domain){
+  public ProjectDto addDomain(SimpleSpecDto domain){
     this.domains.add(domain);
     return this;
   }

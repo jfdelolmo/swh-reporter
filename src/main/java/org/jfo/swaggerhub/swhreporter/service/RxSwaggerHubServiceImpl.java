@@ -9,6 +9,7 @@ import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECT_MEM
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.jfo.swaggerhub.swhreporter.client.SwhClientParams;
 import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
@@ -98,5 +99,18 @@ public class RxSwaggerHubServiceImpl implements RxSwaggerHubService {
     return mono.map(ProjectMembersList::getMembers).flatMapMany(Flux::fromIterable);
   }
 
+  public Mono<Pair<String, String>> getResolvedUnresolvedSpec(String url){
+    String resolvedApi;
+    String unresolvedApi;
+    try {
+      resolvedApi = getApiVersionByUrl(url, true).block();
+    } catch (Exception e) {
+      resolvedApi = "Error on retrieving the resolved specification from SwaggerHub";
+    }
+    unresolvedApi = getApiVersionByUrl(url, false).block();
 
+    return Mono.just(Pair.of(resolvedApi,unresolvedApi));
+  }
+  
+  
 }

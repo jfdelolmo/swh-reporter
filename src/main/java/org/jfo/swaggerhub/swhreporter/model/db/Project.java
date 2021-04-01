@@ -1,5 +1,7 @@
 package org.jfo.swaggerhub.swhreporter.model.db;
 
+import com.google.common.base.Objects;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -32,9 +34,17 @@ public class Project {
     return this;
   }
 
-  public Project addParticipant(ProjectParticipant participant) {
-    this.participants.add(participant);
-    return this;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Project)) return false;
+    Project project = (Project) o;
+    return Objects.equal(name, project.name) && Objects.equal(description, project.description) && Objects.equal(apis, project.apis) && Objects.equal(domains, project.domains) && Objects.equal(participants, project.participants);
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(name, description, apis, domains, participants);
+  }
+  
 }

@@ -1,61 +1,85 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 <head>
-    <meta charset="UTF-8"/>
-    <title>SwaggerHub Reporter Index</title>
+  <meta charset="UTF-8"/>
+  <title>SwaggerHub Reporter Index</title>
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Latest compiled and minified CSS -->
+  <!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"-->
+  <!--        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/sandstone/bootstrap.min.css"
+        integrity="sha384-zEpdAL7W11eTKeoBJK1g79kgl9qjP7g84KfK3AZsuonx38n8ad+f5ZgXtoSDxPOh" crossorigin="anonymous">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <!--  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"-->
+  <!--          integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"-->
+  <!--          crossorigin="anonymous"></script>-->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+          integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </head>
 <body>
 
 <div class="row">
-    <div class="col-md-12 m-5">
-        <!--                <img width="40px" class="img-responsive" src="../static/resources/images/swh_logo.jpg" th:src="@{/resources/images/swh_logo.jpg}"/>-->
-        <h2 th:text="#{welcome} + ' to SwaggerHub Reporter'">Welcome</h2>
-    </div>
+  <div class="col-md-12 m-5">
+    <!--                <img width="40px" class="img-responsive" src="../static/resources/images/swh_logo.jpg" th:src="@{/resources/images/swh_logo.jpg}"/>-->
+    <h2 th:text="#{welcome} + ' to SwaggerHub Reporter'">Welcome</h2>
+  </div>
 </div>
 
+<div class="row" th:if="${errorData != null}">
+  <div class="col-md-12">
+
+    <div class="card text-white bg-danger mb-3 row">
+      <div class="card-header">Error</div>
+      <div class="card-body">
+        <h4 class="card-title"><span th:text="${errorData.getCause}">Danger card title</span></h4>
+        <tr th:each="e : ${errorData.getMessages()}">
+          <td class="card-text" th:text="${e}">Error humanum est</td>
+        </tr>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <div class="row">
-    <div class="col-md-12">
-        <div class="card row col-md-12">
-            <div class="card-header row">Status summary</div>
-            <div class="card-body row" th:if="${status == null}">
-                <div class="col-sm-12">
-                    <p class="label-info">There are no status information available</p>    
-                </div>
+  <div class="col-md-12">
+
+    <div class="card text-white mb-3 row">
+      <div class="card-header bg-primary border-primary ">Status summary</div>
+      <div class="card-body text-dark border-primary" th:if="${status == null}">
+        <h4 class="card-title">There are no status information available</h4>
+      </div>
+      <div class="card-body text-dark border-primary" th:if="${status != null}">
+        <h4 class="card-title">Status information available</h4>
+        <div class="row ">
+          <div class="col-lg">
+            <div>
+              <dl>
+                <dt>Total APIS</dt>
+                <dd><p th:text="${status.totalApis}">Total APIs</p></dd>
+                <dt>Total Domains</dt>
+                <dd><p th:text="${status.totalDomains}">Total Domains</p></dd>
+                <dt>Last update:</dt>
+                <dd><p th:text="${status.lastUpdate}">Last update</p></dd>
+              </dl>
             </div>
-            <div class="card-body row" th:if="${status != null}">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="row">
-                            <dl class="row col-sm-6">
-                                <dt class="col-sm-3">Total APIS</dt>
-                                <dd class="col-sm-9"><span th:text="${status.totalApis}">Total APIs</span></dd>
-                                <dt class="col-sm-3">Total Domains</dt>
-                                <dd class="col-sm-9"><span th:text="${status.totalDomains}">Total Domains</span></dd>
-                                <dt class="col-sm-3">Last update:</dt>
-                                <dd class="col-sm-9"><span th:text="${status.lastUpdate}">Last update</span></dd>
-                            </dl>
-                            <dl class="row col-sm-6">
-                                <dt class="col-sm-3">APIs with errors:</dt>
-                                <dd class="col-sm-9"><span th:text="${status.errorApis}">APIs with errors</span></dd>
-                                <dt class="col-sm-3">Domains with errors:</dt>
-                                <dd class="col-sm-9"><span th:text="${status.errorDomains}">Domains with errors</span></dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="col-lg">
+            <div>
+              <dl>
+                <dt>APIs with errors:</dt>
+                <dd><p th:text="${status.errorApis}">APIs with errors</span></dd>
+                <dt>Domains with errors:</dt>
+                <dd><p th:text="${status.errorDomains}">Domains with errors</p></dd>
+              </dl>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+
+  </div>
 </div>
 
 </body>

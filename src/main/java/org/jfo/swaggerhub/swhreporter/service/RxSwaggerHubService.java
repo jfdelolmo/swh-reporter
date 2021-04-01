@@ -1,5 +1,6 @@
 package org.jfo.swaggerhub.swhreporter.service;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
@@ -20,5 +21,5 @@ public interface RxSwaggerHubService {
     Flux<ProjectsJson> getProjects(String owner);
 
     Flux<ProjectMember> getProjectMembers(String owner, String project);
-
+    Mono<Pair<String, String>> getResolvedUnresolvedSpec(String url);
 }

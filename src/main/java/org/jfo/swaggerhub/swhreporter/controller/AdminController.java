@@ -44,6 +44,18 @@ public class AdminController {
     return INDEX_VIEW;
   }
 
+  @GetMapping("/load/docs")
+  public String loadDocuments() {
+    log.info("Call for Documentation processor....");
+    long start = System.currentTimeMillis();
+    
+    swhProcessor.processCallForDocumentation();
+
+    log.info("Message sent to process ({} ms)", System.currentTimeMillis()-start);
+    return INDEX_VIEW;
+  }
+  
+  
   @GetMapping("/load/collaborations")
   public String loadCollaboration() {
     log.info("Call for Collaboration processor....");
@@ -61,6 +73,16 @@ public class AdminController {
 
     SwhEventPayload payload = swhProcessor.processCallForProjects();
     
+    log.info("Payload id: {}", payload.getId());
+    return INDEX_VIEW;
+  }
+
+  @GetMapping("/load/status")
+  public String updateStatus() {
+    log.info("Call for Update status processor....");
+
+    SwhEventPayload payload = swhProcessor.processCallUpdateStatus();
+
     log.info("Payload id: {}", payload.getId());
     return INDEX_VIEW;
   }

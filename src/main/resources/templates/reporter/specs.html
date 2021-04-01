@@ -57,7 +57,7 @@
                     <tr th:each="s : ${specs.specs}">
                         <td th:text="${s.specType}">DOMAIN</td>
                         <td th:text="${s.specTitle}">Title</td>
-                        <td><a th:href="'/reporter/specs/'+ ${s.id}" th:text="${s.specName}" /></td>
+                        <td><a th:href="'/reporter/specs/'+ ${s.id}" th:text="${s.specName}"></a></td>
                         <td th:text="${s.specVersion}">3.2.0</td>
                         <td th:text="${s.specDescription}">Api description: Lorem...</td>
                     </tr>
