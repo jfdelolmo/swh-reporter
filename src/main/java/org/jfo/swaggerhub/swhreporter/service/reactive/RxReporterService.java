@@ -1,9 +1,11 @@
 package org.jfo.swaggerhub.swhreporter.service.reactive;
 
+import org.apache.commons.lang3.Streams;
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
 import org.jfo.swaggerhub.swhreporter.dto.ParticipantReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecInfoDto;
+import org.jfo.swaggerhub.swhreporter.dto.UnresolvedSpecDto;
 import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceSpecDto;
 import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
 import org.jfo.swaggerhub.swhreporter.model.db.Specification;
@@ -74,5 +76,11 @@ public class RxReporterService {
               s.getSpecificationProperties().getType()));
     }
     return ws;
+  }
+
+  public Flux<UnresolvedSpecDto> getUnresolvedSpecs() {
+    return specificationReactiveRepository
+        .getUnresolvedSpecs()
+        .map(modelMapper::specModelToUnresolvedSpecDto);
   }
 }

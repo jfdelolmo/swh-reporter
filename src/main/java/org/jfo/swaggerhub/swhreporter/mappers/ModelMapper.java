@@ -21,6 +21,7 @@ import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
 import org.jfo.swaggerhub.swhreporter.dto.SimpleSpecDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecInfoDto;
 import org.jfo.swaggerhub.swhreporter.dto.TeamDto;
+import org.jfo.swaggerhub.swhreporter.dto.UnresolvedSpecDto;
 import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceSpecDto;
 import org.jfo.swaggerhub.swhreporter.model.db.Api;
 import org.jfo.swaggerhub.swhreporter.model.db.Collaboration;
@@ -192,6 +193,26 @@ public class ModelMapper {
         output.setType(s.getSpecificationProperties().getType());
       }
     }
+    return output;
+  }
+
+  public UnresolvedSpecDto specModelToUnresolvedSpecDto(Specification input) {
+    UnresolvedSpecDto output = new UnresolvedSpecDto();
+
+    if (null!=input){
+      output.setName(input.getName());
+      output.setTitle(input.getTitle());
+      
+      if (null!=input.getOpenApiDocument()){
+        output.setResolved(input.getOpenApiDocument().getUnresolved());
+      }
+      if (null!=input.getSpecificationProperties()){
+        output.setVersion(input.getSpecificationProperties().getDefaultVersion());
+        output.setType(input.getSpecificationProperties().getType());
+      }
+
+    }
+
     return output;
   }
 }

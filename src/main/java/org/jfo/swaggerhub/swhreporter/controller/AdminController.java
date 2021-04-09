@@ -1,6 +1,5 @@
 package org.jfo.swaggerhub.swhreporter.controller;
 
-import org.jfo.swaggerhub.swhreporter.service.InitializerService;
 import org.jfo.swaggerhub.swhreporter.service.message.SwhEventPayload;
 import org.jfo.swaggerhub.swhreporter.service.message.SwhProcessor;
 import org.springframework.stereotype.Controller;
@@ -16,75 +15,76 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/admin")
 public class AdminController {
 
-  public static final String ELAPSED_TIME_LOG = "Elapsed time: {}";
-  public static final String INDEX_VIEW = "index";
+  private static final String ELAPSED_TIME_LOG = "AdminController :: Elapsed time for payload {} :: {}";
+  private static final String REDIRECT_INDEX_VIEW = "redirect:/index";
 
-  private final InitializerService initializerService;
   private final SwhProcessor swhProcessor;
 
   @GetMapping("/load/myadmin")
   public String loadMyAdmin() {
+    log.info("AdminController :: MyAdmin processor....");
     long startTime = System.currentTimeMillis();
-    log.info("Call for MyAdmin processor....");
 
     SwhEventPayload payload = swhProcessor.processCallForMyAdmin();
-
-    log.info("Payload id: {}", payload.getId());
-    return INDEX_VIEW;
+    
+    log.info(ELAPSED_TIME_LOG,payload.getId(), System.currentTimeMillis()-startTime);
+    return REDIRECT_INDEX_VIEW;
   }
 
   @GetMapping("/load/specs")
   public String loadSpecs() {
+    log.info("AdminController :: Specs processor....");
     long startTime = System.currentTimeMillis();
-    log.info("Call for Specs processor....");
 
     SwhEventPayload payload = swhProcessor.processCallForSpecs();
 
-    log.info("Payload id: {}", payload.getId());
-    return INDEX_VIEW;
+    log.info(ELAPSED_TIME_LOG,payload.getId(), System.currentTimeMillis()-startTime);
+    return REDIRECT_INDEX_VIEW;
   }
 
   @GetMapping("/load/docs")
   public String loadDocuments() {
-    log.info("Call for Documentation processor....");
+    log.info("AdminController :: Documentation processor....");
     long start = System.currentTimeMillis();
     
     swhProcessor.processCallForDocumentation();
 
-    log.info("Message sent to process ({} ms)", System.currentTimeMillis()-start);
-    return INDEX_VIEW;
+    log.info("AdminController :: Documentation processor elapsed time :: {})", System.currentTimeMillis()-start);
+    return REDIRECT_INDEX_VIEW;
   }
   
   
   @GetMapping("/load/collaborations")
   public String loadCollaboration() {
-    log.info("Call for Collaboration processor....");
+    log.info("AdminController :: Collaboration processor....");
     long start = System.currentTimeMillis();
     
     swhProcessor.processCallForCollaboration();
 
-    log.info("Message sent to process ({} ms)", System.currentTimeMillis()-start);
-    return INDEX_VIEW;
+    log.info("AdminController :: Collaboration processor elapsed time :: {})", System.currentTimeMillis()-start);
+    return REDIRECT_INDEX_VIEW;
   }
   
   @GetMapping("/load/projects")
   public String loadProjects() {
-    log.info("Call for Projects processor....");
-
-    SwhEventPayload payload = swhProcessor.processCallForProjects();
+    log.info("AdminController :: Projects processor....");
+    long start = System.currentTimeMillis();
     
-    log.info("Payload id: {}", payload.getId());
-    return INDEX_VIEW;
+    SwhEventPayload payload = swhProcessor.processCallForProjects();
+
+    log.info(ELAPSED_TIME_LOG,payload.getId(), System.currentTimeMillis()-start);
+    return REDIRECT_INDEX_VIEW;
   }
 
   @GetMapping("/load/status")
   public String updateStatus() {
-    log.info("Call for Update status processor....");
+    log.info("AdminController :: Update status processor....");
+    long start = System.currentTimeMillis();
 
     SwhEventPayload payload = swhProcessor.processCallUpdateStatus();
-
-    log.info("Payload id: {}", payload.getId());
-    return INDEX_VIEW;
+    
+    log.info(ELAPSED_TIME_LOG,payload.getId(), System.currentTimeMillis()-start);
+    return REDIRECT_INDEX_VIEW;
   }
 
 }

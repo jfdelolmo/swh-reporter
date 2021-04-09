@@ -7,8 +7,10 @@ import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CAL
 import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_SPECS;
 import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CALL_FOR_UPDATE_STATUS;
 
+import java.util.Map;
+import java.util.function.Function;
+
 import org.jfo.swaggerhub.swhreporter.service.InitializerService;
-import org.jfo.swaggerhub.swhreporter.service.reactive.RxAdminService;
 import org.jfo.swaggerhub.swhreporter.service.reactive.RxStatusService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,15 @@ public class SwhListener {
   private final InitializerService initializerService;
   private final RxStatusService rxStatusService;
 
+  Map<SwhEventCommand, Function<SwhEventPayload, String>> commandMap = Map.of(
+      CALL_FOR_SPECS, this::callForSpecs,
+      CALL_FOR_MY_ADMIN, this::callForDummyAdmin,
+      CALL_FOR_PROJECTS, this::callForProjects,
+      CALL_FOR_COLLABORATION, this::callForCollaboration,
+      CALL_FOR_DOCUMENTATION, this::callForDocumentation,
+      CALL_FOR_UPDATE_STATUS, this::callForUpdateStatus
+  );
+
   @EventListener
   public void onApplicationEvent(SwhEvent event) {
     log.info("Listening event {}  @ {}", event.getPayload().getId(), event.getTimestamp());
@@ -31,65 +42,46 @@ public class SwhListener {
   }
 
   private void handleEvent(SwhEventPayload payload) {
-    if (CALL_FOR_SPECS.equals(payload.getCommand())) {
-      log.info("SwhListener::callForSpecs - {}", payload.getId());
-      callForSpecs();
-    }
-    if (CALL_FOR_MY_ADMIN.equals(payload.getCommand())) {
-      log.info("SwhListener::callForMyAdmin - {}", payload.getId());
-      callForDummyAdmin();
-    }
-    if (CALL_FOR_PROJECTS.equals(payload.getCommand())) {
-      log.info("SwhListener::callForProjects - {}", payload.getId());
-      callForProjects();
-    }
-    if (CALL_FOR_COLLABORATION.equals(payload.getCommand())) {
-      log.info("SwhListener::callForCollaboration - {}", payload.getId());
-      callForCollaboration(payload);
-    }
-    if (CALL_FOR_DOCUMENTATION.equals(payload.getCommand())) {
-      log.info("SwhListener::callForDocumentation - {}", payload.getId());
-      callForDocumentation(payload);
-    }
-    if (CALL_FOR_UPDATE_STATUS.equals(payload.getCommand())) {
-      log.info("SwhListener::callForUpdateStatus - {}", payload.getId());
-      callForUpdateStatus(payload);
-    }
+    commandMap.get(payload.getCommand()).apply(payload);
+    log.info("SwhLister consumed :: {} - {}", payload.getCommand(), payload.getId());
   }
 
-  private void callForDummyAdmin() {
-    String uuid = initializerService.initDummyAdmin();
-    if ("".equals(uuid)) {
-      log.error("MyAdmin not initialized");
-    } else {
-      log.info("MyAdmin uuid is {}", uuid);
-    }
-  }
-
-  private void callForSpecs() {
+  private String callForSpecs(SwhEventPayload payload) {
     long loadedItems = initializerService.rxInitAllOwnedSpecs();
     if (-1L == loadedItems) {
       log.warn("No need to update list of owned specs");
     } else {
       log.info("All owned specs items: {}", loadedItems);
     }
+    return payload.getId();
   }
 
-  private void callForProjects() {
+  private String callForDummyAdmin(SwhEventPayload payload) {
+    String uuid = initializerService.initDummyAdmin();
+    if ("".equals(uuid)) {
+      log.error("MyAdmin not initialized");
+    } else {
+      log.info("MyAdmin uuid is {}", uuid);
+    }
+    return payload.getId();
+  }
+
+  private String callForProjects(SwhEventPayload payload) {
     long loadedItems = initializerService.rxInitAllOwnedProjects();
-    if (loadedItems>0) {
+    if (loadedItems > 0) {
       log.info("Projects loaded: {}", loadedItems);
     } else {
       log.warn("No need to update list of owned projects");
     }
 
     long projectUpdated = initializerService.updateProjectSpecs();
-    if (projectUpdated>0) {
+    if (projectUpdated > 0) {
       log.info("Project - updated specs id: {}", projectUpdated);
     }
+    return payload.getId();
   }
 
-  private void callForCollaboration(SwhEventPayload payload) {
+  private String callForCollaboration(SwhEventPayload payload) {
     String specUuid = (String) payload.getParams().get("specUUID");
     long loaded = initializerService.retrieveCollaborationAndUpdateSpecification(specUuid);
     if (-1L == loaded) {
@@ -97,9 +89,10 @@ public class SwhListener {
     } else {
       log.info("Collaboration updated for specification {}", specUuid);
     }
+    return payload.getId();
   }
 
-  private void callForDocumentation(SwhEventPayload payload) {
+  private String callForDocumentation(SwhEventPayload payload) {
     String specUuid = (String) payload.getParams().get("specUUID");
     Long loaded = initializerService.retrieveDocumentationAndUpdateSpecification(specUuid);
     if (-1L == loaded) {
@@ -107,10 +100,11 @@ public class SwhListener {
     } else {
       log.info("Documentation updated for specification {}", specUuid);
     }
+    return payload.getId();
   }
 
-  private void callForUpdateStatus(SwhEventPayload payload) {
+  private String callForUpdateStatus(SwhEventPayload payload) {
     rxStatusService.updateStatus();
-    log.info("Status updated - {}", payload.getId());
+    return payload.getId();
   }
 }

@@ -59,7 +59,7 @@ public class SwhWebClient {
                 .baseUrl(url)
                 .defaultHeader("Authorization", APIKEY)
                 .defaultUriVariables(uriParams)
-            .exchangeStrategies(es)
+                .exchangeStrategies(es)
                 .build();
 
         return webClient

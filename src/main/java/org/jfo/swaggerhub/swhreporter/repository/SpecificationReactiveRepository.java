@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jfo.swaggerhub.swhreporter.model.db.Specification;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.stereotype.Repository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface SpecificationReactiveRepository extends ReactiveMongoRepository<Specification, String> {
+@Repository
+public interface SpecificationReactiveRepository extends ReactiveMongoRepository<Specification, String>, CustomSpecificationReactiveRepository {
 
   Mono<Specification> findByName(String name);
 
@@ -36,5 +39,5 @@ public interface SpecificationReactiveRepository extends ReactiveMongoRepository
     
     return Flux.fromIterable(newSpecs);
   }
-
+  
 }

@@ -58,7 +58,7 @@ public class SwhProcessor {
     Function<Specification, SwhEventPayload> pubSpec = s -> commonPublisher(loadFromSpec(CALL_FOR_DOCUMENTATION, s.getId()));
     specificationReactiveRepository
         .findAll()
-        .delaySubscription(Duration.of(1, ChronoUnit.SECONDS))
+        .delaySubscription(Duration.of(5, ChronoUnit.SECONDS))
         .subscribe(pubSpec::apply);
   }
 

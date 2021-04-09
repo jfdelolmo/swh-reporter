@@ -59,6 +59,7 @@
             <span class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reports</a>
                 <div class="dropdown-menu">
+                    <span class="dropdown-item" th:replace="::menuItem ('/reporter/unresolved','unresolved','Unresolved','search','Specs unresolved')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/reporter/wrongreference','wrongreference','Wrong reference','search','Wrong reference')"></span>
 <!--                    <div class="dropdown-divider"></div>-->
 <!--                    <a class="dropdown-item" href="#">Separated link</a>-->

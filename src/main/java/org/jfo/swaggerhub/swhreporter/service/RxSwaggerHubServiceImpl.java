@@ -5,6 +5,7 @@ import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.API_AS_YAML;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.DOMAIN_AS_YAML;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECTS_BY_OWNER;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECT_MEMBERS;
+import static org.jfo.swaggerhub.swhreporter.model.CommonConcepts.ERROR_RETRIEVE_FROM_SWAGGER_HUB;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -105,7 +106,8 @@ public class RxSwaggerHubServiceImpl implements RxSwaggerHubService {
     try {
       resolvedApi = getApiVersionByUrl(url, true).block();
     } catch (Exception e) {
-      resolvedApi = "Error on retrieving the resolved specification from SwaggerHub";
+      log.error("Error on resolving api from {} :: {}", url, e.getMessage());
+      resolvedApi = ERROR_RETRIEVE_FROM_SWAGGER_HUB;
     }
     unresolvedApi = getApiVersionByUrl(url, false).block();
 

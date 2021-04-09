@@ -7,10 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.jfo.swaggerhub.swhreporter.dto.ErrorDto;
 import org.jfo.swaggerhub.swhreporter.exception.OpenAPIParseResultException;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,19 +45,14 @@ public class MyExceptionHandler {
 
 
   @ExceptionHandler(OpenAPIParseResultException.class)
-  public ModelAndView handleError(HttpServletRequest req, OpenAPIParseResultException ex) {
-    log.error("Request: " + req.getRequestURL() + " raised " + ex);
-
+  public String handleError(OpenAPIParseResultException ex, RedirectAttributes redirectAttributes) {
     ErrorDto errorDto = new ErrorDto();
     errorDto.setCause(ex.getMessage());
     errorDto.setMessages(ex.getErrors());
-    
-    ModelAndView mav = new ModelAndView();
-
-    mav.addObject("errorData", errorDto);
-    mav.addObject("url", req.getRequestURL());
-    mav.setViewName("index");
-    return mav;
+  
+    redirectAttributes.addFlashAttribute("errorData", errorDto);
+  
+    return "redirect:/index";
   }
 
 }

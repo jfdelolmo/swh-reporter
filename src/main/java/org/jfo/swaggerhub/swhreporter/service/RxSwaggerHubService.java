@@ -21,5 +21,6 @@ public interface RxSwaggerHubService {
     Flux<ProjectsJson> getProjects(String owner);
 
     Flux<ProjectMember> getProjectMembers(String owner, String project);
+    
     Mono<Pair<String, String>> getResolvedUnresolvedSpec(String url);
 }

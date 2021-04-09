@@ -6,6 +6,7 @@ import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.API_AS_YAML;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.DOMAIN_AS_YAML;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECTS_BY_OWNER;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECT_MEMBERS;
+import static org.jfo.swaggerhub.swhreporter.model.CommonConcepts.ERROR_RETRIEVE_FROM_SWAGGER_HUB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,7 +142,7 @@ public class SwaggerHubServiceImpl {
     try {
       resolvedApi = getSpecVersionByUrl(url, true);
     } catch (Exception e) {
-      resolvedApi = "Error on retrieving the resolved specification from SwaggerHub";
+      resolvedApi = ERROR_RETRIEVE_FROM_SWAGGER_HUB;
     }
     unresolvedApi = getSpecVersionByUrl(url, false);
     
