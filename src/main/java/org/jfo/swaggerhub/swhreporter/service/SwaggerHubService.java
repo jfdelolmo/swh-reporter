@@ -10,7 +10,7 @@ import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface RxSwaggerHubService {
+public interface SwaggerHubService {
 
     Flux<ApisJson> getAllOwnerSpecs(String owner);
 

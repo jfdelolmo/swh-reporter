@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WrongReferenceReportDto {
+public class InvalidSpecsReportDto {
   
-  private Long total;
-  private Set<WrongReferenceSpecDto> wrongspecs = new HashSet<>();
+  private int total;
+  private Set<InvalidSpecDto> invalidSpecs = new HashSet<>();
   
 }

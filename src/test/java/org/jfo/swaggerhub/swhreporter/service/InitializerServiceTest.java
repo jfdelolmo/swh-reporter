@@ -2,15 +2,17 @@ package org.jfo.swaggerhub.swhreporter.service;
 
 import org.assertj.core.api.Assertions;
 import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
+import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
+import org.jfo.swaggerhub.swhreporter.mappers.OASExtractor;
 import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
 import org.jfo.swaggerhub.swhreporter.model.db.Admin;
 import org.jfo.swaggerhub.swhreporter.model.db.Specification;
-import org.jfo.swaggerhub.swhreporter.repository.AdminReactiveRepository;
-import org.jfo.swaggerhub.swhreporter.repository.ProjectReactiveRepository;
-import org.jfo.swaggerhub.swhreporter.repository.SpecificationReactiveRepository;
-import org.jfo.swaggerhub.swhreporter.service.reactive.RxAdminService;
+import org.jfo.swaggerhub.swhreporter.repository.AdminRepository;
+import org.jfo.swaggerhub.swhreporter.repository.ProjectRepository;
+import org.jfo.swaggerhub.swhreporter.repository.SpecificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,21 +24,23 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@DisplayName("When InitializerService is used")
 class InitializerServiceTest {
 
-    private final AdminReactiveRepository adminReactiveRepository = mock(AdminReactiveRepository.class);
-    private final SpecificationReactiveRepository specificationReactiveRepository = mock(SpecificationReactiveRepository.class);
-    private final ProjectReactiveRepository projectReactiveRepository = mock(ProjectReactiveRepository.class);
+    private final AdminRepository adminRepository = mock(AdminRepository.class);
+    private final SpecificationRepository specificationReactiveRepository = mock(SpecificationRepository.class);
+    private final ProjectRepository projectRepository = mock(ProjectRepository.class);
 
-    private final RxAdminService adminService = new RxAdminService(adminReactiveRepository);
-    private final RxSwaggerHubService rxSwaggerHubService = new RxSwaggerHubServiceImpl(new SwhWebClient());
+    private final ModelMapper modelMapper = new ModelMapper(new OASExtractor());
+    private final AdminService adminService = new AdminService(adminRepository, modelMapper);
+    private final SwaggerHubService swaggerHubService = new SwaggerHubServiceImpl(new SwhWebClient());
     private final SwhMapper swhMapper = new SwhMapper();
 
 
     private final InitializerService initializerService = new InitializerService(
             specificationReactiveRepository,
-            projectReactiveRepository,
-            rxSwaggerHubService,
+        projectRepository,
+        swaggerHubService,
             adminService,
             swhMapper
     );
@@ -56,11 +60,11 @@ class InitializerServiceTest {
         admin.setPendingToUpdate(true);
         Mono<Admin> adminDummy = Mono.just(admin);
 
-        when(adminReactiveRepository.findByOwner(any())).thenReturn(adminDummy);
+        when(adminRepository.findByUser(any())).thenReturn(adminDummy);
         doNothing().when(specificationReactiveRepository).saveAll(anyList());
         when(specificationReactiveRepository.count()).thenReturn(mono);
 
-        Long response = initializerService.rxInitAllOwnedSpecs();
+        Long response = initializerService.initAllOwnedSpecs();
 
         Assertions.assertThat(response).isEqualTo(1L);
     }

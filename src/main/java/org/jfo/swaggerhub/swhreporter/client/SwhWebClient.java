@@ -14,9 +14,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class SwhWebClient {
-
-    private static final String APIKEY = "a377281d-81e5-4b5b-9391-962439111515";
-
+    
     public static final String BASE_URL = "https://api.swaggerhub.com";
     public static final String GET_SPECS_URL = BASE_URL + "/specs";
     public static final String GET_APIS_BY_OWNER = BASE_URL + "/apis/{owner}";
@@ -28,7 +26,16 @@ public class SwhWebClient {
     public static final String GET_PROJECTS_BY_OWNER = BASE_URL + "/projects/{owner}";
     public static final String GET_PROJECT_MEMBERS = BASE_URL + "/projects/{owner}/{projectId}/members";
     
+    private String apiKey;
     
+    public void setApiKey(String apiKey){
+        this.apiKey = apiKey;
+    }
+
+    public String getApiKey() {
+        return this.apiKey;
+    }
+
     public <T> Mono<T> executeCallMono(String url, Map<String, ?> uriParams, MultiValueMap<String, String> queryParams, Class<T> responseClazz){
         if (null==queryParams){
             queryParams = new LinkedMultiValueMap<>();
@@ -57,7 +64,7 @@ public class SwhWebClient {
         
         WebClient webClient = WebClient.builder()
                 .baseUrl(url)
-                .defaultHeader("Authorization", APIKEY)
+                .defaultHeader("Authorization", apiKey)
                 .defaultUriVariables(uriParams)
                 .exchangeStrategies(es)
                 .build();

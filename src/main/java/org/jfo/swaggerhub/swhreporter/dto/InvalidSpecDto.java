@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WrongReferenceSpecDto {
+public class InvalidSpecDto {
   
   private String type;
   private String title;
   private String name;
-  private Integer numErrors;
+  private Integer numErrors = 0;
   private Set<String> errors = new HashSet<>();
   
 }

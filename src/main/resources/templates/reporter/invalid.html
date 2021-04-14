@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'wrongreference')}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'invalid')}">
 <head>
     <meta charset="UTF-8"/>
     <title>Projects report</title>
@@ -24,16 +24,17 @@
     <div class="container-fluid" style="margin-top: 20px">
         <div class="row">
             <div class="panel panel-heading">
-                <h3>Specification wrong refereces (<span th:text="${wrongreference.getTotal()}">0</span>)</h3>
-                <p>This specifications are using local file reference in its definition</p>
+                <h3>Invalid specifications (<span th:text="${invalid.getTotal()}">0</span>)</h3>
+                <p>The validator is checking:</p>
+                <ul><li>ClxApiOAuth2 is defined with authorization code flow</li></ul>
             </div>
         </div>
     
-        <div class="row" th:if="${#lists.isEmpty(wrongreference.getWrongspecs())}">
+        <div class="row" th:if="${#lists.isEmpty(invalid.getInvalidSpecs())}">
             <p class="label-info">There is no projects information</p>
         </div>
-        <div class="row" th:if="${not #lists.isEmpty(wrongreference.getWrongspecs())}">
-            <table class="table table-sm table-hover table-m-0 col-sm-12" th:if="${not #lists.isEmpty(wrongreference.getWrongspecs())}">
+        <div class="row" th:if="${not #lists.isEmpty(invalid.getInvalidSpecs())}">
+            <table class="table table-sm table-hover table-m-0 col-sm-12" th:if="${not #lists.isEmpty(invalid.getInvalidSpecs())}">
                 <thead class="table thead-dark">
                     <tr class="row">
                         <th scope="col" class="text-center align-middle col-sm-1" >Number</th>
@@ -44,42 +45,28 @@
                 </thead>
                 
                 <tbody>
-                    <tr th:remove="all">
-                        <td th:text="${wr.getNumErrors()}" class="col-sm-1">Number of errors</td>
-                        <td th:text="${wr.getType()}" class="col-sm-1">Type of spec</td>
-                        <td th:text="${wr.getName()}" class="col-sm-5">Spec name</td>
+                    <tr th:remove="all" class="row">
+                        <td class="text-center col-sm-1">Number of errors</td>
+                        <td class="text-center col-sm-1">Type of spec</td>
+                        <td class="col-sm-5">Spec name</td>
                         <td class="col-sm-5">
-                            <table class="table table-sm table-light table-m-0">
-                                <tbody>
-                                <tr th:each="error : ${wr.getErrors()}" class="row col-sm-12">
-                                    <td th:text="${error}" class="col-sm-4">Error</td>
-                                </tr>
+                            <table class="table mb-0 table-borderless">
+                                <tbody>    <!--class="table table-sm table-light table-m-0"-->
+                                    <tr> <!--class="row col-sm-12"-->
+                                        <td>Error</td> <!-- class="col-sm-4"-->
+                                    </tr>
                                 </tbody>
                             </table>
                         </td>
                     </tr>
-                    <tr th:remove="all">
-                        <td th:text="${wr.getNumErrors()}" class="col-sm-3">Number of errors</td>
-                        <td th:text="${wr.getType()}" class="col-sm-3">Type of spec</td>
-                        <td th:text="${wr.getName()}" class="col-sm-3">Spec name</td>
-                        <td class="col-sm-9">
-                            <table class="table table-sm table-light table-m-0">
-                                <tbody>
-                                <tr th:each="error : ${wr.getErrors()}" class="row col-sm-12">
-                                    <td th:text="${error}" class="col-sm-4">Error</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr th:each="wr : ${wrongreference.getWrongspecs()}" class="row">
-                        <td th:text="${wr.getNumErrors()}" class="col-sm-1">Number of errors</td>
-                        <td th:text="${wr.getType()}" class="col-sm-1">Type of spec</td>
-                        <td th:text="${wr.getName()}" class="col-sm-5">Spec name</td>
+                    <tr th:each="item : ${invalid.getInvalidSpecs()}" class="row">
+                        <td th:text="${item.getNumErrors()}" class="text-center col-sm-1">Number of errors</td>
+                        <td th:text="${item.getType()}" class="text-center col-sm-1">Type of spec</td>
+                        <td th:text="${item.getName()}" class="col-sm-5">Spec name</td>
                         <td class="col-sm-5">
-                            <table class="table table-sm table-light table-m-0">
+                            <table class="table mb-0 table-borderless">
                                 <tbody>
-                                    <tr th:each="error : ${wr.getErrors()}" class="row col-sm-12">
+                                    <tr th:each="error : ${item.getErrors()}" class="row col-sm-12">
                                         <td th:text="${error}">Error</td>
                                     </tr>
                                 </tbody>

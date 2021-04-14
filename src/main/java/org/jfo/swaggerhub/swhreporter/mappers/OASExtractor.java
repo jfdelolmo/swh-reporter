@@ -35,7 +35,7 @@ public class OASExtractor {
         .map(Components::getSecuritySchemes)
         .map(ss -> ss.get("ClxApiOAuth2"))
         .map(SecurityScheme::getFlows)
-        .orElseThrow(() -> new OpenApiSecurityExtractorException("ClxApiOAuth2 flow not defined"));
+        .orElse(new OAuthFlows());
 
     extensions = Optional.ofNullable(clxApiOAuth2Flows.getAuthorizationCode())
         .map(OAuthFlow::getExtensions)

@@ -10,8 +10,9 @@ import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CAL
 import java.util.Map;
 import java.util.function.Function;
 
+import org.jfo.swaggerhub.swhreporter.dto.MyAdminDto;
 import org.jfo.swaggerhub.swhreporter.service.InitializerService;
-import org.jfo.swaggerhub.swhreporter.service.reactive.RxStatusService;
+import org.jfo.swaggerhub.swhreporter.service.StatusService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -24,11 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 public class SwhListener {
 
   private final InitializerService initializerService;
-  private final RxStatusService rxStatusService;
+  private final StatusService statusService;
 
   Map<SwhEventCommand, Function<SwhEventPayload, String>> commandMap = Map.of(
       CALL_FOR_SPECS, this::callForSpecs,
-      CALL_FOR_MY_ADMIN, this::callForDummyAdmin,
+      CALL_FOR_MY_ADMIN, this::callForMyAdmin,
       CALL_FOR_PROJECTS, this::callForProjects,
       CALL_FOR_COLLABORATION, this::callForCollaboration,
       CALL_FOR_DOCUMENTATION, this::callForDocumentation,
@@ -47,7 +48,7 @@ public class SwhListener {
   }
 
   private String callForSpecs(SwhEventPayload payload) {
-    long loadedItems = initializerService.rxInitAllOwnedSpecs();
+    long loadedItems = initializerService.initAllOwnedSpecs();
     if (-1L == loadedItems) {
       log.warn("No need to update list of owned specs");
     } else {
@@ -56,12 +57,12 @@ public class SwhListener {
     return payload.getId();
   }
 
-  private String callForDummyAdmin(SwhEventPayload payload) {
-    String uuid = initializerService.initDummyAdmin();
-    if ("".equals(uuid)) {
+  private String callForMyAdmin(SwhEventPayload payload) {
+    String user = initializerService.initMyAdmin((MyAdminDto) payload.getParams().get("myAdmin"));
+    if ("".equals(user)) {
       log.error("MyAdmin not initialized");
     } else {
-      log.info("MyAdmin uuid is {}", uuid);
+      log.info("MyAdmin for user {}", user);
     }
     return payload.getId();
   }
@@ -104,7 +105,7 @@ public class SwhListener {
   }
 
   private String callForUpdateStatus(SwhEventPayload payload) {
-    rxStatusService.updateStatus();
+    statusService.updateStatus();
     return payload.getId();
   }
 }

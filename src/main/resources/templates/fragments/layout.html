@@ -60,7 +60,7 @@
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reports</a>
                 <div class="dropdown-menu">
                     <span class="dropdown-item" th:replace="::menuItem ('/reporter/unresolved','unresolved','Unresolved','search','Specs unresolved')"></span>
-                    <span class="dropdown-item" th:replace="::menuItem ('/reporter/wrongreference','wrongreference','Wrong reference','search','Wrong reference')"></span>
+                    <span class="dropdown-item" th:replace="::menuItem ('/reporter/invalid','invalid','Invalid specs','search','Invalid specs')"></span>
 <!--                    <div class="dropdown-divider"></div>-->
 <!--                    <a class="dropdown-item" href="#">Separated link</a>-->
                 </div>
@@ -69,6 +69,7 @@
             <span class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
                 <div class="dropdown-menu">
+                    <span class="dropdown-item" th:replace="::menuItem ('/admin/load/myadmin','Home','My Admin','search','My Admin')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/specs','Home','Load specifications','search','Load specifications')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/docs','Home','Load documentation','search','Load documentation')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/collaborations','Home','Load collaborations','search','Load collaborations')"></span>

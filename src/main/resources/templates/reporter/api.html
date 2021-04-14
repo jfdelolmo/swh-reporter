@@ -55,6 +55,8 @@
         </div>
     </div>
 
+    <hr class="my-4">
+    
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-primary">
@@ -63,90 +65,96 @@
                     <p class="label-info">Collaboration information is not loaded yet</p>
                 </div>
                 <div class="panel panel-body" th:if="${api.getCollaboration() != null}">
-                    <div class="row" th:if="${#lists.isEmpty(api.getCollaboration().getMembers()) && #lists.isEmpty(api.getCollaboration().getTeams())}">
-                        <p class="label-info">There is no collaboration information</p>
-                    </div>
-                    <div class="row" th:if="${not #lists.isEmpty(api.getCollaboration().getMembers()) && not #lists.isEmpty(api.getCollaboration().getTeams())}">
-                    <div class="col-md-6">
-                        <div class="panel-title"><h5>Members</h5></div>
-                        <div class="table-responsive table-striped" th:if="${not #lists.isEmpty(api.getCollaboration().getMembers())}">
-                            <table class="table table-sm table-hover ">
-                                <thead class="thead-inverse">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:remove="all">
-                                    <td th:text="${member.memberName}">Member name</td>
-                                    <td th:text="${member.memberRole}">Member role</td>
-                                </tr>
-                                <tr th:remove="all">
-                                    <td th:text="${member.memberName}">Member name</td>
-                                    <td th:text="${member.memberRole}">Member role</td>
-                                </tr>
-                                <tr th:each="member : ${api.getCollaboration().getMembers()}">
-                                    <td th:text="${member.memberName}">Member name</td>
-                                    <td th:text="${member.memberRole}">Member role</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel-title"><h5>Members</h5></div>
+                            <div th:if="${#lists.isEmpty(api.getCollaboration().getMembers())}" class="alert alert-light" role="alert">
+                                There is no members information
+                            </div>
+                            <div class="table-responsive table-striped" th:if="${not #lists.isEmpty(api.getCollaboration().getMembers())}">
+                                <table class="table table-sm table-hover ">
+                                    <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:remove="all">
+                                        <td th:text="${member.memberName}">Member name</td>
+                                        <td th:text="${member.memberRole}">Member role</td>
+                                    </tr>
+                                    <tr th:remove="all">
+                                        <td th:text="${member.memberName}">Member name</td>
+                                        <td th:text="${member.memberRole}">Member role</td>
+                                    </tr>
+                                    <tr th:each="member : ${api.getCollaboration().getMembers()}">
+                                        <td th:text="${member.memberName}">Member name</td>
+                                        <td th:text="${member.memberRole}">Member role</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="panel-title"><h5>Teams</h5></div>
-                        <div class="table-responsive" th:if="${not #lists.isEmpty(api.collaboration.teams)}">
-                            <table class="table table-sm table-hover ">
-                                <thead class="thead-inverse">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:remove="all">
-                                    <td th:text="${team.name}">Team name</td>
-                                    <td th:text="${team.description}">Team description</td>
-                                </tr>
-                                <tr th:remove="all">
-                                    <td th:text="${team.name}">Team name</td>
-                                    <td th:text="${team.description}">Team description</td>
-                                </tr>
-                                <tr th:each="team : ${api.collaboration.teams}">
-                                    <td th:text="${team.name}">Team name</td>
-                                    <td th:text="${team.description}">Team description</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        
+                        <div class="col-md-6">
+                            <div class="panel-title"><h5>Teams</h5></div>
+                            <div th:if="${#lists.isEmpty(api.getCollaboration().getTeams())}" class="alert alert-light" role="alert">
+                                There is no teams information
+                            </div>
+                            <div class="table-responsive" th:if="${not #lists.isEmpty(api.collaboration.teams)}">
+                                <table class="table table-sm table-hover ">
+                                    <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:remove="all">
+                                        <td th:text="${team.name}">Team name</td>
+                                        <td th:text="${team.description}">Team description</td>
+                                    </tr>
+                                    <tr th:remove="all">
+                                        <td th:text="${team.name}">Team name</td>
+                                        <td th:text="${team.description}">Team description</td>
+                                    </tr>
+                                    <tr th:each="team : ${api.collaboration.teams}">
+                                        <td th:text="${team.name}">Team name</td>
+                                        <td th:text="${team.description}">Team description</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
 
+    <hr class="my-4">
+    
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-primary">
                 <div class="panel panel-heading"><h4>Security definitions</h4></div>
-                <div class="panel panel-body" th:if="${api.getSecurityDefinitions != null}">
+                <div class="panel panel-body" th:if="${api.getSecurityDefinitions == null}">
                     <div class="alert alert-warning" role="alert">
                         The security definitions has not been loaded
                     </div>
                 </div>
-                <div class="panel panel-body" th:if="${api.getSecurityDefinitions != null}">
-                    <div class="row col-md-12" th:if="${#lists.isEmpty(api.getSecurityDefinitions().getRoles()) && 
-                        #lists.isEmpty(api.getSecurityDefinitions().getScopes()) &&
-                        #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
+                <div class="panel panel-body" th:if="${api.getSecurityDefinitions != null && 
+                    #lists.isEmpty(api.getSecurityDefinitions().getRoles()) &&
+                    #lists.isEmpty(api.getSecurityDefinitions().getScopes()) &&
+                    #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
                         <div class="alert alert-warning" role="alert">
                             There are no valid security definitions
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getScopes())}">
+                            <div class="table-responsive" th:if="${api.getSecurityDefinitions != null && not #lists.isEmpty(api.getSecurityDefinitions().getScopes())}">
                                 <table class="table table-sm table-hover ">
                                     <thead class="thead-inverse">
                                     <tr>
@@ -168,7 +176,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getRoles())}">
+                            <div class="table-responsive" th:if="${api.getSecurityDefinitions != null && not #lists.isEmpty(api.getSecurityDefinitions().getRoles())}">
                                 <table class="table table-sm table-hover ">
                                     <thead class="thead-inverse">
                                     <tr>
@@ -190,7 +198,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="table-responsive" th:if="${not #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
+                            <div class="table-responsive" th:if="${api.getSecurityDefinitions != null && not #lists.isEmpty(api.getSecurityDefinitions().getAudiences())}">
                                 <table class="table table-sm table-hover ">
                                     <thead class="thead-inverse">
                                     <tr>
@@ -215,25 +223,29 @@
                 </div>
             </div>
         </div>
-    </div>
+
+    <hr class="my-4">
 
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
-            <div class="panel-heading">
-                <p>
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            <div class="panel panel-primary">
+                <div class="panel panel-heading">
+                    <button class="w-100 btn btn-primary btn-lg" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                         Specification
                     </button>
-                </p>
-            </div>
-            <div class="collapse" id="collapseExample">
-                <div class="card card-body">
-                    <pre th:text="${api.document}">openapi: .....blablablab .....</pre>
+                </div>
+                <div class="collapse" id="collapseExample">
+                    <div class="panel panel-body">
+                        <pre>
+                            <code th:text="${api.document}">openapi: .....blablablab .....</code>
+                        </pre>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 </body>
 </html>

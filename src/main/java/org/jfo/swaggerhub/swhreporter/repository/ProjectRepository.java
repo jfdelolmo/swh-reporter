@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface ProjectReactiveRepository extends ReactiveMongoRepository<Project, String> {
+public interface ProjectRepository extends ReactiveMongoRepository<Project, String> {
 
   Flux<Project> findAll();
   Mono<Project> findByName(String name);

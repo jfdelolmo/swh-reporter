@@ -23,19 +23,19 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Slf4j
-class RxSwaggerHubServiceImplTest {
+class SwaggerHubServiceImplTest {
 
   private static final String COLLABORATION_URL = "https://api.swaggerhub.com/apis/CREALOGIX/Test111/0.0.1";
   private static final String PROJECT_NAME = "Monitoring";
   public static final String OWNER = "CREALOGIX";
 
   private final SwhWebClient swhWebClient = new SwhWebClient();
-  private final RxSwaggerHubService rxService = new RxSwaggerHubServiceImpl(swhWebClient);
+  private final SwaggerHubService service = new SwaggerHubServiceImpl(swhWebClient);
 
   @Test
   @Disabled("Avoid call to SwaggerHub")
   void getAllOwnerSpecs() {
-    Flux<ApisJson> flux = rxService.getAllOwnerSpecs(OWNER);
+    Flux<ApisJson> flux = service.getAllOwnerSpecs(OWNER);
     List<ApisJsonApi> all = new ArrayList<>();
     flux.map(ApisJson::getApis).all(all::addAll).block();
 
@@ -49,7 +49,7 @@ class RxSwaggerHubServiceImplTest {
   @Test
   @Disabled("Avoid call to SwaggerHub")
   void getSpecVersionByUrl(){
-    Mono<String> mono = rxService.getApiVersionByUrl(COLLABORATION_URL, true);
+    Mono<String> mono = service.getApiVersionByUrl(COLLABORATION_URL, true);
     Assertions.assertThat(mono).isNotNull();
     Assertions.assertThat(mono.block()).isNotNull().isNotEmpty();
   }
@@ -59,7 +59,7 @@ class RxSwaggerHubServiceImplTest {
 //  @Disabled("Avoid call to SwaggerHub")
   void getCollaboration() {
 //    Mono<Collaboration> mono = rxService.getCollaboration(OWNER, COLLABORATION_URL);
-    Mono<Collaboration> mono = rxService.getCollaboration(OWNER, "https://api.swaggerhub.com/apis/CREALOGIX/aso-admin_api/2.0.7");
+    Mono<Collaboration> mono = service.getCollaboration(OWNER, "https://api.swaggerhub.com/apis/CREALOGIX/aso-admin_api/2.0.7");
     Collaboration collaboration = mono.block();
 
     Assertions.assertThat(mono).isNotNull();
@@ -72,7 +72,7 @@ class RxSwaggerHubServiceImplTest {
   @Disabled("Avoid calls to SwaggerHub")
   void getProjects() {
     List<Project> projects = new ArrayList<>();
-    Flux<ProjectsJson> flux = rxService.getProjects(OWNER);
+    Flux<ProjectsJson> flux = service.getProjects(OWNER);
     flux.map(p -> projects.addAll(p.getProjects()))
         .collectList()
         .block();
@@ -84,7 +84,7 @@ class RxSwaggerHubServiceImplTest {
   @Test
   @Disabled("Avoid calls to SwaggerHub")
   void getProjectMembers() {
-    Flux<ProjectMember> flux = rxService.getProjectMembers(OWNER, PROJECT_NAME);
+    Flux<ProjectMember> flux = service.getProjectMembers(OWNER, PROJECT_NAME);
 
     List<ProjectMember> all = flux.collectList().block();
 

@@ -5,7 +5,9 @@ import static org.jfo.swaggerhub.swhreporter.model.CommonConcepts.TYPE_API;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -14,7 +16,9 @@ import org.jfo.swaggerhub.swhreporter.dto.AdminStatusDto;
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
 import org.jfo.swaggerhub.swhreporter.dto.ClxApiOauth2SecurityDefinitionDto;
 import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
+import org.jfo.swaggerhub.swhreporter.dto.InvalidSpecDto;
 import org.jfo.swaggerhub.swhreporter.dto.MemberDto;
+import org.jfo.swaggerhub.swhreporter.dto.MyAdminDto;
 import org.jfo.swaggerhub.swhreporter.dto.ParticipantDto;
 import org.jfo.swaggerhub.swhreporter.dto.ParticipantReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
@@ -22,7 +26,7 @@ import org.jfo.swaggerhub.swhreporter.dto.SimpleSpecDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecInfoDto;
 import org.jfo.swaggerhub.swhreporter.dto.TeamDto;
 import org.jfo.swaggerhub.swhreporter.dto.UnresolvedSpecDto;
-import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceSpecDto;
+import org.jfo.swaggerhub.swhreporter.model.db.Admin;
 import org.jfo.swaggerhub.swhreporter.model.db.Api;
 import org.jfo.swaggerhub.swhreporter.model.db.Collaboration;
 import org.jfo.swaggerhub.swhreporter.model.db.Domain;
@@ -118,17 +122,34 @@ public class ModelMapper {
     if (null != input) {
       out.setId(input.getId());
       out.setSpecName(input.getName());
-
       out.setSpecTitle(input.getTitle());
-      out.setSpecDescription(input.getDescription());
 
       //Properties
       if (null != input.getSpecificationProperties()) {
         out.setSpecType(input.getSpecificationProperties().getType());
         out.setSpecVersion(input.getSpecificationProperties().getDefaultVersion());
+        out.setSpecDescription(getMaxStdLevel(input.getSpecificationProperties().getStandardization()));
       }
     }
     return out;
+  }
+
+  public String getMaxStdLevel(String original) {
+    List<String> stdList = Arrays.asList(
+        original.replace("[", "")
+            .replace("]", "")
+            .split(",")
+    );
+
+    if (stdList.contains("CRITICAL")) {
+      return "CRITICAL";
+    }
+
+    if (stdList.contains("WARNING")) {
+      return "WARNING";
+    }
+
+    return "OK";
   }
 
   public ApiDto apiDetailsModelToDto(Specification input) {
@@ -182,8 +203,8 @@ public class ModelMapper {
     return output;
   }
 
-  public WrongReferenceSpecDto validations(Specification s, Set<String> validate) {
-    WrongReferenceSpecDto output = new WrongReferenceSpecDto();
+  public InvalidSpecDto validations(Specification s, Set<String> validate) {
+    InvalidSpecDto output = new InvalidSpecDto();
     if (null != s) {
       output.setName(s.getName());
       output.setTitle(s.getTitle());
@@ -199,14 +220,14 @@ public class ModelMapper {
   public UnresolvedSpecDto specModelToUnresolvedSpecDto(Specification input) {
     UnresolvedSpecDto output = new UnresolvedSpecDto();
 
-    if (null!=input){
+    if (null != input) {
       output.setName(input.getName());
       output.setTitle(input.getTitle());
-      
-      if (null!=input.getOpenApiDocument()){
+
+      if (null != input.getOpenApiDocument()) {
         output.setResolved(input.getOpenApiDocument().getUnresolved());
       }
-      if (null!=input.getSpecificationProperties()){
+      if (null != input.getSpecificationProperties()) {
         output.setVersion(input.getSpecificationProperties().getDefaultVersion());
         output.setType(input.getSpecificationProperties().getType());
       }
@@ -215,6 +236,20 @@ public class ModelMapper {
 
     return output;
   }
+
+  public MyAdminDto adminToDto(Admin input) {
+    MyAdminDto output = new MyAdminDto();
+    
+    if (null != input) {
+      output.setOwner(input.getOwner());
+      output.setApikey(input.getApikey());
+      output.setUser(input.getUser());
+      output.setPendingToUpdate(input.getPendingToUpdate());
+    }
+
+    return output;
+  }
+  
 }
 //    public SpecInfoDto specModelToSpecPropertiesDto(Specification model) {
 //        SpecInfoDto dto = new SpecInfoDto();

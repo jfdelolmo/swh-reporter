@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jfo.swaggerhub.swhreporter.model.db.Specification;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface SpecificationReactiveRepository extends ReactiveMongoRepository<Specification, String>, CustomSpecificationReactiveRepository {
+public interface SpecificationRepository extends ReactiveMongoRepository<Specification, String>, CustomSpecificationRepository {
 
   Mono<Specification> findByName(String name);
 

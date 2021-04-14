@@ -14,6 +14,7 @@ public class Admin {
   @Id
   private String id = UUID.randomUUID().toString();
 
+  private String user;
   private String owner;
   private String apikey;
   private Boolean pendingToUpdate;

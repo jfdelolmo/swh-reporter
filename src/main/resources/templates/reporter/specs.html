@@ -36,7 +36,7 @@
                         <th scope="col">Title</th>
                         <th scope="col">Name</th>
                         <th scope="col">Default version</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">Standardization</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,21 +45,24 @@
                         <td th:text="${s.specTitle}">Title</td>
                         <td th:text="${s.specName}">Api name</td>
                         <td th:text="${s.specVersion}">Api version</td>
-                        <td th:text="${s.specDescription}">Api description</td>
+                        <td th:text="${s.specDescription}">Standardization</td>
                     </tr>
                     <tr th:remove="all">
                         <td th:text="${s.specType}">Api type</td>
                         <td th:text="${s.specTitle}">Title</td>
                         <td th:text="${s.specName}">Api name</td>
                         <td th:text="${s.specVersion}">Api version</td>
-                        <td th:text="${s.specDescription}">Api description</td>
+                        <td th:text="${s.specDescription}">Standardization</td>
                     </tr>
                     <tr th:each="s : ${specs.specs}">
                         <td th:text="${s.specType}">DOMAIN</td>
                         <td th:text="${s.specTitle}">Title</td>
                         <td><a th:href="'/reporter/specs/'+ ${s.id}" th:text="${s.specName}"></a></td>
                         <td th:text="${s.specVersion}">3.2.0</td>
-                        <td th:text="${s.specDescription}">Api description: Lorem...</td>
+                        
+                        <td th:if="${s.specDescription == 'OK'}" class="text-center"><span class="badge bg-success w-75">Ok</span></td>
+                        <td th:if="${s.specDescription == 'CRITICAL'}" class="text-center"><span class="badge bg-danger w-75">Critical</span></td>
+                        <td th:if="${s.specDescription == 'WARNING'}" class="text-center"><span class="badge bg-warning w-75">Warning</span></td>
                     </tr>
                 </tbody>
                 <tfoot>

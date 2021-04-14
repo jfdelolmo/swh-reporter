@@ -8,17 +8,16 @@ import static org.jfo.swaggerhub.swhreporter.service.message.SwhEventCommand.CAL
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.UUID;
 import java.util.function.Function;
 
+import org.jfo.swaggerhub.swhreporter.dto.MyAdminDto;
 import org.jfo.swaggerhub.swhreporter.model.db.Specification;
-import org.jfo.swaggerhub.swhreporter.repository.SpecificationReactiveRepository;
+import org.jfo.swaggerhub.swhreporter.repository.SpecificationRepository;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.scheduler.Scheduler;
 
 @Slf4j
 @Component
@@ -26,14 +25,22 @@ import reactor.core.scheduler.Scheduler;
 public class SwhProcessor {
 
   private final SwhEventPublisher publisher;
-  private final SpecificationReactiveRepository specificationReactiveRepository;
+  private final SpecificationRepository specificationReactiveRepository;
 
+  @Deprecated
   public SwhEventPayload processCallForMyAdmin() {
     return commonPublisher(
         commonPayloadBuilder(SwhEventCommand.CALL_FOR_MY_ADMIN)
     );
   }
 
+  public SwhEventPayload processCallForCreateMyAdmin(MyAdminDto myAdminDto){
+    SwhEventPayload createMyAdminPayload = new SwhEventPayload();
+    createMyAdminPayload.setCommand(SwhEventCommand.CALL_FOR_MY_ADMIN);
+    createMyAdminPayload.getParams().put("myAdmin", myAdminDto);
+    return commonPublisher(createMyAdminPayload);
+  }
+  
   public SwhEventPayload processCallForSpecs() {
     return commonPublisher(
         commonPayloadBuilder(CALL_FOR_SPECS)

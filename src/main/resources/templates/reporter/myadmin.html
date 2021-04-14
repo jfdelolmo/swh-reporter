@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'myadmin')}">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/sandstone/bootstrap.min.css" integrity="sha384-zEpdAL7W11eTKeoBJK1g79kgl9qjP7g84KfK3AZsuonx38n8ad+f5ZgXtoSDxPOh" crossorigin="anonymous">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+  <main>
+    <div class="py-5">
+      <h4 class="mb-3">MyAdmin information</h4>
+      <p class="lead">Fill the data below with the appropriate values provided by SwaggerHub</p>
+    </div>
+
+    <div class="row g-5">
+      <div class="col-md-7 col-lg-8">
+        
+        <form class="needs-validation" novalidate="" method="post" th:object="${myAdmin}">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="owner" class="form-label">Owner</label>
+              <input th:field="*{owner}" type="text" class="form-control" id="owner" placeholder="Get the owner from SwaggerHub (case sensitive)" value="" required="yes">
+              <div class="invalid-feedback">
+                Please enter owner name (case sensitive).
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="apikey" class="form-label">Api Key</label>
+              <input th:field="*{apikey}" type="text" class="form-control" id="apikey" placeholder="Get your key from your profile at SwaggerHub" required="yes">
+              <div class="invalid-feedback">
+                Please enter your api key.
+              </div>
+            </div>
+
+          </div>
+
+          <hr class="my-4">
+
+          <button class="w-100 btn btn-primary btn-lg" type="submit">Save</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+
+<script src="/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
+<script src="form-validation.js"></script>
+
+</body>
+</html>

@@ -5,8 +5,9 @@ import org.jfo.swaggerhub.swhreporter.model.db.Status;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 
-public interface AdminReactiveRepository extends ReactiveMongoRepository<Admin, String> {
-
-    Mono<Admin> findByOwner(String owner);
+public interface AdminRepository extends ReactiveMongoRepository<Admin, String> {
+    
+    Mono<Admin> findByUserAndOwner(String user, String owner);
+    Mono<Admin> findByUser(String user);
 
 }

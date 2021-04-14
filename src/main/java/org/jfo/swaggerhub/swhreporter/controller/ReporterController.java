@@ -1,13 +1,22 @@
 package org.jfo.swaggerhub.swhreporter.controller;
 
+import static org.jfo.swaggerhub.swhreporter.model.CommonConcepts.TYPE_API;
+import static org.jfo.swaggerhub.swhreporter.model.CommonConcepts.TYPE_DOMAIN;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jfo.swaggerhub.swhreporter.dto.InvalidSpecDto;
+import org.jfo.swaggerhub.swhreporter.dto.InvalidSpecsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectParticipantsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectsReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
 import org.jfo.swaggerhub.swhreporter.dto.UnresolvedReportDto;
-import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceReportDto;
-import org.jfo.swaggerhub.swhreporter.service.reactive.RxReporterService;
+import org.jfo.swaggerhub.swhreporter.service.ReporterService;
+import org.jfo.swaggerhub.swhreporter.service.StatusService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,16 +33,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ReporterController {
 
     private static final String ELAPSED_TIME_LOG = "ReporterController :: Elapsed time {}";
-    
-    private final RxReporterService rxReporterService;
+
+    private final ReporterService reporterService;
+    private final StatusService statusService;
 
     @GetMapping("/specs")
     public String getSpecs(Model model) {
         log.info("Entering getSpecs controller method");
         long startTime = System.currentTimeMillis();
-        
+
         SpecsDto out = new SpecsDto();
-        out.setSpecs(rxReporterService.getAllSpecifications().collectList().block());
+        out.setSpecs(reporterService.getAllSpecifications().collectList().block());
         out.setNumberOfSpec(out.getSpecs().size());
 
         model.addAttribute("specs", out);
@@ -46,8 +56,8 @@ public class ReporterController {
     public String getSpecDetails(Model model, @PathVariable("id") String id) {
         log.info("Entering getSpecDetails controller method");
         long startTime = System.currentTimeMillis();
-        
-        model.addAttribute("api", rxReporterService.getApiDetails(id).block());
+
+        model.addAttribute("api", reporterService.getApiDetails(id).block());
         
         log.info(ELAPSED_TIME_LOG, System.currentTimeMillis()-startTime);
         return "reporter/api";
@@ -59,7 +69,7 @@ public class ReporterController {
         long startTime = System.currentTimeMillis();
         
         ProjectsReportDto dto = new ProjectsReportDto();
-        dto.setProjects(rxReporterService.getAllProjects().collect(Collectors.toSet()).block());
+        dto.setProjects(reporterService.getAllProjects().collect(Collectors.toSet()).block());
         dto.setTotal(dto.getProjects().size());
         model.addAttribute("projects", dto);
 
@@ -71,27 +81,35 @@ public class ReporterController {
     public String getParticipantsReport(Model model) {
         log.info("Entering Participants Report controller method");
         long startTime = System.currentTimeMillis();
-        
+
         ProjectParticipantsReportDto dto = new ProjectParticipantsReportDto();
-        dto.setParticipants(rxReporterService.getParticipantsReport().collect(Collectors.toSet()).block());
+        dto.setParticipants(reporterService.getParticipantsReport().collect(Collectors.toSet()).block());
         model.addAttribute("participants", dto);
 
-        log.info(ELAPSED_TIME_LOG, System.currentTimeMillis()-startTime);
+        log.info(ELAPSED_TIME_LOG, System.currentTimeMillis() - startTime);
         return "reporter/participants";
     }
 
-    @GetMapping("/wrongreference")
-    public String getWrongReferencedApis(Model model) {
-        log.info("Entering Wrong Referenced Apis Report controller method");
+    @GetMapping("/invalid")
+    public String getInvalidSpecs(Model model) {
+        log.info("Entering Invalid Specs Report controller method");
         long startTime = System.currentTimeMillis();
-        
-        WrongReferenceReportDto dto = new WrongReferenceReportDto();
-        dto.setWrongspecs(rxReporterService.getWrongReferencedApis().collect(Collectors.toSet()).block());
-        dto.setTotal((long) dto.getWrongspecs().size());
-        model.addAttribute("wrongreference", dto);
 
-        log.info(ELAPSED_TIME_LOG, System.currentTimeMillis()-startTime);
-        return "/reporter/wrongreference";
+        InvalidSpecsReportDto dto = new InvalidSpecsReportDto();
+        Set<InvalidSpecDto> invalidSpecs = reporterService.getInvalidSpecs().collect(Collectors.toSet()).blockOptional().orElse(new HashSet<>());
+        dto.setInvalidSpecs(invalidSpecs);
+        dto.setTotal(invalidSpecs.size());
+        model.addAttribute("invalid", dto);
+
+        Map<String, List<InvalidSpecDto>> invalidSpecsMap = invalidSpecs.stream()
+            .collect(Collectors.groupingBy(InvalidSpecDto::getType));
+        statusService.updateInvalidSpecs(
+            null != invalidSpecsMap.get(TYPE_API) ? invalidSpecsMap.get(TYPE_API).size() : 0,
+            null != invalidSpecsMap.get(TYPE_DOMAIN) ? invalidSpecsMap.get(TYPE_DOMAIN).size() : 0
+        );
+
+        log.info(ELAPSED_TIME_LOG, System.currentTimeMillis() - startTime);
+        return "/reporter/invalid";
     }
     
     @GetMapping("/unresolved")
@@ -100,7 +118,7 @@ public class ReporterController {
         long startTime = System.currentTimeMillis();
 
         UnresolvedReportDto dto = new UnresolvedReportDto();
-        dto.setUnresolvedSpecs(rxReporterService.getUnresolvedSpecs().collect(Collectors.toSet()).block());
+        dto.setUnresolvedSpecs(reporterService.getUnresolvedSpecs().collect(Collectors.toSet()).block());
         dto.setTotal((long) dto.getUnresolvedSpecs().size());
         model.addAttribute("unresolved", dto);
 

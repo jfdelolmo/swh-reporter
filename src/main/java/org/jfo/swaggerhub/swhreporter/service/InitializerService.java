@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.jfo.swaggerhub.swhreporter.dto.MyAdminDto;
 import org.jfo.swaggerhub.swhreporter.mappers.SwhMapper;
-import org.jfo.swaggerhub.swhreporter.model.db.Admin;
 import org.jfo.swaggerhub.swhreporter.model.db.OpenApiDocument;
 import org.jfo.swaggerhub.swhreporter.model.db.Project;
 import org.jfo.swaggerhub.swhreporter.model.db.Specification;
@@ -18,9 +18,8 @@ import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
-import org.jfo.swaggerhub.swhreporter.repository.ProjectReactiveRepository;
-import org.jfo.swaggerhub.swhreporter.repository.SpecificationReactiveRepository;
-import org.jfo.swaggerhub.swhreporter.service.reactive.RxAdminService;
+import org.jfo.swaggerhub.swhreporter.repository.ProjectRepository;
+import org.jfo.swaggerhub.swhreporter.repository.SpecificationRepository;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -40,54 +39,101 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 public class InitializerService {
 
-  private final SpecificationReactiveRepository specificationReactiveRepository;
-  private final ProjectReactiveRepository projectReactiveRepository;
+  private final SpecificationRepository specificationRepository;
+  private final ProjectRepository projectRepository;
 
-  private final RxSwaggerHubService rxSwaggerHubService;
-  private final RxAdminService adminService;
+  private final SwaggerHubService swaggerHubService;
+  private final AdminService adminService;
 
   private final SwhMapper swhMapper;
 
-  public String initDummyAdmin() {
-    return adminService.createAdmin("", "").getId();
+  public String initMyAdmin(MyAdminDto myAdminDto) {
+    String owner = "";
+    String apiKey = "";
+    if (null!=myAdminDto){
+      owner = myAdminDto.getOwner();
+      apiKey = myAdminDto.getApikey();
+    }
+    return adminService.createAdmin(owner, apiKey).getUser(); 
   }
-
-  public Long rxInitAllOwnedSpecs() {
-    Admin admin = adminService.getMyAdmin().blockOptional().orElse(null);
-    if (null != admin && admin.getPendingToUpdate()) {
-      List<ApisJsonApi> jsonApiList = new ArrayList<>();
-      rxSwaggerHubService
-          .getAllOwnerSpecs(admin.getOwner())
-          .map(ApisJson::getApis)
-          .all(jsonApiList::addAll)
-          .block();
-
-      List<Specification> specifications = jsonApiList.stream()
-          .map(swhMapper::apisJsonApiToSpecModel)
-          .collect(Collectors.toList());
-
+  
+  public Long initAllOwnedSpecs() {
+    MyAdminDto admin = adminService.getMyAdmin();
+    if (admin.getPendingToUpdate()) {
+      List<Specification> specsFromSwh = getSpecsFromSwh(admin.getOwner());
+      
       AtomicLong updated = new AtomicLong(0);
-      specificationReactiveRepository.saveOrUpdateAll(specifications)
+      specificationRepository.saveOrUpdateAll(specsFromSwh)
           .subscribe(r ->
               log.info("Inserted spec {} - {} - {}", updated.incrementAndGet(), r.getId(), r.getName())
           );
-
+      
+      deleteSpecsNotReceived(specsFromSwh);
+      
       return updated.get();
     }
     return -1L;
   }
 
+  /**
+   * Calls swaggerHubService to retrieve all the specs and maps them to Specification.
+   * @param owner The owner returned by the AdminService
+   * @return The list of specifications
+   */
+  private List<Specification> getSpecsFromSwh(String owner){
+    List<ApisJsonApi> jsonApiList = new ArrayList<>();
+    swaggerHubService
+        .getAllOwnerSpecs(owner)
+        .map(ApisJson::getApis)
+        .all(jsonApiList::addAll)
+        .block();
+
+    return jsonApiList.stream()
+        .map(swhMapper::apisJsonApiToSpecModel)
+        .collect(Collectors.toList());
+  }
+  
+  /**
+   * Delete in the DB the ones deleted in SWH
+   * Receives the specs from SwaggerHub
+   * Get all specs in the DB
+   * Removes from the list the ones received, so we keep in the list the ones that are not received
+   * and have to be deleted
+   * @param specsFromSwh List of specs from SwaggerHub
+   */
+  private void deleteSpecsNotReceived(List<Specification> specsFromSwh) {
+    Set<String> specsFromSwhNameVersion = specsFromSwh
+        .stream()
+        .map(s->s.getName()+"::"+s.getSpecificationProperties().getDefaultVersion())
+        .collect(Collectors.toSet());
+
+    List<Specification> allDbSpecs = specificationRepository
+        .findAll()
+        .collectList()
+        .block();
+
+    if (null!=allDbSpecs && !allDbSpecs.isEmpty()) {
+      Set<Specification> specsToDelete = allDbSpecs.stream()
+          .filter(s -> !specsFromSwhNameVersion.contains(s.getName() + "::" + s.getSpecificationProperties().getDefaultVersion()))
+          .collect(Collectors.toSet());
+      specsToDelete.forEach(s -> {
+        log.info("Delete {} - {}", s.getSpecificationProperties().getType(), s.getName());
+        specificationRepository.deleteById(s.getId()).block();
+      });
+    }
+  }
+
   public Long retrieveCollaborationAndUpdateSpecification(String specUuid) {
-    Admin admin = adminService.getMyAdmin().blockOptional().orElse(null);
-    if (null != admin && null != admin.getOwner()) {
-      Specification spec = specificationReactiveRepository.findById(specUuid).block();
+    MyAdminDto admin = adminService.getMyAdmin();
+    if (null != admin.getOwner()) {
+      Specification spec = specificationRepository.findById(specUuid).block();
       if (null != spec && null != spec.getSpecificationProperties() && null != spec.getSpecificationProperties().getUrl()) {
-        Collaboration swhCollaboration = rxSwaggerHubService.getCollaboration(
+        Collaboration swhCollaboration = swaggerHubService.getCollaboration(
             admin.getOwner(),
             spec.getSpecificationProperties().getUrl())
             .block();
         spec.setCollaboration(swhMapper.collaborationSwhToModel(swhCollaboration));
-        specificationReactiveRepository.save(spec).block();
+        specificationRepository.save(spec).block();
         return 1L;
       }
     }
@@ -95,14 +141,14 @@ public class InitializerService {
   }
 
   public Long retrieveDocumentationAndUpdateSpecification(String specUuid) {
-    Admin admin = adminService.getMyAdmin().blockOptional().orElse(null);
-    if (null != admin && null != admin.getOwner()) {
-      Specification spec = specificationReactiveRepository.findById(specUuid).block();
+    MyAdminDto admin = adminService.getMyAdmin();
+    if (null != admin.getOwner()) {
+      Specification spec = specificationRepository.findById(specUuid).block();
       if (null != spec &&
           null != spec.getSpecificationProperties() &&
           null != spec.getSpecificationProperties().getUrl()) {
 
-        Pair<String, String> pair = rxSwaggerHubService
+        Pair<String, String> pair = swaggerHubService
             .getResolvedUnresolvedSpec(spec.getSpecificationProperties().getUrl())
             .blockOptional()
             .orElse(Pair.of(null, null));
@@ -111,7 +157,7 @@ public class InitializerService {
 
         if (null == spec.getOpenApiDocument() || !spec.getOpenApiDocument().equals(newOAS)) {
           spec.setOpenApiDocument(newOAS);
-          specificationReactiveRepository.save(spec).block();
+          specificationRepository.save(spec).block();
           return 1L;
         }
       }
@@ -125,11 +171,11 @@ public class InitializerService {
    * @return All the projects with it's members.
    */
   public Long rxInitAllOwnedProjects() {
-    Admin admin = adminService.getMyAdmin().blockOptional().orElse(null);
+    MyAdminDto admin = adminService.getMyAdmin();
     AtomicLong updated = new AtomicLong(0);
-    if (null != admin && null != admin.getOwner()) {
+    if (null != admin.getOwner()) {
       List<org.jfo.swaggerhub.swhreporter.model.swh.Project> shwProjectList = new ArrayList<>();
-      rxSwaggerHubService
+      swaggerHubService
           .getProjects(admin.getOwner())
           .map(ProjectsJson::getProjects)
           .all(shwProjectList::addAll)
@@ -142,7 +188,7 @@ public class InitializerService {
 
       log.debug("Calling SwaggerHub to get the projects members");
       mappedSwhProjectSet.forEach(project -> {
-        Flux<ProjectMember> memberFlux = rxSwaggerHubService.getProjectMembers(admin.getOwner(), project.getName());
+        Flux<ProjectMember> memberFlux = swaggerHubService.getProjectMembers(admin.getOwner(), project.getName());
         if (null != memberFlux) {
           project.getParticipants()
               .addAll(
@@ -155,17 +201,17 @@ public class InitializerService {
       });
 
       mappedSwhProjectSet.forEach(incoming -> {
-        Project existent = projectReactiveRepository.findByName(incoming.getName()).block();
+        Project existent = projectRepository.findByName(incoming.getName()).block();
 
         if (null == existent) {
-          projectReactiveRepository.save(incoming).block();
+          projectRepository.save(incoming).block();
           log.info("{} - Saved new project {} - {}", updated.incrementAndGet(), incoming.getId(), incoming.getName());
         } else {
           if (!existent.equals(incoming)) {
             existent.setDescription(incoming.getDescription());
             existent.setApis(incoming.getApis());
             existent.setDomains(incoming.getDomains());
-            projectReactiveRepository.save(existent).block();
+            projectRepository.save(existent).block();
             log.info("{} - Updated project {} - {}", updated.incrementAndGet(), existent.getId(), existent.getName());
           }else
             log.info("Received unmodified project {} - {}", existent.getId(), existent.getName());
@@ -179,12 +225,12 @@ public class InitializerService {
   public Long updateProjectSpecs(){
     AtomicLong projectUpdated = new AtomicLong(0);
     AtomicLong updated = new AtomicLong(0);
-    Set<Project> projects = projectReactiveRepository.findAll().collect(Collectors.toSet()).block();
+    Set<Project> projects = projectRepository.findAll().collect(Collectors.toSet()).block();
     if (null!=projects){
       projects.forEach(p -> {
         
         p.getApis().forEach(a -> {
-          Specification spec = specificationReactiveRepository.findByName(a.getName()).block();
+          Specification spec = specificationRepository.findByName(a.getName()).block();
           if (null!=spec && a.getId()==null){
             a.setId(spec.getId());
             updated.incrementAndGet();
@@ -192,7 +238,7 @@ public class InitializerService {
         });
         
         p.getDomains().forEach(d -> {
-          Specification spec = specificationReactiveRepository.findByName(d.getName()).block();
+          Specification spec = specificationRepository.findByName(d.getName()).block();
           if (null!=spec && d.getId()==null){
             d.setId(spec.getId());
             updated.incrementAndGet();
@@ -200,7 +246,7 @@ public class InitializerService {
         });
         
         if (updated.get()>0){
-          projectReactiveRepository.save(p).block();
+          projectRepository.save(p).block();
           log.info("{} SpecId updated from project {}",projectUpdated.incrementAndGet(),p.getName());
           updated.set(0);
         }
@@ -209,68 +255,5 @@ public class InitializerService {
     }
     return projectUpdated.get();
   }
-  
-
-//    /**
-//     * For each of the specifications stored in the repository retrieve it's collaboration and updates the specification.
-//     *
-//     * @return Set of specifications with the collaboration updated
-//     */
-//  public Set<NewSpecification> retrieveAllCollaborationsAndUpdateSpecification() {
-//    Set<NewSpecification> allSpecs = new HashSet<>();
-//    specificationRepository.findAll().forEach(s -> {
-//      Collaboration collaboration = swaggerHubServiceImpl.getCollaboration(s.getProperties().getUrl());
-//      s.updateCollaboration(swhMapper.collaborationSwhToModel(collaboration));
-//      allSpecs.add(s);
-//    });
-//    return allSpecs;
-//  }
-//    public Specification retrieveApiAndStoreUpdatedSpecification(Specification specification) {
-//    Pair<String, String> specsPair = swaggerHubServiceImpl.getResolvedUnresolvedSpec(specification.getSpecificationProperties().getUrl());
-//
-//    specification.setOpenApiDocument(new OpenApiDocument(specsPair.getLeft(), specsPair.getRight()));
-//    return specificationRepository.save(specification);
-//        return null;
-//    }
-//    public Specification retrieveCollaborationAndStoreUpdatedSpecification(Specification specification) {
-//    Collaboration collaboration = swaggerHubServiceImpl.getCollaboration(specification.getSpecificationProperties().getUrl());
-//    specification.setCollaboration(swhMapper.collaborationSwhToModel(collaboration));
-//    return specificationRepository.save(specification);
-//        return null;
-//    }
-//  public Set<Project> retrieveAllOwnedProjectsAndMembers() {
-//    Set<Project> projects = new HashSet<>();
-//
-//    log.debug("Calling SwaggerHub to get the projects");
-//    ProjectsJson swhProjects = swaggerHubServiceImpl.getProjects(adminService.getUserOwner());
-//    log.debug("Received {} projects from SwaggerHub", swhProjects.getProjects().size());
-//
-//    log.debug("Calling SwaggerHub to get the projects members");
-//    swhProjects.getProjects().forEach(project -> {
-//      Project dbProject = swhMapper.projectSwhToModel(project);
-//      Set<ProjectMember> members = swaggerHubServiceImpl.getProjectMembers(adminService.getUserOwner(), project.getName());
-//      members.forEach(m -> dbProject.addParticipant(swhMapper.memberShwToParticipants(m)));
-//      projects.add(projectRepository.saveOrUpdate(dbProject));
-//    });
-//
-//    return projects;
-//  }
-//    /**
-//     * Retrieves all the owned specifications and save or updates them in the repository.
-//     *
-//     * @return Set of specifications
-//     */
-//    public Set<Specification> retrieveAllOwnedSpecs() {
-//        log.info("Retrieving all the specs for initialization");
-//    Set<ApisJsonApi> allApis = swaggerHubServiceImpl.getAllOwnerSpecs(adminService.getUserOwner());
-//    log.info("Mapping the {} specs received", allApis.size());
-//    Set<Specification> allApisModel = allApis.stream().map(swhMapper::apisJsonApiToSpecModel).collect(Collectors.toSet());
-//    log.info("Saving the {} specs mapped", allApis.size());
-//    Set<NewSpecification> result = specificationRepository.saveOrUpdateAll(allApisModel);
-//    log.info("{} specs stored in the database", result.size());
-//    return result;
-//        return null;
-//    }    
-
 
 }

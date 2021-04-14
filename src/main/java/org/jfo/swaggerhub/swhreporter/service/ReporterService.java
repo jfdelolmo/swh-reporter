@@ -1,16 +1,15 @@
-package org.jfo.swaggerhub.swhreporter.service.reactive;
+package org.jfo.swaggerhub.swhreporter.service;
 
-import org.apache.commons.lang3.Streams;
 import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
 import org.jfo.swaggerhub.swhreporter.dto.ParticipantReportDto;
 import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
 import org.jfo.swaggerhub.swhreporter.dto.SpecInfoDto;
 import org.jfo.swaggerhub.swhreporter.dto.UnresolvedSpecDto;
-import org.jfo.swaggerhub.swhreporter.dto.WrongReferenceSpecDto;
+import org.jfo.swaggerhub.swhreporter.dto.InvalidSpecDto;
 import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
 import org.jfo.swaggerhub.swhreporter.model.db.Specification;
-import org.jfo.swaggerhub.swhreporter.repository.ProjectReactiveRepository;
-import org.jfo.swaggerhub.swhreporter.repository.SpecificationReactiveRepository;
+import org.jfo.swaggerhub.swhreporter.repository.ProjectRepository;
+import org.jfo.swaggerhub.swhreporter.repository.SpecificationRepository;
 import org.jfo.swaggerhub.swhreporter.validator.SpecValidator;
 import org.springframework.stereotype.Service;
 
@@ -22,50 +21,50 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RxReporterService {
+public class ReporterService {
 
-  private final SpecificationReactiveRepository specificationReactiveRepository;
-  private final ProjectReactiveRepository projectReactiveRepository;
-
+  private final SpecificationRepository specificationRepository;
+  private final ProjectRepository projectRepository;
+  
   private final SpecValidator specValidator;
 
   private final ModelMapper modelMapper;
 
   public Flux<SpecInfoDto> getAllSpecifications() {
-    return specificationReactiveRepository
+    return specificationRepository
         .findAll()
         .map(modelMapper::specModelToSpecDto)
         .defaultIfEmpty(new SpecInfoDto());
   }
 
   public Mono<ApiDto> getApiDetails(String id) {
-    return specificationReactiveRepository
+    return specificationRepository
         .findById(id)
         .map(modelMapper::apiDetailsModelToDto);
   }
 
   public Flux<ProjectDto> getAllProjects() {
-    return projectReactiveRepository
+    return projectRepository
         .findAll()
         .map(modelMapper::projectModelToDto);
   }
-
-
+  
   public Flux<ParticipantReportDto> getParticipantsReport() {
-    return projectReactiveRepository
+    return projectRepository
         .findAllByOrderByNameAsc()
         .map(modelMapper::projectModelToParticipantReportDto)
         .defaultIfEmpty(new ParticipantReportDto());
   }
 
-  public Flux<WrongReferenceSpecDto> getWrongReferencedApis() {
-    return specificationReactiveRepository
+  public Flux<InvalidSpecDto> getInvalidSpecs() {
+    return specificationRepository
         .findAll()
-        .map(this::callValidator);
+        .map(this::callValidator)
+        .filter(f -> f.getNumErrors() > 0);
   }
 
-  private WrongReferenceSpecDto callValidator(Specification s) {
-    WrongReferenceSpecDto ws = new WrongReferenceSpecDto();
+  private InvalidSpecDto callValidator(Specification s) {
+    InvalidSpecDto ws = new InvalidSpecDto();
     if (null != s &&
         null != s.getSpecificationProperties() &&
         null != s.getOpenApiDocument()) {
@@ -79,7 +78,7 @@ public class RxReporterService {
   }
 
   public Flux<UnresolvedSpecDto> getUnresolvedSpecs() {
-    return specificationReactiveRepository
+    return specificationRepository
         .getUnresolvedSpecs()
         .map(modelMapper::specModelToUnresolvedSpecDto);
   }
