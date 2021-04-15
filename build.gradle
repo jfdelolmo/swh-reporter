@@ -84,10 +84,12 @@ dependencies {
 //    implementation("javax.cache:cache-api")
 
     //Front-end
-    implementation('org.webjars:webjars-locator-core',
-            'org.webjars:jquery:2.2.4',
-            'org.webjars:jquery-ui:1.11.4',
-            'org.webjars:bootstrap:4.6.0');
+//    implementation(
+//            'org.webjars:webjars-locator-core',
+//            'org.webjars:jquery:2.2.4',
+//            'org.webjars:jquery-ui:1.11.4',
+//            'org.webjars:bootstrap:4.6.0'
+//    );
 
     //Testing required
 

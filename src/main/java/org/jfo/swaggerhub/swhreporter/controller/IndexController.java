@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class IndexController {
   
-  private static final String ELAPSED_TIME_LOG = "IndexController :: Elapsed time {}";
+  private static final String ELAPSED_TIME_LOG = "IndexController :: Elapsed time {} ms";
   
   private final StatusService statusService;
 

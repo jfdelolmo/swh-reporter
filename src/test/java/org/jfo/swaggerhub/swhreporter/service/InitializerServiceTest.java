@@ -33,7 +33,7 @@ class InitializerServiceTest {
 
     private final ModelMapper modelMapper = new ModelMapper(new OASExtractor());
     private final AdminService adminService = new AdminService(adminRepository, modelMapper);
-    private final SwaggerHubService swaggerHubService = new SwaggerHubServiceImpl(new SwhWebClient());
+    private final SwaggerHubService swaggerHubService = new SwaggerHubServiceImpl(adminService, new SwhWebClient());
     private final SwhMapper swhMapper = new SwhMapper();
 
 

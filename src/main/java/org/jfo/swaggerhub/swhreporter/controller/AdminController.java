@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/admin")
 public class AdminController {
 
-  private static final String ELAPSED_TIME_LOG = "AdminController :: Elapsed time for payload {} :: {}";
+  private static final String ELAPSED_TIME_LOG = "AdminController :: Elapsed time for payload {} :: {} ms";
   private static final String REDIRECT_INDEX_VIEW = "redirect:/index";
 
   private final SwhProcessor swhProcessor;
@@ -34,7 +34,7 @@ public class AdminController {
     model.addAttribute("myAdmin", adminService.getMyAdmin());
 
     log.info("AdminController :: Loaded MyAdmin in {} ms", System.currentTimeMillis() - startTime);
-    return "reporter/myadmin";
+    return "admin/myadmin";
   }
 
   @PostMapping("load/myadmin")

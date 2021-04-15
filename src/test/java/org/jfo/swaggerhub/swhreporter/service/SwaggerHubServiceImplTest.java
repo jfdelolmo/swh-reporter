@@ -5,12 +5,15 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.jfo.swaggerhub.swhreporter.client.SwhWebClient;
+import org.jfo.swaggerhub.swhreporter.mappers.ModelMapper;
+import org.jfo.swaggerhub.swhreporter.mappers.OASExtractor;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJson;
 import org.jfo.swaggerhub.swhreporter.model.swh.ApisJsonApi;
 import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.jfo.swaggerhub.swhreporter.model.swh.Project;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
+import org.jfo.swaggerhub.swhreporter.repository.AdminRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -22,6 +25,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import static org.mockito.Mockito.mock;
+
 @Slf4j
 class SwaggerHubServiceImplTest {
 
@@ -29,8 +34,12 @@ class SwaggerHubServiceImplTest {
   private static final String PROJECT_NAME = "Monitoring";
   public static final String OWNER = "CREALOGIX";
 
+  private final AdminRepository adminRepository = mock(AdminRepository.class);
+  private final ModelMapper modelMapper = new ModelMapper(new OASExtractor());
+  private final AdminService adminService = new AdminService(adminRepository, modelMapper);
+
   private final SwhWebClient swhWebClient = new SwhWebClient();
-  private final SwaggerHubService service = new SwaggerHubServiceImpl(swhWebClient);
+  private final SwaggerHubService service = new SwaggerHubServiceImpl(adminService, swhWebClient);
 
   @Test
   @Disabled("Avoid call to SwaggerHub")

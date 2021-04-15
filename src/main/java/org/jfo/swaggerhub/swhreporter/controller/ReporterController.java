@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/reporter")
 public class ReporterController {
 
-    private static final String ELAPSED_TIME_LOG = "ReporterController :: Elapsed time {}";
+    private static final String ELAPSED_TIME_LOG = "ReporterController :: Elapsed time {} ms";
 
     private final ReporterService reporterService;
     private final StatusService statusService;
