@@ -43,7 +43,8 @@
             <li th:replace="::menuItem ('/reporter/specs','specs','Specification list','search','Specification list')" class="nav-item active"></li>
             <li th:replace="::menuItem ('/reporter/projects','projects','Projects & specifications','search','Projects & specifications')"></li>
             <li th:replace="::menuItem ('/reporter/participants','projects','Projects & participants','search','Projects & participants')"></li>
-            
+            <li th:replace="::menuItem ('/reporter/users','users','Members','search','Members')"></li>
+
             <span class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reports</a>
                 <div class="dropdown-menu">
@@ -58,6 +59,7 @@
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
                 <div class="dropdown-menu">
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/myadmin','Home','My Admin','search','My Admin')"></span>
+                    <span class="dropdown-item" th:replace="::menuItem ('/admin/load/users','Home','Load users','search','Load users')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/specs','Home','Load specifications','search','Load specifications')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/docs','Home','Load documentation','search','Load documentation')"></span>
                     <span class="dropdown-item" th:replace="::menuItem ('/admin/load/collaborations','Home','Load collaborations','search','Load collaborations')"></span>

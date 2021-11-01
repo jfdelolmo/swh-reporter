@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static java.lang.String.valueOf;
+
 public class SwhClientParams {
   
   private SwhClientParams(){
@@ -17,9 +19,12 @@ public class SwhClientParams {
   public static final String LIMIT_PARAM = "limit" ;
   public static final String ORDER_PARAM = "order";
   public static final String SORT_PARAM = "sort";
+  public static final String SORT_BY_PARAM = "sortBy";
   public static final String PAGE_PARAM = "page";
+  public static final String PAGE_SIZE_PARAM = "pageSize";
+  public static final int PAGE_SIZE_NUM = 25;
 
-  private static final String PAGE_SIZE = "25";
+  private static final String PAGE_SIZE = valueOf(PAGE_SIZE_NUM);
 
   public static MultiValueMap<String, String> buildAllOwnerSpecsParams(String owner, int page) {
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
@@ -29,7 +34,7 @@ public class SwhClientParams {
     queryParams.add(LIMIT_PARAM, PAGE_SIZE);
     queryParams.add(ORDER_PARAM, "ASC");
     queryParams.add(OWNER_PARAM, owner);
-    queryParams.add(PAGE_PARAM, String.valueOf(page));
+    queryParams.add(PAGE_PARAM, valueOf(page));
     queryParams.add(SORT_PARAM, "NAME");
     return queryParams;
   }
@@ -68,7 +73,7 @@ public class SwhClientParams {
   public static MultiValueMap<String, String> buildGetProjectsQueryParams(int page) {
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
     queryParams.add("nameOnly", "false");
-    queryParams.add(PAGE_PARAM, String.valueOf(page));
+    queryParams.add(PAGE_PARAM, valueOf(page));
     queryParams.add(LIMIT_PARAM, PAGE_SIZE);
     queryParams.add(ORDER_PARAM, "ASC");
     return queryParams;
@@ -80,4 +85,20 @@ public class SwhClientParams {
     uriParams.put("projectId", project);
     return uriParams;
   }
+
+  public static Map<String, String> buildGetAllOwnerMembersUriParams(String owner) {
+    Map<String, String> uriParams = new HashMap<>();
+    uriParams.put(OWNER_PARAM, owner);
+    return uriParams;
+  }
+
+  public static MultiValueMap<String, String> buildAllOwnerMembersParams(int page) {
+    MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+    queryParams.add(SORT_BY_PARAM, "NAME");
+    queryParams.add(ORDER_PARAM, "ASC");
+    queryParams.add(PAGE_PARAM, valueOf(page));
+    queryParams.add(PAGE_SIZE_PARAM, PAGE_SIZE);
+    return queryParams;
+  }
+
 }

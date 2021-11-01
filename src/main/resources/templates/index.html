@@ -48,7 +48,7 @@
                 <dt>Total Domains</dt>
                 <dd><p th:text="${status.totalDomains}">Total Domains</p></dd>
                 <dt>Last update:</dt>
-                <dd><p th:text="${status.lastUpdate}">Last update</p></dd>
+                <dd><p th:text="${#temporals.format(status.lastUpdate, 'yyyy-MM-dd HH:mm')}">Last update</p></dd>
               </dl>
             </div>
           </div>

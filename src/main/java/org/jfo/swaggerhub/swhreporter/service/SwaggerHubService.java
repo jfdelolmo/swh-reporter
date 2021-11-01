@@ -7,6 +7,7 @@ import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
 
+import org.jfo.swaggerhub.swhreporter.model.swh.users.GetOrganizationMembersResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -23,4 +24,7 @@ public interface SwaggerHubService {
     Flux<ProjectMember> getProjectMembers(String owner, String project);
     
     Mono<Pair<String, String>> getResolvedUnresolvedSpec(String url);
+
+    Flux<GetOrganizationMembersResult> getAllOwnerMembers(String owner);
+
 }

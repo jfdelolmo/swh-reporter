@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'users')}">
+<head th:insert="fragments/scripts">
+    <meta charset="UTF-8"/>
+    <title>List of users</title>
+</head>
+<body>
+
+    <div class="container-fluid" style="margin-top: 20px">
+    
+        <div class="row">
+            <table class="table table-sm table-responsive table-hover" style="max-width: 100%;" th:if="${not #lists.isEmpty(users.users)}">
+                <thead class="thead-dark">
+                    <tr>
+                        <th colspan="7">Members (<span th:text="${users.numberOfUsers}">0</span>)</th>
+                    </tr>
+                    <tr>
+                        <th colspan="1">Owners: <span th:text="${users.totalOwners}">0</span></th>
+                        <th colspan="2">Designers: <span th:text="${users.totalDesigners}">0</span></th>
+                        <th colspan="1">Consumers: <span th:text="${users.totalConsumers}">0</span></th>
+                        <th colspan="2">Deletable:  <span th:text="${users.totalDeletable}">0</span></th>
+                    </tr>
+                    <tr>
+                        <th scope="col">User Id</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">LastActive</th>
+                        <th scope="col">Deletable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:remove="all">
+                      <td th:text="${user.userId}">User ID</td>
+                      <td th:text="${user.username}">Username</td>
+                      <td th:text="${user.email}">Email</td>
+                      <td th:text="${user.role}">Role</td>
+                      <td th:text="${user.lastActive}">Last active</td>
+                      <td th:text="${user.deleteCandidate}">Deletable</td>
+                    </tr>
+                    <tr th:remove="all">
+                        <td th:text="${user.userId}">User ID</td>
+                        <td th:text="${user.username}">Username</td>
+                        <td th:text="${user.email}">Email</td>
+<!--                        <td th:text="${user.firstName}">First name</td>-->
+<!--                        <td th:text="${user.lastName}">Last name</td>-->
+                        <td th:text="${user.role}"></td>Role</td>
+                        <td th:text="${user.lastActive}">Last active</td>
+                    </tr>
+                    <tr th:each="user : ${users.users}">
+                        <td th:text="${user.userId}">User ID</td>
+                        <td th:text="${user.username}">Username</td>
+                        <td th:text="${user.email}">Email</td>
+                        <td th:text="${user.role}">Role</td>
+                        <td th:text="${#temporals.format(user.lastActive, 'yyyy-MM-dd HH:mm')}">Last active</td>
+                        <td th:if="${user.deleteCandidate == false }" class="text-center"><span class="badge bg-success w-75">OK</span></td>
+                        <td th:if="${user.deleteCandidate == true}" class="text-center"><span class="badge bg-danger w-75">Delete</span></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">Pagination pending</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+    </div>
+</body>
+</html>

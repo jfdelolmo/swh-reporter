@@ -25,7 +25,9 @@ public class SwhWebClient {
     public static final String GET_DOMAIN_VERSION_URL = BASE_URL + "/domains/{owner}/{domain}/{version}" + DOMAIN_AS_YAML;
     public static final String GET_PROJECTS_BY_OWNER = BASE_URL + "/projects/{owner}";
     public static final String GET_PROJECT_MEMBERS = BASE_URL + "/projects/{owner}/{projectId}/members";
-    
+
+    public static final String GET_MEMBERS_URL = BASE_URL + "/user-management/v1/orgs/{owner}/members";
+
     private String apiKey;
     
     public void setApiKey(String apiKey){
@@ -59,7 +61,7 @@ public class SwhWebClient {
 
         ExchangeStrategies es = ExchangeStrategies
             .builder()
-            .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 2))
+            .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 3))
             .build();
         
         WebClient webClient = WebClient.builder()

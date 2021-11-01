@@ -9,12 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jfo.swaggerhub.swhreporter.dto.InvalidSpecDto;
-import org.jfo.swaggerhub.swhreporter.dto.InvalidSpecsReportDto;
-import org.jfo.swaggerhub.swhreporter.dto.ProjectParticipantsReportDto;
-import org.jfo.swaggerhub.swhreporter.dto.ProjectsReportDto;
-import org.jfo.swaggerhub.swhreporter.dto.SpecsDto;
-import org.jfo.swaggerhub.swhreporter.dto.UnresolvedReportDto;
+import org.jfo.swaggerhub.swhreporter.dto.*;
+import org.jfo.swaggerhub.swhreporter.model.swh.users.SwaggerHubUserRole;
 import org.jfo.swaggerhub.swhreporter.service.ReporterService;
 import org.jfo.swaggerhub.swhreporter.service.StatusService;
 import org.springframework.stereotype.Controller;
@@ -61,6 +57,25 @@ public class ReporterController {
         
         log.info(ELAPSED_TIME_LOG, System.currentTimeMillis()-startTime);
         return "reporter/api";
+    }
+
+    @GetMapping("/users")
+    public String getUsers(Model model){
+        log.info("Entering getUsers controller method");
+        long startTime = System.currentTimeMillis();
+
+        UsersDto out = new UsersDto();
+        out.setUsers(reporterService.getAllUsers().collectList().block());
+        out.setNumberOfUsers(out.getUsers().size());
+        out.setTotalOwners(out.getUsers().stream().filter(f-> SwaggerHubUserRole.OWNER.name().equals(f.getRole())).count());
+        out.setTotalDesigners(out.getUsers().stream().filter(f-> SwaggerHubUserRole.DESIGNER.name().equals(f.getRole())).count());
+        out.setTotalConsumers(out.getUsers().stream().filter(f-> SwaggerHubUserRole.CONSUMER.name().equals(f.getRole())).count());
+        out.setTotalDeletable(out.getUsers().stream().filter(UserDto::isDeleteCandidate).count());
+
+        model.addAttribute("users", out);
+
+        log.info(ELAPSED_TIME_LOG, System.currentTimeMillis()-startTime);
+        return "reporter/users";
     }
 
     @GetMapping("/projects")

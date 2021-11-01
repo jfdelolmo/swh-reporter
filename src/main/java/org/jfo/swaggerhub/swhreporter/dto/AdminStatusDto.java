@@ -17,5 +17,9 @@ public class AdminStatusDto {
   private Long errorApis;
   private Long errorDomains;
   private LocalDateTime lastUpdate;
+//  private Long totalUsers;
+//  private Long totalOwners;
+//  private Long totalDesigners;
+//  private Long totalConsumers;
   
 }

@@ -10,6 +10,7 @@ import org.jfo.swaggerhub.swhreporter.model.db.Specification;
 import org.jfo.swaggerhub.swhreporter.repository.AdminRepository;
 import org.jfo.swaggerhub.swhreporter.repository.ProjectRepository;
 import org.jfo.swaggerhub.swhreporter.repository.SpecificationRepository;
+import org.jfo.swaggerhub.swhreporter.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +30,7 @@ class InitializerServiceTest {
 
     private final AdminRepository adminRepository = mock(AdminRepository.class);
     private final SpecificationRepository specificationReactiveRepository = mock(SpecificationRepository.class);
+    private final UserRepository userRepository = mock(UserRepository.class);
     private final ProjectRepository projectRepository = mock(ProjectRepository.class);
 
     private final ModelMapper modelMapper = new ModelMapper(new OASExtractor());
@@ -36,17 +38,17 @@ class InitializerServiceTest {
     private final SwaggerHubService swaggerHubService = new SwaggerHubServiceImpl(adminService, new SwhWebClient());
     private final SwhMapper swhMapper = new SwhMapper();
 
-
     private final InitializerService initializerService = new InitializerService(
             specificationReactiveRepository,
-        projectRepository,
-        swaggerHubService,
+            userRepository,
+            projectRepository,
+            swaggerHubService,
             adminService,
             swhMapper
     );
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         MockitoAnnotations.openMocks(InitializerService.class);
     }
 

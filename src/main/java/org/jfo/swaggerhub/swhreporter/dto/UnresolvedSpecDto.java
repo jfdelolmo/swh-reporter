@@ -13,5 +13,4 @@ public class UnresolvedSpecDto {
   private String version;
   private String resolved;
 
-
 }

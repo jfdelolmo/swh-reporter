@@ -21,7 +21,7 @@
                             <dt class="col-sm-3">Created by</dt>
                             <dd class="col-sm-9"><span th:text="${api.createdBy}">Created By</span></dd>
                             <dt class="col-sm-3">Created</dt>
-                            <dd class="col-sm-9"><span th:text="${api.created}">Created</span></dd>
+                            <dd class="col-sm-9"><span th:text="${#temporals.format(api.created, 'yyyy-MM-dd HH:mm')}">Created</span></dd>
                         </dl>
                         <dl class="row col-sm-6">
                             <dt class="col-sm-3">Default version</dt>
@@ -29,7 +29,7 @@
                             <dt class="col-sm-3">Url</dt>
                             <dd class="col-sm-9"><span th:text="${api.url}">Url</span></dd>
                             <dt class="col-sm-3">Last update</dt>
-                            <dd class="col-sm-9"><span th:text="${api.updated}">Last update</span></dd>
+                            <dd class="col-sm-9"><span th:text="${#temporals.format(api.updated, 'yyyy-MM-dd HH:mm')}">Last update</span></dd>
                         </dl>
                     </div>
                 </div>

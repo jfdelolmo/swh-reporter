@@ -1,6 +1,6 @@
 package org.jfo.swaggerhub.swhreporter.service;
 
-import static org.jfo.swaggerhub.swhreporter.client.SwhClientParams.buildAllOwnerSpecsParams;
+import static org.jfo.swaggerhub.swhreporter.client.SwhClientParams.*;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.API_AS_YAML;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.DOMAIN_AS_YAML;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECTS_BY_OWNER;
@@ -21,6 +21,7 @@ import org.jfo.swaggerhub.swhreporter.model.swh.Collaboration;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMembersList;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
+import org.jfo.swaggerhub.swhreporter.model.swh.users.GetOrganizationMembersResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
@@ -67,8 +68,8 @@ public class SwaggerHubServiceImpl implements SwaggerHubService {
 
   @Override
   public Mono<Collaboration> getCollaboration(String owner, String url) {
-    Map<String, String> uriParams = SwhClientParams.buildGetCollaborationUriParams(owner, url);
-    MultiValueMap<String, String> queryParams = SwhClientParams.buildGetCollaborationQueryParams();
+    Map<String, String> uriParams = buildGetCollaborationUriParams(owner, url);
+    MultiValueMap<String, String> queryParams = buildGetCollaborationQueryParams();
 
     configSwhWebClientApiKey();
     return swhWebClient.executeCallMono(SwhWebClient.GET_API_COLLABORATION_URL, uriParams, queryParams, Collaboration.class);
@@ -101,8 +102,8 @@ public class SwaggerHubServiceImpl implements SwaggerHubService {
   private Flux<ProjectsJson> getProjectsPaged(String owner, int page) {
     return swhWebClient
         .executeCallFlux(GET_PROJECTS_BY_OWNER,
-            SwhClientParams.buildGetProjectsUriParams(owner),
-            SwhClientParams.buildGetProjectsQueryParams(page),
+            buildGetProjectsUriParams(owner),
+            buildGetProjectsQueryParams(page),
             ProjectsJson.class);
   }
 
@@ -111,7 +112,7 @@ public class SwaggerHubServiceImpl implements SwaggerHubService {
     configSwhWebClientApiKey();
     Mono<ProjectMembersList> mono = swhWebClient.executeCallMono(
         GET_PROJECT_MEMBERS,
-        SwhClientParams.buildGetProjectMembersUriParams(owner, project),
+        buildGetProjectMembersUriParams(owner, project),
         null,
         ProjectMembersList.class);
 
@@ -131,6 +132,28 @@ public class SwaggerHubServiceImpl implements SwaggerHubService {
 
     return Mono.just(Pair.of(resolvedApi,unresolvedApi));
   }
-  
-  
+
+  @Override
+  public Flux<GetOrganizationMembersResult> getAllOwnerMembers(String owner) {
+    AtomicInteger pageCounter = new AtomicInteger(0);
+    configSwhWebClientApiKey();
+
+    return getAllOwnerMembersPaged(owner, 0)
+            .expand(r -> {
+              if (r.getTotalCount() > (r.getPage()+1)*PAGE_SIZE_NUM) {
+                return getAllOwnerMembersPaged(owner, pageCounter.incrementAndGet());
+              }
+              return Flux.empty();
+            });
+  }
+
+  private Flux<GetOrganizationMembersResult> getAllOwnerMembersPaged(String owner, int page) {
+    Map<String, String> uriParams = buildGetAllOwnerMembersUriParams(owner);
+    MultiValueMap<String, String> queryParams = buildAllOwnerMembersParams(page);
+    return swhWebClient.executeCallFlux(SwhWebClient.GET_MEMBERS_URL, uriParams, queryParams, GetOrganizationMembersResult.class);
+  }
+
+
+
+
 }

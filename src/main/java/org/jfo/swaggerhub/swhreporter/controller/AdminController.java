@@ -70,6 +70,17 @@ public class AdminController {
     return REDIRECT_INDEX_VIEW;
   }
 
+  @GetMapping("/load/users")
+  public String loadUsers(){
+    log.info("AdminController :: Users processor...");
+    long start = System.currentTimeMillis();
+
+    swhProcessor.processCallForUsers();
+
+    log.info("AdminController :: Users processor elapsed time :: {})", System.currentTimeMillis() - start);
+    return REDIRECT_INDEX_VIEW;
+  }
+
 
   @GetMapping("/load/collaborations")
   public String loadCollaboration() {
