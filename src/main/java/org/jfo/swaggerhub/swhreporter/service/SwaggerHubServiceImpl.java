@@ -5,6 +5,7 @@ import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.API_AS_YAML;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.DOMAIN_AS_YAML;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECTS_BY_OWNER;
 import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.GET_PROJECT_MEMBERS;
+import static org.jfo.swaggerhub.swhreporter.client.SwhWebClient.USER_MANAGEMENT_MEMBERS_URL;
 import static org.jfo.swaggerhub.swhreporter.model.CommonConcepts.ERROR_RETRIEVE_FROM_SWAGGER_HUB;
 
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMembersList;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
 import org.jfo.swaggerhub.swhreporter.model.swh.users.GetOrganizationMembersResult;
+import org.jfo.swaggerhub.swhreporter.model.swh.users.OrganizationMemberResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
@@ -150,10 +152,14 @@ public class SwaggerHubServiceImpl implements SwaggerHubService {
   private Flux<GetOrganizationMembersResult> getAllOwnerMembersPaged(String owner, int page) {
     Map<String, String> uriParams = buildGetAllOwnerMembersUriParams(owner);
     MultiValueMap<String, String> queryParams = buildAllOwnerMembersParams(page);
-    return swhWebClient.executeCallFlux(SwhWebClient.GET_MEMBERS_URL, uriParams, queryParams, GetOrganizationMembersResult.class);
+    return swhWebClient.executeCallFlux(USER_MANAGEMENT_MEMBERS_URL, uriParams, queryParams, GetOrganizationMembersResult.class);
   }
 
-
-
+  public Flux<OrganizationMemberResult> deleteMember(String owner, String... userEmail) {
+    Map<String, String> uriParams = buildDeleteMemberUriParams(owner);
+    MultiValueMap<String, String> queryParams = buildDeleteMemberParams(userEmail);
+    configSwhWebClientApiKey();
+    return swhWebClient.executeCallFluxDelete(USER_MANAGEMENT_MEMBERS_URL, uriParams, queryParams, OrganizationMemberResult.class);
+  }
 
 }

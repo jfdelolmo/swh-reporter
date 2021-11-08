@@ -66,7 +66,7 @@ public class AdminController {
 
     swhProcessor.processCallForDocumentation();
 
-    log.info("AdminController :: Documentation processor elapsed time :: {})", System.currentTimeMillis() - start);
+    log.info("AdminController :: Documentation processor elapsed time :: {} ms", System.currentTimeMillis() - start);
     return REDIRECT_INDEX_VIEW;
   }
 
@@ -77,7 +77,7 @@ public class AdminController {
 
     swhProcessor.processCallForUsers();
 
-    log.info("AdminController :: Users processor elapsed time :: {})", System.currentTimeMillis() - start);
+    log.info("AdminController :: Users processor elapsed time :: {} ms", System.currentTimeMillis() - start);
     return REDIRECT_INDEX_VIEW;
   }
 

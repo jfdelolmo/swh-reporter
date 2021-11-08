@@ -8,6 +8,8 @@ import org.jfo.swaggerhub.swhreporter.model.swh.ProjectMember;
 import org.jfo.swaggerhub.swhreporter.model.swh.ProjectsJson;
 
 import org.jfo.swaggerhub.swhreporter.model.swh.users.GetOrganizationMembersResult;
+import org.jfo.swaggerhub.swhreporter.model.swh.users.OrganizationMemberResult;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -26,5 +28,6 @@ public interface SwaggerHubService {
     Mono<Pair<String, String>> getResolvedUnresolvedSpec(String url);
 
     Flux<GetOrganizationMembersResult> getAllOwnerMembers(String owner);
-
+    
+    Flux<OrganizationMemberResult> deleteMember(String owner, String... userEmail);
 }

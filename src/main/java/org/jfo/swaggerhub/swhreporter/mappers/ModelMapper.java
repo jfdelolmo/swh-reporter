@@ -5,13 +5,39 @@ import static org.jfo.swaggerhub.swhreporter.model.CommonConcepts.TYPE_API;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.jfo.swaggerhub.swhreporter.dto.*;
-import org.jfo.swaggerhub.swhreporter.model.db.*;
-import org.jfo.swaggerhub.swhreporter.model.swh.users.SwaggerHubUserRole;
+import org.jfo.swaggerhub.swhreporter.dto.AdminStatusDto;
+import org.jfo.swaggerhub.swhreporter.dto.ApiDto;
+import org.jfo.swaggerhub.swhreporter.dto.ClxApiOauth2SecurityDefinitionDto;
+import org.jfo.swaggerhub.swhreporter.dto.CollaborationDto;
+import org.jfo.swaggerhub.swhreporter.dto.InvalidSpecDto;
+import org.jfo.swaggerhub.swhreporter.dto.MemberDto;
+import org.jfo.swaggerhub.swhreporter.dto.MyAdminDto;
+import org.jfo.swaggerhub.swhreporter.dto.ParticipantDto;
+import org.jfo.swaggerhub.swhreporter.dto.ParticipantReportDto;
+import org.jfo.swaggerhub.swhreporter.dto.ProjectDto;
+import org.jfo.swaggerhub.swhreporter.dto.SimpleSpecDto;
+import org.jfo.swaggerhub.swhreporter.dto.SpecInfoDto;
+import org.jfo.swaggerhub.swhreporter.dto.TeamDto;
+import org.jfo.swaggerhub.swhreporter.dto.UnresolvedSpecDto;
+import org.jfo.swaggerhub.swhreporter.dto.UserDto;
+import org.jfo.swaggerhub.swhreporter.model.db.Admin;
+import org.jfo.swaggerhub.swhreporter.model.db.Api;
+import org.jfo.swaggerhub.swhreporter.model.db.Collaboration;
+import org.jfo.swaggerhub.swhreporter.model.db.Domain;
+import org.jfo.swaggerhub.swhreporter.model.db.Member;
+import org.jfo.swaggerhub.swhreporter.model.db.Project;
+import org.jfo.swaggerhub.swhreporter.model.db.ProjectParticipant;
+import org.jfo.swaggerhub.swhreporter.model.db.Specification;
+import org.jfo.swaggerhub.swhreporter.model.db.Status;
+import org.jfo.swaggerhub.swhreporter.model.db.Team;
+import org.jfo.swaggerhub.swhreporter.model.db.User;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -238,7 +264,7 @@ public class ModelMapper {
     userDto.setInviteTime(user.getInviteTime());
     userDto.setStartTime(user.getStartTime());
     userDto.setLastActive(user.getLastActive());
-    userDto.setDeleteCandidate(user.getLastActive().isBefore(LocalDateTime.now().minusMonths(1)));
+    userDto.setDeleteCandidate(user.getLastActive().isBefore(LocalDateTime.now().minusMonths(3)));
 
     return userDto;
   }

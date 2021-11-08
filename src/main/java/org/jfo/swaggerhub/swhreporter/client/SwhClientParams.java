@@ -1,5 +1,6 @@
 package org.jfo.swaggerhub.swhreporter.client;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class SwhClientParams {
   public static final String SORT_BY_PARAM = "sortBy";
   public static final String PAGE_PARAM = "page";
   public static final String PAGE_SIZE_PARAM = "pageSize";
+  public static final String USER_PARAM = "user";
   public static final int PAGE_SIZE_NUM = 25;
 
   private static final String PAGE_SIZE = valueOf(PAGE_SIZE_NUM);
@@ -98,6 +100,20 @@ public class SwhClientParams {
     queryParams.add(ORDER_PARAM, "ASC");
     queryParams.add(PAGE_PARAM, valueOf(page));
     queryParams.add(PAGE_SIZE_PARAM, PAGE_SIZE);
+    return queryParams;
+  }
+
+  public static Map<String, String> buildDeleteMemberUriParams(String owner) {
+    Map<String, String> uriParams = new HashMap<>();
+    uriParams.put(OWNER_PARAM, owner);
+    return uriParams;
+  }
+
+  public static MultiValueMap<String, String> buildDeleteMemberParams(String[] userEmail) {
+    MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+    Arrays.asList(userEmail)
+        .forEach(u -> queryParams.add(USER_PARAM, u));
+    
     return queryParams;
   }
 
